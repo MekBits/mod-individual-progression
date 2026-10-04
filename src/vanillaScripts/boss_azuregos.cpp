@@ -157,6 +157,7 @@ public:
             }
             case EVENT_SPELL_ARCANE_VACUUM:
             {
+                Talk(SAY_TELEPORT);
                 DoCastAOE(SPELL_ARCANE_VACUUM);
                 events.Repeat(30s);
                 break;

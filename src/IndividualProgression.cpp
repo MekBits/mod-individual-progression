@@ -601,6 +601,26 @@ void IndividualProgression::checkIPPhasing(Player* player, uint32 newArea)
                 player->CastSpell(player, IPP_PHASE_II, false);
             }
             break;
+        case AREA_DEADWIND_PASS:
+        case AREA_DEADWIND_RAVINE:
+        case AREA_DIAMONDHEAD_RIVER:
+        case AREA_ARIDENS_CAMP:
+        case AREA_THE_VICE:
+        case AREA_KARAZHAN:
+        case AREA_MORGANS_PLOT:
+        case AREA_DEADMANS_CROSSING:
+        case AREA_THE_MASTERS_CELLAR:
+        case AREA_GROSHGOK_COMPOUND:
+        case AREA_SLEEPING_GORGE:
+            if (isBeforeProgression(player, PROGRESSION_PRE_TBC))
+            {
+                player->CastSpell(player, IPP_PHASE, false);
+            }
+            else
+            {
+                player->CastSpell(player, IPP_PHASE_II, false);
+            }
+            break;
         case AREA_IRONTREE_WOOD:
             if (player->getClass() == CLASS_HUNTER && ((player->GetQuestStatus(QUEST_THE_ANCIENT_LEAF) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_THE_ANCIENT_LEAF) == QUEST_STATUS_REWARDED)))
             {

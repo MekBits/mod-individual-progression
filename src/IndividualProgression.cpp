@@ -1162,6 +1162,131 @@ private:
         }
     }
 
+    // hunter_pet_trainers.sql and warlock_pet_trainers.sql keep their data in ipp_pet_* tables. It is written
+    // to the core tables here, before they are loaded, only while the feature is on; the core values it
+    // replaces are kept in ipp_pet_backup_* and put back when the feature is turned off, so that with the
+    // feature off pets, demon trainers and grimoires behave as in AzerothCore.
+    struct PetDatabaseFeature
+    {
+        char const* name;
+        std::vector<char const*> backup;  // first apply only: save the core rows about to be replaced
+        std::vector<char const*> apply;   // every startup while on
+        std::vector<char const*> restore; // first startup after turning it off
+        std::vector<char const*> clear;   // after restore
+    };
+
+    static void ApplyPetDatabaseFeature(PetDatabaseFeature const& feature, bool on)
+    {
+        bool applied = false;
+        if (QueryResult result = WorldDatabase.Query("SELECT `applied` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name))
+            applied = (*result)[0].Get<uint8>() != 0;
+
+        if (!on && !applied)
+            return;
+
+        auto trans = WorldDatabase.BeginTransaction();
+        if (on)
+        {
+            if (!applied)
+                for (char const* sql : feature.backup)
+                    trans->Append(sql);
+            for (char const* sql : feature.apply)
+                trans->Append(sql);
+        }
+        else
+        {
+            for (char const* sql : feature.restore)
+                trans->Append(sql);
+            for (char const* sql : feature.clear)
+                trans->Append(sql);
+        }
+        trans->Append("REPLACE INTO `ipp_pet_state` (`feature`, `applied`) VALUES ('{}', {})", feature.name, on ? 1 : 0);
+        WorldDatabase.DirectCommitTransaction(trans);
+
+        // DirectCommitTransaction rolls back and only logs on failure; the state row tells whether it went through.
+        QueryResult result = WorldDatabase.Query("SELECT `applied` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
+        if (!result || ((*result)[0].Get<uint8>() != 0) != on)
+        {
+            LOG_ERROR("module", "IndividualProgression: writing the {} pet data failed, see the SQL errors above", feature.name);
+            return;
+        }
+
+        LOG_INFO("module", "IndividualProgression: {} pet data {}", feature.name, on ? "applied" : "removed, AzerothCore values restored");
+    }
+
+    static void ApplyPetDatabaseSettings()
+    {
+        if (!WorldDatabase.Query("SHOW TABLES LIKE 'ipp_pet_state'"))
+        {
+            LOG_ERROR("module", "IndividualProgression: table ipp_pet_state is missing, pet data not applied (are the module's world SQL files applied?)");
+            return;
+        }
+
+        static PetDatabaseFeature const hunter
+        {
+            "hunter",
+            {
+                "DELETE FROM `ipp_pet_backup_spell_data_id`",
+                "INSERT INTO `ipp_pet_backup_spell_data_id` (`entry`, `PetSpellDataId`) SELECT ct.`entry`, ct.`PetSpellDataId` FROM `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry`",
+                "DELETE FROM `ipp_pet_backup_creaturespelldata`",
+                "INSERT INTO `ipp_pet_backup_creaturespelldata` SELECT c.* FROM `creaturespelldata_dbc` c JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = c.`ID`",
+            },
+            {
+                "UPDATE `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry` SET ct.`PetSpellDataId` = m.`PetSpellDataId`",
+                "REPLACE INTO `creaturespelldata_dbc` SELECT * FROM `ipp_pet_creaturespelldata`",
+            },
+            {
+                // A row changed since by something else (e.g. an AzerothCore update) keeps its new value.
+                "UPDATE `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry` JOIN `ipp_pet_backup_spell_data_id` b ON b.`entry` = ct.`entry` "
+                    "SET ct.`PetSpellDataId` = b.`PetSpellDataId` WHERE ct.`PetSpellDataId` = m.`PetSpellDataId`",
+                "DELETE c FROM `creaturespelldata_dbc` c JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = c.`ID`",
+                "INSERT IGNORE INTO `creaturespelldata_dbc` SELECT * FROM `ipp_pet_backup_creaturespelldata`",
+            },
+            {
+                "DELETE FROM `ipp_pet_backup_spell_data_id`",
+                "DELETE FROM `ipp_pet_backup_creaturespelldata`",
+            }
+        };
+
+        static PetDatabaseFeature const warlock
+        {
+            "warlock",
+            {
+                "DELETE FROM `ipp_pet_backup_trainer_npcflag`",
+                "INSERT INTO `ipp_pet_backup_trainer_npcflag` (`entry`, `npcflag`) SELECT ct.`entry`, ct.`npcflag` FROM `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry`",
+                "DELETE FROM `ipp_pet_backup_npc_vendor`",
+                "INSERT INTO `ipp_pet_backup_npc_vendor` SELECT v.* FROM `npc_vendor` v WHERE v.`entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "DELETE FROM `ipp_pet_backup_grimoire`",
+                "INSERT INTO `ipp_pet_backup_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) "
+                    "SELECT it.`entry`, it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description` FROM `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry`",
+            },
+            {
+                "UPDATE `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry` SET ct.`npcflag` = m.`npcflag`",
+                "DELETE FROM `npc_vendor` WHERE `entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "INSERT INTO `npc_vendor` SELECT * FROM `ipp_pet_npc_vendor`",
+                "UPDATE `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry` "
+                    "SET it.`spellid_1` = m.`spellid_1`, it.`spellid_2` = m.`spellid_2`, it.`spelltrigger_2` = m.`spelltrigger_2`, it.`description` = m.`description`",
+            },
+            {
+                "UPDATE `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry` JOIN `ipp_pet_backup_trainer_npcflag` b ON b.`entry` = ct.`entry` "
+                    "SET ct.`npcflag` = b.`npcflag` WHERE ct.`npcflag` = m.`npcflag`",
+                "DELETE FROM `npc_vendor` WHERE `entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "INSERT IGNORE INTO `npc_vendor` SELECT * FROM `ipp_pet_backup_npc_vendor`",
+                "UPDATE `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry` JOIN `ipp_pet_backup_grimoire` b ON b.`entry` = it.`entry` "
+                    "SET it.`spellid_1` = b.`spellid_1`, it.`spellid_2` = b.`spellid_2`, it.`spelltrigger_2` = b.`spelltrigger_2`, it.`description` = b.`description` "
+                    "WHERE it.`spellid_1` = m.`spellid_1` AND it.`spellid_2` = m.`spellid_2` AND it.`spelltrigger_2` = m.`spelltrigger_2` AND it.`description` = m.`description`",
+            },
+            {
+                "DELETE FROM `ipp_pet_backup_trainer_npcflag`",
+                "DELETE FROM `ipp_pet_backup_npc_vendor`",
+                "DELETE FROM `ipp_pet_backup_grimoire`",
+            }
+        };
+
+        ApplyPetDatabaseFeature(hunter, sIndividualProgression->HunterPetsActive());
+        ApplyPetDatabaseFeature(warlock, sIndividualProgression->DemonTrainersActive());
+    }
+
 public:
     IndividualPlayerProgression_WorldScript() : WorldScript("IndividualProgression_WorldScript") { }
 
@@ -1171,9 +1296,13 @@ public:
         LoadXpValues();
     }
 
-    void OnAfterConfigLoad(bool /*reload*/) override
+    void OnAfterConfigLoad(bool reload) override
     {
         ApplyMountSettings();
+
+        // The core tables are already loaded on a config reload; the new state takes effect at the next start.
+        if (!reload)
+            ApplyPetDatabaseSettings();
 
         if (sIndividualProgression->simpleConfigOverride)
         {

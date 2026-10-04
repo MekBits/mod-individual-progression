@@ -387,6 +387,13 @@ public:
             return false;
         }
 
+        if ((target->getClass() == CLASS_HUNTER && !sIndividualProgression->HunterPetsActive()) ||
+            (target->getClass() == CLASS_WARLOCK && !sIndividualProgression->DemonTrainersActive()))
+        {
+            handler->SendSysMessage("Vanilla/TBC pet training is disabled (IndividualProgression.VanillaHunterPets / WarlockDemonTrainers).");
+            return true;
+        }
+
         // normalize to lowercase
         for (char& c : pet)
             c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));

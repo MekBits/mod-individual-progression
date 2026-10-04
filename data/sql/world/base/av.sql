@@ -3463,7 +3463,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (113577, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Ram Rider Commander - On Respawn - Set Faction Friendly'),
 (113577, 0, 2, 0, 0, 0, 100, 0, 5000, 8000, 9000, 13000, 0, 0, 11, 16856, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Stormpike Ram Rider Commander - In Combat - Cast Mortal Strike'),
 (113577, 0, 3, 0, 0, 0, 100, 0, 4000, 7000, 7000, 9000, 0, 0, 11, 15284, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,     'Stormpike Ram Rider Commander - In Combat - Cast Cleave'),
-(113577, 0, 4, 5, 62, 0, 100, 0, 65701, 0,0,0,0,0, 12, 113419, 3, 10000, 0,0,0,8,0,0,0,0, 600.03, -2.925, 42.08, 0,    'Stormpike Ram Rider Commander - On Gossip Select - Summon NPC_AV_DUMMY_A'),
+(113577, 0, 4, 5, 62, 0, 100, 0, 65702, 0,0,0,0,0, 12, 113419, 3, 10000, 0,0,0,8,0,0,0,0, 600.03, -2.925, 42.08, 0,    'Stormpike Ram Rider Commander - On Gossip Select - Summon NPC_AV_DUMMY_A'),
 (113577, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Ram Rider Commander - On Gossip Select - Remove gossip select'),
 (113577, 0, 6, 0, 108, 0, 100, 1, 6, @WPID+3160, 0, 0, 0, 0, 80, 11357701, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Ram Rider Commander - On WP Reached - Run Script 11357701'),
 --

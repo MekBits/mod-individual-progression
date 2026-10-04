@@ -35,7 +35,7 @@ void IndividualProgression::UpdateRNDbotSpells(Player* player)
 
 void IndividualProgression::checkHunterPetSpells(Player* player)
 {
-    if (!player || !player->IsInWorld() || !VanillaHunterPets)
+    if (!player || !player->IsInWorld() || !HunterPetsActive())
         return;
 
     if (sIndividualProgression->isBotAccount(player))
@@ -450,7 +450,7 @@ void IndividualProgression::checkHunterPetSpells(Player* player)
 
 void IndividualProgression::checkWarlockPetSpells(Player* player)
 {
-    if (!player || !player->IsInWorld() || !WarlockDemonTrainers)
+    if (!player || !player->IsInWorld() || !DemonTrainersActive())
         return;
 
     if (sIndividualProgression->isBotAccount(player))
@@ -583,7 +583,7 @@ public:
         if (!player || !player->IsInWorld())
             return false;
 
-        if (player->getClass() != CLASS_WARLOCK)
+        if (player->getClass() != CLASS_WARLOCK || !sIndividualProgression->DemonTrainersActive())
             return true;
 
         if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5))
@@ -747,7 +747,7 @@ public:
         if (sIndividualProgression->isBotAccount(player))
             return;
 
-        if (player->getClass() == CLASS_WARLOCK)
+        if (player->getClass() == CLASS_WARLOCK && sIndividualProgression->DemonTrainersActive())
         {
             if (spellID < 600000 || spellID > 700000)
                 return;
@@ -766,7 +766,7 @@ public:
 
         uint32 SPELL_TAME_BEAST = 1515;
 
-        if (player->getClass() == CLASS_HUNTER)
+        if (player->getClass() == CLASS_HUNTER && sIndividualProgression->HunterPetsActive())
         {
             if (spell->GetSpellInfo()->Id == SPELL_TAME_BEAST)
             {
@@ -1270,7 +1270,10 @@ private:
         if (!owner || !owner->IsPlayer())
             return;
 
-        if (!owner->ToPlayer()->IsClass(CLASS_WARLOCK, CLASS_CONTEXT_PET) && !owner->ToPlayer()->IsClass(CLASS_HUNTER, CLASS_CONTEXT_PET))
+        Player* player = owner->ToPlayer();
+        bool const hunter = player->IsClass(CLASS_HUNTER, CLASS_CONTEXT_PET) && sIndividualProgression->HunterPetsActive();
+        bool const warlock = player->IsClass(CLASS_WARLOCK, CLASS_CONTEXT_PET) && sIndividualProgression->DemonTrainersActive();
+        if (!hunter && !warlock)
             return;
 
         // Pet::LoadPetFromDB calls InitStatsForLevel (-> OnInitStatsForLevel), then Map::AddToMap -> Pet::AddToWorld (-> OnPetAddToWorld).

@@ -232,506 +232,848 @@ INSERT INTO `spell_dbc` (`ID`, `Category`, `DispelType`, `Mechanic`, `Attributes
 'Warp','','','','','','','','',0,0,0,0,0,0,0,0,'Rank 1','','','','','','','','',0,0,0,0,0,0,0,0,'','','','','','','','','',0,0,0,0,0,0,0,0,'','','','','','','','','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
 
--- During Vanilla these beasts had no PetSpellDataId, no default spells.
-UPDATE `creature_template` SET `PetSpellDataId` = 0 WHERE `entry` IN 
-(43, 69, 113, 119, 154, 157, 199, 213, 217, 299, 330, 345, 390, 428, 454, 462, 524, 525, 539, 547, 565, 684, 685, 686, 687, 698, 704, 705, 708, 730, 768, 772, 830, 831, 854, 855, 856, 858, 923, 930, 949, 977, 
-1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1082, 1084, 1085, 1108, 1109, 1111, 1114, 1125, 1126, 1127, 1128, 1140, 1150, 1151, 1152, 1184, 1186, 1188, 1190, 1191, 1192, 1194, 1201, 1353, 
-1400, 1417, 1504, 1508, 1511, 1512, 1513, 1516, 1554, 1557, 1558, 1559, 1689, 1766, 1780, 1781, 1797, 1815, 1821, 1822, 1984, 1985, 1986, 1996, 1998, 2031, 2032, 2033, 2034, 2043, 2069, 2071, 2165, 
-2172, 2175, 2231, 2233, 2234, 2235, 2236, 2275, 2322, 2354, 2356, 2406, 2407, 2521, 2544, 2559, 2560, 2561, 2580, 2635, 2680, 2707, 2829, 2830, 2831, 2923, 2924, 2925, 2954, 2955, 2956, 2961, 2966, 
-2969, 2970, 2971, 3098, 3099, 3100, 3107, 3122, 3123, 3125, 3126, 3225, 3226, 3227, 3228, 3231, 3243, 3244, 3247, 3249, 3250, 3252, 3254, 3255, 3256, 3257, 3415, 3416, 3424, 3425, 3472, 3475, 3566, 
-3630, 3631, 3632, 3633, 3634, 3636, 3637, 3811, 3814, 3819, 3820, 3824, 3861, 3862, 3866, 3868, 3939, 4040, 4117, 4118, 4119, 4124, 4127, 4128, 4129, 4139, 4142, 4144, 4154, 4158, 4248, 4249, 4250,
-4263, 4264, 4316, 4342, 4351, 4352, 4355, 4356, 4357, 4376, 4377, 4378, 4379, 4380, 4397, 4398, 4399, 4414, 4415, 4511, 4512, 4514, 4534, 4535, 4548, 4660, 4689, 4690, 4692, 4694, 4695, 4699, 5048, 
-5056, 5224, 5225, 5260, 5262, 5272, 5287, 5288, 5291, 5423, 5424, 5431, 5755, 5756, 5762, 5807, 5828, 5829, 5834, 5842, 5856, 5857, 5858, 5865, 5982, 5983, 5984, 5985, 5988, 6013, 6352, 6369, 6505, 
-6506, 6507, 6508, 6513, 6514, 6516, 6581, 6585, 6789, 6867, 7078, 7268, 7376, 7405, 7431, 7434, 7443, 7446, 7803, 7977, 8336, 8956, 8957, 8960, 9521, 9622, 9683, 9684, 9690, 9691, 9694, 9697, 9698, 
-10077, 10221, 10357, 10359, 10375, 10644, 10737, 10741, 10806, 10882, 10979, 10981, 11357, 11359, 11360, 11361, 11368, 11371, 11372, 11373, 11735, 11736, 11737, 11738, 11739, 12037, 12347, 12418, 
-12431, 12432, 12433, 13036, 13896, 14123, 14222, 14228, 14232, 14234, 14268, 14274, 14280, 14283, 14430, 14472, 14476, 14491, 14532, 14821, 14965, 15041, 15043, 15974, 15975, 15976, 16453);
+/*
+    Vanilla/TBC `PetSpellDataId` per creature and TBC `creaturespelldata_dbc` rows.
+    They are kept in ipp_pet_* tables and written to creature_template/creaturespelldata_dbc at
+    startup only while IndividualProgression.VanillaHunterPets = 1; with 0 AzerothCore's values are
+    restored (IndividualProgression.cpp, ApplyPetDatabaseSettings). Changing the key needs a restart.
+*/
+-- Whether the startup step has written the ipp_pet_* data to the core tables (rows written by C++ only).
+CREATE TABLE IF NOT EXISTS `ipp_pet_state` (
+    `feature` varchar(16) NOT NULL,
+    `applied` tinyint unsigned NOT NULL DEFAULT 0,
+    PRIMARY KEY (`feature`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_spell_data_id` (
+    `entry` int unsigned NOT NULL,
+    `PetSpellDataId` int unsigned NOT NULL,
+    PRIMARY KEY (`entry`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_backup_spell_data_id` LIKE `ipp_pet_spell_data_id`;
 
--- During TBC these beasts had no PetSpellDataId, no default spells.
-UPDATE `creature_template` SET `PetSpellDataId` = 0 WHERE `entry` IN
-(16520, 16933, 16972, 16973, 17144, 17202, 17203, 17216, 17217, 17221, 17345, 17347, 17348, 17372, 17373, 17374, 17522, 17523, 17525, 17661, 17683, 17724,
- 17731, 17736, 17952, 18130, 18131, 18241, 18280, 18285, 18437, 18468, 18469, 18470, 18477, 18647, 18670, 18880, 18982, 18983, 19423, 19429, 19458, 19459,
- 20039, 20075, 20173, 20185, 20186, 20196, 20611, 20682, 20686, 20714, 20728, 20729, 20748, 20751, 20752, 20773, 20998, 21124, 21128, 21372, 21373, 21515, 21723, 21724,
- 21839, 21841, 21891, 21901, 21904, 21989, 21990, 22044, 22052, 22132, 22162, 22163, 22173, 22767, 23163, 23326, 23501, 23873, 24043, 24047, 24064, 24138, 24530, 24922);
+-- During Vanilla/TBC some beasts had no PetSpellDataId (0); the others get their Vanilla/TBC value.
+DELETE FROM `ipp_pet_spell_data_id`;
+INSERT INTO `ipp_pet_spell_data_id` (`entry`, `PetSpellDataId`) VALUES
+(43, 10495),
+(69, 0),
+(113, 9081),
+(119, 9073),
+(154, 8834),
+(157, 9085),
+(199, 0),
+(213, 0),
+(217, 10503),
+(299, 0),
+(330, 9077),
+(345, 9063),
+(390, 9076),
+(428, 0),
+(454, 9088),
+(462, 0),
+(524, 9078),
+(525, 0),
+(539, 10502),
+(547, 9086),
+(565, 0),
+(684, 8880),
+(685, 0),
+(686, 0),
+(687, 0),
+(698, 0),
+(704, 0),
+(705, 0),
+(708, 9080),
+(730, 0),
+(768, 8881),
+(772, 0),
+(830, 0),
+(831, 0),
+(854, 0),
+(855, 0),
+(856, 0),
+(858, 0),
+(923, 0),
+(930, 10506),
+(949, 10507),
+(977, 0),
+(1015, 0),
+(1016, 0),
+(1017, 0),
+(1018, 0),
+(1019, 0),
+(1020, 0),
+(1021, 0),
+(1022, 0),
+(1023, 0),
+(1082, 0),
+(1084, 0),
+(1085, 0),
+(1108, 9059),
+(1109, 0),
+(1111, 10505),
+(1114, 9057),
+(1125, 9068),
+(1126, 9072),
+(1127, 9070),
+(1128, 0),
+(1140, 0),
+(1150, 0),
+(1151, 0),
+(1152, 0),
+(1184, 0),
+(1186, 0),
+(1188, 0),
+(1190, 9075),
+(1191, 9087),
+(1192, 9084),
+(1194, 0),
+(1201, 0),
+(1353, 0),
+(1400, 0),
+(1417, 0),
+(1504, 10524),
+(1508, 0),
+(1511, 0),
+(1512, 0),
+(1513, 0),
+(1516, 0),
+(1554, 0),
+(1557, 9055),
+(1558, 0),
+(1559, 0),
+(1689, 9079),
+(1766, 0),
+(1780, 0),
+(1781, 0),
+(1797, 0),
+(1815, 0),
+(1821, 0),
+(1822, 10514),
+(1984, 9083),
+(1985, 9082),
+(1986, 0),
+(1996, 0),
+(1998, 0),
+(2031, 0),
+(2032, 0),
+(2033, 0),
+(2034, 0),
+(2043, 0),
+(2069, 0),
+(2071, 0),
+(2165, 0),
+(2172, 0),
+(2175, 0),
+(2231, 0),
+(2233, 0),
+(2234, 0),
+(2235, 0),
+(2236, 0),
+(2275, 0),
+(2322, 0),
+(2354, 0),
+(2356, 0),
+(2406, 5525),
+(2407, 0),
+(2521, 0),
+(2544, 0),
+(2559, 0),
+(2560, 0),
+(2561, 0),
+(2580, 0),
+(2635, 0),
+(2680, 0),
+(2707, 0),
+(2829, 0),
+(2830, 0),
+(2831, 0),
+(2923, 0),
+(2924, 8847),
+(2925, 8864),
+(2954, 9066),
+(2955, 0),
+(2956, 0),
+(2961, 0),
+(2966, 9065),
+(2969, 0),
+(2970, 0),
+(2971, 0),
+(3098, 9074),
+(3099, 9069),
+(3100, 9071),
+(3107, 0),
+(3122, 0),
+(3123, 0),
+(3125, 0),
+(3126, 0),
+(3225, 9067),
+(3226, 8848),
+(3227, 0),
+(3228, 0),
+(3231, 0),
+(3243, 0),
+(3244, 0),
+(3247, 8903),
+(3249, 8904),
+(3250, 8849),
+(3252, 8850),
+(3254, 0),
+(3255, 0),
+(3256, 0),
+(3257, 0),
+(3415, 0),
+(3416, 0),
+(3424, 8902),
+(3425, 0),
+(3472, 8908),
+(3475, 0),
+(3566, 0),
+(3630, 8898),
+(3631, 8900),
+(3632, 0),
+(3633, 0),
+(3634, 0),
+(3636, 0),
+(3637, 0),
+(3811, 0),
+(3814, 0),
+(3819, 0),
+(3820, 0),
+(3824, 0),
+(3861, 0),
+(3862, 0),
+(3866, 0),
+(3868, 0),
+(3939, 0),
+(4040, 10504),
+(4117, 8905),
+(4118, 8907),
+(4119, 8906),
+(4124, 0),
+(4127, 0),
+(4128, 0),
+(4129, 0),
+(4139, 8853),
+(4142, 0),
+(4144, 0),
+(4154, 0),
+(4158, 8836),
+(4248, 0),
+(4249, 0),
+(4250, 0),
+(4263, 10498),
+(4264, 0),
+(4316, 0),
+(4342, 0),
+(4351, 0),
+(4352, 0),
+(4355, 0),
+(4356, 0),
+(4357, 0),
+(4376, 10508),
+(4377, 10510),
+(4378, 10509),
+(4379, 10511),
+(4380, 10512),
+(4397, 0),
+(4398, 0),
+(4399, 0),
+(4414, 0),
+(4415, 0),
+(4511, 9089),
+(4512, 9091),
+(4514, 9090),
+(4534, 0),
+(4535, 0),
+(4548, 0),
+(4660, 0),
+(4689, 0),
+(4690, 0),
+(4692, 0),
+(4694, 8837),
+(4695, 0),
+(4699, 8852),
+(5048, 10543),
+(5056, 8899),
+(5224, 10544),
+(5225, 10544),
+(5260, 0),
+(5262, 9054),
+(5272, 0),
+(5287, 8865),
+(5288, 0),
+(5291, 8909),
+(5423, 8857),
+(5424, 8856),
+(5431, 0),
+(5755, 10543),
+(5756, 8901),
+(5762, 11587),
+(5807, 0),
+(5828, 0),
+(5829, 0),
+(5834, 0),
+(5842, 0),
+(5856, 10513),
+(5857, 0),
+(5858, 0),
+(5865, 0),
+(5982, 0),
+(5983, 0),
+(5984, 0),
+(5985, 0),
+(5988, 8858),
+(6013, 8306),
+(6352, 0),
+(6369, 0),
+(6505, 0),
+(6506, 0),
+(6507, 0),
+(6508, 0),
+(6513, 0),
+(6514, 0),
+(6516, 9053),
+(6581, 0),
+(6585, 9051),
+(6789, 0),
+(6867, 0),
+(7078, 8851),
+(7268, 10544),
+(7376, 0),
+(7405, 8854),
+(7431, 0),
+(7434, 0),
+(7443, 0),
+(7446, 0),
+(7803, 8855),
+(7977, 0),
+(8336, 8910),
+(8956, 0),
+(8957, 0),
+(8960, 0),
+(9521, 8301),
+(9622, 9050),
+(9683, 0),
+(9684, 0),
+(9690, 0),
+(9691, 8860),
+(9694, 0),
+(9697, 0),
+(9698, 8833),
+(10077, 0),
+(10221, 0),
+(10357, 0),
+(10359, 10497),
+(10375, 10515),
+(10644, 8866),
+(10737, 0),
+(10741, 0),
+(10806, 0),
+(10882, 0),
+(10979, 0),
+(10981, 0),
+(11357, 9001),
+(11359, 11582),
+(11360, 0),
+(11361, 0),
+(11368, 0),
+(11371, 10530),
+(11372, 10530),
+(11373, 10530),
+(11735, 8859),
+(11736, 8832),
+(11737, 8861),
+(11738, 0),
+(11739, 10516),
+(12037, 0),
+(12347, 0),
+(12418, 0),
+(12431, 0),
+(12432, 0),
+(12433, 10500),
+(13036, 0),
+(13896, 9062),
+(14123, 0),
+(14222, 0),
+(14228, 0),
+(14232, 0),
+(14234, 0),
+(14268, 0),
+(14274, 8841),
+(14280, 0),
+(14283, 0),
+(14430, 0),
+(14472, 0),
+(14476, 8861),
+(14491, 0),
+(14532, 10517),
+(14821, 0),
+(14965, 0),
+(15041, 10518),
+(15043, 0),
+(15974, 0),
+(15975, 0),
+(15976, 0),
+(16453, 0),
+(16520, 0),
+(16933, 0),
+(16972, 0),
+(16973, 0),
+(17144, 0),
+(17202, 0),
+(17203, 0),
+(17216, 0),
+(17217, 0),
+(17221, 0),
+(17345, 0),
+(17347, 0),
+(17348, 0),
+(17372, 0),
+(17373, 0),
+(17374, 0),
+(17522, 0),
+(17523, 0),
+(17525, 0),
+(17661, 0),
+(17683, 0),
+(17724, 0),
+(17731, 0),
+(17736, 0),
+(17952, 0),
+(18130, 0),
+(18131, 0),
+(18241, 0),
+(18280, 0),
+(18285, 0),
+(18437, 0),
+(18468, 0),
+(18469, 0),
+(18470, 0),
+(18477, 0),
+(18647, 0),
+(18670, 0),
+(18880, 0),
+(18982, 0),
+(18983, 0),
+(19423, 0),
+(19429, 0),
+(19458, 0),
+(19459, 0),
+(20039, 0),
+(20075, 0),
+(20173, 0),
+(20185, 0),
+(20186, 0),
+(20196, 0),
+(20611, 0),
+(20682, 0),
+(20686, 0),
+(20714, 0),
+(20728, 0),
+(20729, 0),
+(20748, 0),
+(20751, 0),
+(20752, 0),
+(20773, 0),
+(20998, 0),
+(21124, 0),
+(21128, 0),
+(21372, 0),
+(21373, 0),
+(21515, 0),
+(21723, 0),
+(21724, 0),
+(21839, 0),
+(21841, 0),
+(21891, 0),
+(21901, 0),
+(21904, 0),
+(21989, 0),
+(21990, 0),
+(22044, 0),
+(22052, 0),
+(22132, 0),
+(22162, 0),
+(22163, 0),
+(22173, 0),
+(22767, 0),
+(23163, 0),
+(23326, 0),
+(23501, 0),
+(23873, 0),
+(24043, 0),
+(24047, 0),
+(24064, 0),
+(24138, 0),
+(24530, 0),
+(24922, 0),
+(30, 5880),
+(118, 5943),
+(120, 5884),
+(442, 5888),
+(471, 5908),
+(505, 5891),
+(521, 5960),
+(569, 5894),
+(574, 5911),
+(616, 5909),
+(628, 5949),
+(681, 5828),
+(682, 8264),
+(683, 5829),
+(728, 8279),
+(729, 8278),
+(731, 8887),
+(736, 5830),
+(767, 8265),
+(769, 5903),
+(822, 5797),
+(833, 5946),
+(834, 5944),
+(922, 5845),
+(976, 8263),
+(1087, 5854),
+(1088, 5846),
+(1112, 5910),
+(1129, 5795),
+(1130, 5812),
+(1131, 5940),
+(1132, 5959),
+(1133, 5941),
+(1138, 5937),
+(1185, 5890),
+(1189, 5801),
+(1195, 5885),
+(1196, 5796),
+(1199, 5816),
+(1216, 5840),
+(1225, 5815),
+(1258, 5950),
+(1505, 5879),
+(1509, 5935),
+(1553, 5786),
+(1555, 5886),
+(1688, 5881),
+(1693, 5847),
+(1713, 8267),
+(1765, 5945),
+(1778, 5799),
+(1809, 8311),
+(1811, 8312),
+(1816, 5810),
+(1817, 5956),
+(1824, 5906),
+(1922, 5938),
+(1923, 5947),
+(1961, 5814),
+(1994, 5913),
+(1995, 5859),
+(1997, 5860),
+(1999, 5882),
+(2000, 5883),
+(2001, 5887),
+(2042, 5817),
+(2070, 5821),
+(2089, 5849),
+(2163, 5798),
+(2232, 5837),
+(2237, 5823),
+(2321, 5916),
+(2323, 5919),
+(2348, 5896),
+(2349, 5895),
+(2350, 5893),
+(2351, 5804),
+(2384, 5824),
+(2385, 5826),
+(2408, 5924),
+(2476, 5856),
+(2505, 5928),
+(2522, 5833),
+(2563, 5898),
+(2565, 5900),
+(2578, 8303),
+(2579, 8304),
+(2681, 5958),
+(2686, 5904),
+(2727, 5952),
+(2728, 8293),
+(2729, 8294),
+(2730, 8295),
+(2731, 5831),
+(2732, 5832),
+(2734, 8266),
+(2753, 5961),
+(2850, 8275),
+(2926, 8296),
+(2931, 8314),
+(2957, 5915),
+(2958, 5936),
+(2959, 5939),
+(2960, 5942),
+(3035, 5819),
+(3068, 5921),
+(3106, 5835),
+(3108, 5836),
+(3110, 5800),
+(3121, 5818),
+(3124, 5864),
+(3127, 5865),
+(3241, 5822),
+(3245, 5918),
+(3246, 5917),
+(3281, 5875),
+(3460, 5839),
+(3461, 5923),
+(3581, 5857),
+(3619, 9477),
+(3653, 5934),
+(3809, 5803),
+(3810, 5805),
+(3812, 5841),
+(3821, 5897),
+(3823, 5948),
+(3825, 5951),
+(4005, 5889),
+(4006, 5892),
+(4067, 5825),
+(4126, 5827),
+(4140, 5867),
+(4143, 5926),
+(4304, 8287),
+(4341, 5853),
+(4343, 5851),
+(4344, 5852),
+(4345, 5855),
+(4346, 8317),
+(4347, 8318),
+(4348, 8319),
+(4396, 5925),
+(4400, 5927),
+(4411, 5901),
+(4412, 5902),
+(4413, 5899),
+(4425, 5794),
+(4482, 5957),
+(4538, 5790),
+(4539, 8300),
+(4662, 8282),
+(4688, 8280),
+(4691, 8281),
+(4693, 8305),
+(4696, 5866),
+(4697, 5868),
+(4724, 8292),
+(4725, 5922),
+(4821, 5842),
+(4822, 5843),
+(4823, 5844),
+(4824, 5929),
+(4825, 5930),
+(4841, 5858),
+(4861, 5791),
+(4862, 5792),
+(4887, 5932),
+(4950, 8299),
+(5053, 5848),
+(5268, 5806),
+(5274, 5807),
+(5286, 5953),
+(5307, 8320),
+(5308, 8321),
+(5349, 8322),
+(5352, 5813),
+(5356, 5963),
+(5422, 5869),
+(5425, 8283),
+(5426, 8284),
+(5427, 8285),
+(5428, 8307),
+(5429, 8308),
+(5430, 8309),
+(5432, 5931),
+(5708, 8323),
+(5766, 5820),
+(5823, 5876),
+(5937, 5877),
+(5986, 8286),
+(5987, 5870),
+(5989, 5871),
+(5992, 8261),
+(6250, 5838),
+(6788, 5802),
+(7022, 5873),
+(7055, 8298),
+(7097, 8315),
+(7098, 8316),
+(7099, 5861),
+(7319, 5914),
+(7430, 5834),
+(7432, 8270),
+(7433, 8268),
+(7444, 5809),
+(7445, 5811),
+(7455, 5862),
+(7456, 5863),
+(8207, 8310),
+(8208, 8288),
+(8211, 5962),
+(8213, 5933),
+(8277, 5912),
+(8299, 8313),
+(8300, 8289),
+(8301, 5878),
+(8303, 8262),
+(8437, 10544),
+(8600, 5787),
+(8601, 5788),
+(8602, 5789),
+(8762, 5905),
+(8926, 5874),
+(8927, 5793),
+(8933, 5907),
+(8958, 5808),
+(8959, 5954),
+(8961, 5955),
+(9416, 8297),
+(9695, 5872),
+(9696, 7344),
+(10200, 8276),
+(11291, 6706),
+(11365, 8274),
+(11370, 10519),
+(11614, 5956),
+(11871, 5945),
+(11921, 5892),
+(12800, 5953),
+(12801, 5953),
+(12802, 5953),
+(12803, 5953),
+(13599, 11601),
+(14223, 5924),
+(14233, 5858),
+(14266, 5890),
+(14279, 5893),
+(14339, 5954),
+(14343, 5861),
+(14344, 5808),
+(15067, 8272),
+(15068, 8271),
+(15101, 8272),
+(15649, 10481),
+(15650, 10391),
+(15651, 11553),
+(15652, 11094),
+(15653, 11562),
+(16117, 9161),
+(16170, 10522),
+(16171, 10523),
+(16347, 11556),
+(16348, 11092),
+(16349, 11093),
+(16350, 10496),
+(16351, 10499),
+(16352, 10501),
+(16932, 11567),
+(16934, 11565),
+(17034, 10705),
+(17035, 10708),
+(17039, 10705),
+(17042, 8311),
+(17053, 10709),
+(17128, 10711),
+(17129, 10706),
+(17178, 9504),
+(17198, 11593),
+(17199, 11594),
+(17236, 5904),
+(17399, 9613),
+(17401, 9612),
+(17411, 8267),
+(17526, 11563),
+(17527, 11564),
+(17556, 11595),
+(17620, 11596),
+(18033, 11591),
+(18155, 10483),
+(18220, 10710),
+(18257, 10707),
+(18464, 10525),
+(18465, 11577),
+(18466, 10520),
+(18467, 10521),
+(18476, 11592),
+(18605, 9612),
+(18614, 9613),
+(18851, 10480),
+(18854, 10482),
+(18878, 11573),
+(18884, 11576),
+(18963, 10712),
+(18996, 10712),
+(19022, 5830),
+(19023, 5830),
+(19024, 5830),
+(19025, 5830),
+(19026, 5830),
+(19027, 5830),
+(19030, 5830),
+(19031, 5830),
+(19055, 10713),
+(19189, 11566),
+(19349, 11570),
+(19350, 11569),
+(19428, 11586),
+(19784, 10530),
+(19785, 11588),
+(20038, 10487),
+(20058, 11590),
+(20109, 10709),
+(20330, 11589),
+(20502, 10480),
+(20517, 10480),
+(20634, 12153),
+(20671, 11572),
+(20673, 11581),
+(20688, 11586),
+(20749, 11584),
+(20797, 10540),
+(20999, 11583),
+(21022, 11571),
+(21033, 9071),
+(21042, 12668),
+(21123, 11585),
+(21468, 10709),
+(21470, 10856),
+(21544, 10483),
+(21634, 5918),
+(21804, 10709),
+(21864, 11579),
+(21956, 11091),
+(22039, 10525),
+(22100, 11580),
+(22123, 11568),
+(22191, 11574),
+(22193, 12056),
+(22255, 11575),
+(22257, 11578),
+(22265, 10712),
+(22793, 8841),
+(22807, 11669),
+(23051, 10708),
+(23219, 11576),
+(23761, 7264),
+(23812, 11571),
+(23877, 11571),
+(23878, 11571),
+(23879, 11571),
+(23880, 11571),
+(27946, 12993);
 
--- update `PetSpellDataId` with Vanilla/TBC values
-UPDATE `creature_template` SET `PetSpellDataId` = 5880  WHERE `entry` = 30;
-UPDATE `creature_template` SET `PetSpellDataId` = 10495 WHERE `entry` = 43;
-UPDATE `creature_template` SET `PetSpellDataId` = 9081  WHERE `entry` = 113;
-UPDATE `creature_template` SET `PetSpellDataId` = 5943  WHERE `entry` = 118;
-UPDATE `creature_template` SET `PetSpellDataId` = 9073  WHERE `entry` = 119;
-UPDATE `creature_template` SET `PetSpellDataId` = 5884  WHERE `entry` = 120;
-UPDATE `creature_template` SET `PetSpellDataId` = 8834  WHERE `entry` = 154;
-UPDATE `creature_template` SET `PetSpellDataId` = 9085  WHERE `entry` = 157;
-UPDATE `creature_template` SET `PetSpellDataId` = 10503 WHERE `entry` = 217;
-UPDATE `creature_template` SET `PetSpellDataId` = 9077  WHERE `entry` = 330;
-UPDATE `creature_template` SET `PetSpellDataId` = 9063  WHERE `entry` = 345;
-UPDATE `creature_template` SET `PetSpellDataId` = 9076  WHERE `entry` = 390;
-UPDATE `creature_template` SET `PetSpellDataId` = 5888  WHERE `entry` = 442;
-UPDATE `creature_template` SET `PetSpellDataId` = 9088  WHERE `entry` = 454;
-UPDATE `creature_template` SET `PetSpellDataId` = 5908  WHERE `entry` = 471;
-UPDATE `creature_template` SET `PetSpellDataId` = 5891  WHERE `entry` = 505;
-UPDATE `creature_template` SET `PetSpellDataId` = 5960  WHERE `entry` = 521;
-UPDATE `creature_template` SET `PetSpellDataId` = 9078  WHERE `entry` = 524;
-UPDATE `creature_template` SET `PetSpellDataId` = 10502 WHERE `entry` = 539;
-UPDATE `creature_template` SET `PetSpellDataId` = 9086  WHERE `entry` = 547;
-UPDATE `creature_template` SET `PetSpellDataId` = 5894  WHERE `entry` = 569;
-UPDATE `creature_template` SET `PetSpellDataId` = 5911  WHERE `entry` = 574;
-UPDATE `creature_template` SET `PetSpellDataId` = 5909  WHERE `entry` = 616;
-UPDATE `creature_template` SET `PetSpellDataId` = 5949  WHERE `entry` = 628;
-UPDATE `creature_template` SET `PetSpellDataId` = 5828  WHERE `entry` = 681;
-UPDATE `creature_template` SET `PetSpellDataId` = 8264  WHERE `entry` = 682;
-UPDATE `creature_template` SET `PetSpellDataId` = 5829  WHERE `entry` = 683;
-UPDATE `creature_template` SET `PetSpellDataId` = 8880  WHERE `entry` = 684;
-UPDATE `creature_template` SET `PetSpellDataId` = 9080  WHERE `entry` = 708;
-UPDATE `creature_template` SET `PetSpellDataId` = 8279  WHERE `entry` = 728;
-UPDATE `creature_template` SET `PetSpellDataId` = 8278  WHERE `entry` = 729;
-UPDATE `creature_template` SET `PetSpellDataId` = 8887  WHERE `entry` = 731;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 736;
-UPDATE `creature_template` SET `PetSpellDataId` = 8265  WHERE `entry` = 767;
-UPDATE `creature_template` SET `PetSpellDataId` = 8881  WHERE `entry` = 768;
-UPDATE `creature_template` SET `PetSpellDataId` = 5903  WHERE `entry` = 769;
-UPDATE `creature_template` SET `PetSpellDataId` = 5797  WHERE `entry` = 822;
-UPDATE `creature_template` SET `PetSpellDataId` = 5946  WHERE `entry` = 833;
-UPDATE `creature_template` SET `PetSpellDataId` = 5944  WHERE `entry` = 834;
-UPDATE `creature_template` SET `PetSpellDataId` = 5845  WHERE `entry` = 922;
-UPDATE `creature_template` SET `PetSpellDataId` = 10506 WHERE `entry` = 930;
-UPDATE `creature_template` SET `PetSpellDataId` = 10507 WHERE `entry` = 949;
-UPDATE `creature_template` SET `PetSpellDataId` = 8263  WHERE `entry` = 976;
-UPDATE `creature_template` SET `PetSpellDataId` = 5854  WHERE `entry` = 1087;
-UPDATE `creature_template` SET `PetSpellDataId` = 5846  WHERE `entry` = 1088;
-UPDATE `creature_template` SET `PetSpellDataId` = 9059  WHERE `entry` = 1108;
-UPDATE `creature_template` SET `PetSpellDataId` = 10505 WHERE `entry` = 1111;
-UPDATE `creature_template` SET `PetSpellDataId` = 5910  WHERE `entry` = 1112;
-UPDATE `creature_template` SET `PetSpellDataId` = 9057  WHERE `entry` = 1114;
-UPDATE `creature_template` SET `PetSpellDataId` = 9068  WHERE `entry` = 1125;
-UPDATE `creature_template` SET `PetSpellDataId` = 9072  WHERE `entry` = 1126;
-UPDATE `creature_template` SET `PetSpellDataId` = 9070  WHERE `entry` = 1127;
-UPDATE `creature_template` SET `PetSpellDataId` = 5795  WHERE `entry` = 1129;
-UPDATE `creature_template` SET `PetSpellDataId` = 5812  WHERE `entry` = 1130;
-UPDATE `creature_template` SET `PetSpellDataId` = 5940  WHERE `entry` = 1131;
-UPDATE `creature_template` SET `PetSpellDataId` = 5959  WHERE `entry` = 1132;
-UPDATE `creature_template` SET `PetSpellDataId` = 5941  WHERE `entry` = 1133;
-UPDATE `creature_template` SET `PetSpellDataId` = 5937  WHERE `entry` = 1138;
-UPDATE `creature_template` SET `PetSpellDataId` = 5890  WHERE `entry` = 1185;
-UPDATE `creature_template` SET `PetSpellDataId` = 5801  WHERE `entry` = 1189;
-UPDATE `creature_template` SET `PetSpellDataId` = 9075  WHERE `entry` = 1190;
-UPDATE `creature_template` SET `PetSpellDataId` = 9087  WHERE `entry` = 1191;
-UPDATE `creature_template` SET `PetSpellDataId` = 9084  WHERE `entry` = 1192;
-UPDATE `creature_template` SET `PetSpellDataId` = 5885  WHERE `entry` = 1195;
-UPDATE `creature_template` SET `PetSpellDataId` = 5796  WHERE `entry` = 1196;
-UPDATE `creature_template` SET `PetSpellDataId` = 5816  WHERE `entry` = 1199;
-UPDATE `creature_template` SET `PetSpellDataId` = 5840  WHERE `entry` = 1216;
-UPDATE `creature_template` SET `PetSpellDataId` = 5815  WHERE `entry` = 1225;
-UPDATE `creature_template` SET `PetSpellDataId` = 5950  WHERE `entry` = 1258;
-UPDATE `creature_template` SET `PetSpellDataId` = 10524 WHERE `entry` = 1504;
-UPDATE `creature_template` SET `PetSpellDataId` = 5879  WHERE `entry` = 1505;
-UPDATE `creature_template` SET `PetSpellDataId` = 5935  WHERE `entry` = 1509;
-UPDATE `creature_template` SET `PetSpellDataId` = 5786  WHERE `entry` = 1553;
-UPDATE `creature_template` SET `PetSpellDataId` = 5886  WHERE `entry` = 1555;
-UPDATE `creature_template` SET `PetSpellDataId` = 9055  WHERE `entry` = 1557;
-UPDATE `creature_template` SET `PetSpellDataId` = 5881  WHERE `entry` = 1688;
-UPDATE `creature_template` SET `PetSpellDataId` = 9079  WHERE `entry` = 1689;
-UPDATE `creature_template` SET `PetSpellDataId` = 5847  WHERE `entry` = 1693;
-UPDATE `creature_template` SET `PetSpellDataId` = 8267  WHERE `entry` = 1713;
-UPDATE `creature_template` SET `PetSpellDataId` = 5945  WHERE `entry` = 1765;
-UPDATE `creature_template` SET `PetSpellDataId` = 5799  WHERE `entry` = 1778;
-UPDATE `creature_template` SET `PetSpellDataId` = 8311  WHERE `entry` = 1809;
-UPDATE `creature_template` SET `PetSpellDataId` = 8312  WHERE `entry` = 1811;
-UPDATE `creature_template` SET `PetSpellDataId` = 5810  WHERE `entry` = 1816;
-UPDATE `creature_template` SET `PetSpellDataId` = 5956  WHERE `entry` = 1817;
-UPDATE `creature_template` SET `PetSpellDataId` = 10514 WHERE `entry` = 1822;
-UPDATE `creature_template` SET `PetSpellDataId` = 5906  WHERE `entry` = 1824;
-UPDATE `creature_template` SET `PetSpellDataId` = 5938  WHERE `entry` = 1922;
-UPDATE `creature_template` SET `PetSpellDataId` = 5947  WHERE `entry` = 1923;
-UPDATE `creature_template` SET `PetSpellDataId` = 5814  WHERE `entry` = 1961;
-UPDATE `creature_template` SET `PetSpellDataId` = 9083  WHERE `entry` = 1984;
-UPDATE `creature_template` SET `PetSpellDataId` = 9082  WHERE `entry` = 1985;
-UPDATE `creature_template` SET `PetSpellDataId` = 5913  WHERE `entry` = 1994;
-UPDATE `creature_template` SET `PetSpellDataId` = 5859  WHERE `entry` = 1995;
-UPDATE `creature_template` SET `PetSpellDataId` = 5860  WHERE `entry` = 1997;
-UPDATE `creature_template` SET `PetSpellDataId` = 5882  WHERE `entry` = 1999;
-UPDATE `creature_template` SET `PetSpellDataId` = 5883  WHERE `entry` = 2000;
-UPDATE `creature_template` SET `PetSpellDataId` = 5887  WHERE `entry` = 2001;
-UPDATE `creature_template` SET `PetSpellDataId` = 5817  WHERE `entry` = 2042;
-UPDATE `creature_template` SET `PetSpellDataId` = 5821  WHERE `entry` = 2070;
-UPDATE `creature_template` SET `PetSpellDataId` = 5849  WHERE `entry` = 2089;
-UPDATE `creature_template` SET `PetSpellDataId` = 5798  WHERE `entry` = 2163;
-UPDATE `creature_template` SET `PetSpellDataId` = 5837  WHERE `entry` = 2232;
-UPDATE `creature_template` SET `PetSpellDataId` = 5823  WHERE `entry` = 2237;
-UPDATE `creature_template` SET `PetSpellDataId` = 5916  WHERE `entry` = 2321;
-UPDATE `creature_template` SET `PetSpellDataId` = 5919  WHERE `entry` = 2323;
-UPDATE `creature_template` SET `PetSpellDataId` = 5896  WHERE `entry` = 2348;
-UPDATE `creature_template` SET `PetSpellDataId` = 5895  WHERE `entry` = 2349;
-UPDATE `creature_template` SET `PetSpellDataId` = 5893  WHERE `entry` = 2350;
-UPDATE `creature_template` SET `PetSpellDataId` = 5804  WHERE `entry` = 2351;
-UPDATE `creature_template` SET `PetSpellDataId` = 5824  WHERE `entry` = 2384;
-UPDATE `creature_template` SET `PetSpellDataId` = 5826  WHERE `entry` = 2385;
-UPDATE `creature_template` SET `PetSpellDataId` = 5525  WHERE `entry` = 2406;
-UPDATE `creature_template` SET `PetSpellDataId` = 5924  WHERE `entry` = 2408;
-UPDATE `creature_template` SET `PetSpellDataId` = 5856  WHERE `entry` = 2476;
-UPDATE `creature_template` SET `PetSpellDataId` = 5928  WHERE `entry` = 2505;
-UPDATE `creature_template` SET `PetSpellDataId` = 5833  WHERE `entry` = 2522;
-UPDATE `creature_template` SET `PetSpellDataId` = 5898  WHERE `entry` = 2563;
-UPDATE `creature_template` SET `PetSpellDataId` = 5900  WHERE `entry` = 2565;
-UPDATE `creature_template` SET `PetSpellDataId` = 8303  WHERE `entry` = 2578;
-UPDATE `creature_template` SET `PetSpellDataId` = 8304  WHERE `entry` = 2579;
-UPDATE `creature_template` SET `PetSpellDataId` = 5958  WHERE `entry` = 2681;
-UPDATE `creature_template` SET `PetSpellDataId` = 5904  WHERE `entry` = 2686;
-UPDATE `creature_template` SET `PetSpellDataId` = 5952  WHERE `entry` = 2727;
-UPDATE `creature_template` SET `PetSpellDataId` = 8293  WHERE `entry` = 2728;
-UPDATE `creature_template` SET `PetSpellDataId` = 8294  WHERE `entry` = 2729;
-UPDATE `creature_template` SET `PetSpellDataId` = 8295  WHERE `entry` = 2730;
-UPDATE `creature_template` SET `PetSpellDataId` = 5831  WHERE `entry` = 2731;
-UPDATE `creature_template` SET `PetSpellDataId` = 5832  WHERE `entry` = 2732;
-UPDATE `creature_template` SET `PetSpellDataId` = 8266  WHERE `entry` = 2734;
-UPDATE `creature_template` SET `PetSpellDataId` = 5961  WHERE `entry` = 2753;
-UPDATE `creature_template` SET `PetSpellDataId` = 8275  WHERE `entry` = 2850;
-UPDATE `creature_template` SET `PetSpellDataId` = 8847  WHERE `entry` = 2924;
-UPDATE `creature_template` SET `PetSpellDataId` = 8864  WHERE `entry` = 2925;
-UPDATE `creature_template` SET `PetSpellDataId` = 8296  WHERE `entry` = 2926;
-UPDATE `creature_template` SET `PetSpellDataId` = 8314  WHERE `entry` = 2931;
-UPDATE `creature_template` SET `PetSpellDataId` = 9066  WHERE `entry` = 2954;
-UPDATE `creature_template` SET `PetSpellDataId` = 5915  WHERE `entry` = 2957;
-UPDATE `creature_template` SET `PetSpellDataId` = 5936  WHERE `entry` = 2958;
-UPDATE `creature_template` SET `PetSpellDataId` = 5939  WHERE `entry` = 2959;
-UPDATE `creature_template` SET `PetSpellDataId` = 5942  WHERE `entry` = 2960;
-UPDATE `creature_template` SET `PetSpellDataId` = 9065  WHERE `entry` = 2966;
-UPDATE `creature_template` SET `PetSpellDataId` = 5819  WHERE `entry` = 3035;
-UPDATE `creature_template` SET `PetSpellDataId` = 5921  WHERE `entry` = 3068;
-UPDATE `creature_template` SET `PetSpellDataId` = 9074  WHERE `entry` = 3098;
-UPDATE `creature_template` SET `PetSpellDataId` = 9069  WHERE `entry` = 3099;
-UPDATE `creature_template` SET `PetSpellDataId` = 9071  WHERE `entry` = 3100;
-UPDATE `creature_template` SET `PetSpellDataId` = 5835  WHERE `entry` = 3106;
-UPDATE `creature_template` SET `PetSpellDataId` = 5836  WHERE `entry` = 3108;
-UPDATE `creature_template` SET `PetSpellDataId` = 5800  WHERE `entry` = 3110;
-UPDATE `creature_template` SET `PetSpellDataId` = 5818  WHERE `entry` = 3121;
-UPDATE `creature_template` SET `PetSpellDataId` = 5864  WHERE `entry` = 3124;
-UPDATE `creature_template` SET `PetSpellDataId` = 5865  WHERE `entry` = 3127;
-UPDATE `creature_template` SET `PetSpellDataId` = 9067  WHERE `entry` = 3225;
-UPDATE `creature_template` SET `PetSpellDataId` = 8848  WHERE `entry` = 3226;
-UPDATE `creature_template` SET `PetSpellDataId` = 5822  WHERE `entry` = 3241;
-UPDATE `creature_template` SET `PetSpellDataId` = 5918  WHERE `entry` = 3245;
-UPDATE `creature_template` SET `PetSpellDataId` = 5917  WHERE `entry` = 3246;
-UPDATE `creature_template` SET `PetSpellDataId` = 8903  WHERE `entry` = 3247;
-UPDATE `creature_template` SET `PetSpellDataId` = 8904  WHERE `entry` = 3249;
-UPDATE `creature_template` SET `PetSpellDataId` = 8849  WHERE `entry` = 3250;
-UPDATE `creature_template` SET `PetSpellDataId` = 8850  WHERE `entry` = 3252;
-UPDATE `creature_template` SET `PetSpellDataId` = 5875  WHERE `entry` = 3281;
-UPDATE `creature_template` SET `PetSpellDataId` = 8902  WHERE `entry` = 3424;
-UPDATE `creature_template` SET `PetSpellDataId` = 5839  WHERE `entry` = 3460;
-UPDATE `creature_template` SET `PetSpellDataId` = 5923  WHERE `entry` = 3461;
-UPDATE `creature_template` SET `PetSpellDataId` = 8908  WHERE `entry` = 3472;
-UPDATE `creature_template` SET `PetSpellDataId` = 5857  WHERE `entry` = 3581;
-UPDATE `creature_template` SET `PetSpellDataId` = 9477  WHERE `entry` = 3619;
-UPDATE `creature_template` SET `PetSpellDataId` = 8898  WHERE `entry` = 3630;
-UPDATE `creature_template` SET `PetSpellDataId` = 8900  WHERE `entry` = 3631;
-UPDATE `creature_template` SET `PetSpellDataId` = 5934  WHERE `entry` = 3653;
-UPDATE `creature_template` SET `PetSpellDataId` = 5803  WHERE `entry` = 3809;
-UPDATE `creature_template` SET `PetSpellDataId` = 5805  WHERE `entry` = 3810;
-UPDATE `creature_template` SET `PetSpellDataId` = 5841  WHERE `entry` = 3812;
-UPDATE `creature_template` SET `PetSpellDataId` = 5897  WHERE `entry` = 3821;
-UPDATE `creature_template` SET `PetSpellDataId` = 5948  WHERE `entry` = 3823;
-UPDATE `creature_template` SET `PetSpellDataId` = 5951  WHERE `entry` = 3825;
-UPDATE `creature_template` SET `PetSpellDataId` = 5889  WHERE `entry` = 4005;
-UPDATE `creature_template` SET `PetSpellDataId` = 5892  WHERE `entry` = 4006;
-UPDATE `creature_template` SET `PetSpellDataId` = 10504 WHERE `entry` = 4040;
-UPDATE `creature_template` SET `PetSpellDataId` = 5825  WHERE `entry` = 4067;
-UPDATE `creature_template` SET `PetSpellDataId` = 8905  WHERE `entry` = 4117;
-UPDATE `creature_template` SET `PetSpellDataId` = 8907  WHERE `entry` = 4118;
-UPDATE `creature_template` SET `PetSpellDataId` = 8906  WHERE `entry` = 4119;
-UPDATE `creature_template` SET `PetSpellDataId` = 5827  WHERE `entry` = 4126;
-UPDATE `creature_template` SET `PetSpellDataId` = 8853  WHERE `entry` = 4139;
-UPDATE `creature_template` SET `PetSpellDataId` = 5867  WHERE `entry` = 4140;
-UPDATE `creature_template` SET `PetSpellDataId` = 5926  WHERE `entry` = 4143;
-UPDATE `creature_template` SET `PetSpellDataId` = 8836  WHERE `entry` = 4158;
-UPDATE `creature_template` SET `PetSpellDataId` = 10498 WHERE `entry` = 4263;
-UPDATE `creature_template` SET `PetSpellDataId` = 8287  WHERE `entry` = 4304;
-UPDATE `creature_template` SET `PetSpellDataId` = 5853  WHERE `entry` = 4341;
-UPDATE `creature_template` SET `PetSpellDataId` = 5851  WHERE `entry` = 4343;
-UPDATE `creature_template` SET `PetSpellDataId` = 5852  WHERE `entry` = 4344;
-UPDATE `creature_template` SET `PetSpellDataId` = 5855  WHERE `entry` = 4345;
-UPDATE `creature_template` SET `PetSpellDataId` = 8317  WHERE `entry` = 4346;
-UPDATE `creature_template` SET `PetSpellDataId` = 8318  WHERE `entry` = 4347;
-UPDATE `creature_template` SET `PetSpellDataId` = 8319  WHERE `entry` = 4348;
-UPDATE `creature_template` SET `PetSpellDataId` = 10508 WHERE `entry` = 4376;
-UPDATE `creature_template` SET `PetSpellDataId` = 10510 WHERE `entry` = 4377;
-UPDATE `creature_template` SET `PetSpellDataId` = 10509 WHERE `entry` = 4378;
-UPDATE `creature_template` SET `PetSpellDataId` = 10511 WHERE `entry` = 4379;
-UPDATE `creature_template` SET `PetSpellDataId` = 10512 WHERE `entry` = 4380;
-UPDATE `creature_template` SET `PetSpellDataId` = 5925  WHERE `entry` = 4396;
-UPDATE `creature_template` SET `PetSpellDataId` = 5927  WHERE `entry` = 4400;
-UPDATE `creature_template` SET `PetSpellDataId` = 5901  WHERE `entry` = 4411;
-UPDATE `creature_template` SET `PetSpellDataId` = 5902  WHERE `entry` = 4412;
-UPDATE `creature_template` SET `PetSpellDataId` = 5899  WHERE `entry` = 4413;
-UPDATE `creature_template` SET `PetSpellDataId` = 5794  WHERE `entry` = 4425;
-UPDATE `creature_template` SET `PetSpellDataId` = 5957  WHERE `entry` = 4482;
-UPDATE `creature_template` SET `PetSpellDataId` = 9089  WHERE `entry` = 4511;
-UPDATE `creature_template` SET `PetSpellDataId` = 9091  WHERE `entry` = 4512;
-UPDATE `creature_template` SET `PetSpellDataId` = 9090  WHERE `entry` = 4514;
-UPDATE `creature_template` SET `PetSpellDataId` = 5790  WHERE `entry` = 4538;
-UPDATE `creature_template` SET `PetSpellDataId` = 8300  WHERE `entry` = 4539;
-UPDATE `creature_template` SET `PetSpellDataId` = 8282  WHERE `entry` = 4662;
-UPDATE `creature_template` SET `PetSpellDataId` = 8280  WHERE `entry` = 4688;
-UPDATE `creature_template` SET `PetSpellDataId` = 8281  WHERE `entry` = 4691;
-UPDATE `creature_template` SET `PetSpellDataId` = 8305  WHERE `entry` = 4693;
-UPDATE `creature_template` SET `PetSpellDataId` = 8837  WHERE `entry` = 4694;
-UPDATE `creature_template` SET `PetSpellDataId` = 5866  WHERE `entry` = 4696;
-UPDATE `creature_template` SET `PetSpellDataId` = 5868  WHERE `entry` = 4697;
-UPDATE `creature_template` SET `PetSpellDataId` = 8852  WHERE `entry` = 4699;
-UPDATE `creature_template` SET `PetSpellDataId` = 8292  WHERE `entry` = 4724;
-UPDATE `creature_template` SET `PetSpellDataId` = 5922  WHERE `entry` = 4725;
-UPDATE `creature_template` SET `PetSpellDataId` = 5842  WHERE `entry` = 4821;
-UPDATE `creature_template` SET `PetSpellDataId` = 5843  WHERE `entry` = 4822;
-UPDATE `creature_template` SET `PetSpellDataId` = 5844  WHERE `entry` = 4823;
-UPDATE `creature_template` SET `PetSpellDataId` = 5929  WHERE `entry` = 4824;
-UPDATE `creature_template` SET `PetSpellDataId` = 5930  WHERE `entry` = 4825;
-UPDATE `creature_template` SET `PetSpellDataId` = 5858  WHERE `entry` = 4841;
-UPDATE `creature_template` SET `PetSpellDataId` = 5791  WHERE `entry` = 4861;
-UPDATE `creature_template` SET `PetSpellDataId` = 5792  WHERE `entry` = 4862;
-UPDATE `creature_template` SET `PetSpellDataId` = 5932  WHERE `entry` = 4887;
-UPDATE `creature_template` SET `PetSpellDataId` = 8299  WHERE `entry` = 4950;
-UPDATE `creature_template` SET `PetSpellDataId` = 10543 WHERE `entry` = 5048;
-UPDATE `creature_template` SET `PetSpellDataId` = 5848  WHERE `entry` = 5053;
-UPDATE `creature_template` SET `PetSpellDataId` = 8899  WHERE `entry` = 5056;
-UPDATE `creature_template` SET `PetSpellDataId` = 10544 WHERE `entry` = 5224;
-UPDATE `creature_template` SET `PetSpellDataId` = 10544 WHERE `entry` = 5225;
-UPDATE `creature_template` SET `PetSpellDataId` = 9054  WHERE `entry` = 5262;
-UPDATE `creature_template` SET `PetSpellDataId` = 5806  WHERE `entry` = 5268;
-UPDATE `creature_template` SET `PetSpellDataId` = 5807  WHERE `entry` = 5274;
-UPDATE `creature_template` SET `PetSpellDataId` = 5953  WHERE `entry` = 5286;
-UPDATE `creature_template` SET `PetSpellDataId` = 8865  WHERE `entry` = 5287;
-UPDATE `creature_template` SET `PetSpellDataId` = 8909  WHERE `entry` = 5291;
-UPDATE `creature_template` SET `PetSpellDataId` = 8320  WHERE `entry` = 5307;
-UPDATE `creature_template` SET `PetSpellDataId` = 8321  WHERE `entry` = 5308;
-UPDATE `creature_template` SET `PetSpellDataId` = 8322  WHERE `entry` = 5349;
-UPDATE `creature_template` SET `PetSpellDataId` = 5813  WHERE `entry` = 5352;
-UPDATE `creature_template` SET `PetSpellDataId` = 5963  WHERE `entry` = 5356;
-UPDATE `creature_template` SET `PetSpellDataId` = 5869  WHERE `entry` = 5422;
-UPDATE `creature_template` SET `PetSpellDataId` = 8857  WHERE `entry` = 5423;
-UPDATE `creature_template` SET `PetSpellDataId` = 8856  WHERE `entry` = 5424;
-UPDATE `creature_template` SET `PetSpellDataId` = 8283  WHERE `entry` = 5425;
-UPDATE `creature_template` SET `PetSpellDataId` = 8284  WHERE `entry` = 5426;
-UPDATE `creature_template` SET `PetSpellDataId` = 8285  WHERE `entry` = 5427;
-UPDATE `creature_template` SET `PetSpellDataId` = 8307  WHERE `entry` = 5428;
-UPDATE `creature_template` SET `PetSpellDataId` = 8308  WHERE `entry` = 5429;
-UPDATE `creature_template` SET `PetSpellDataId` = 8309  WHERE `entry` = 5430;
-UPDATE `creature_template` SET `PetSpellDataId` = 5931  WHERE `entry` = 5432;
-UPDATE `creature_template` SET `PetSpellDataId` = 8323  WHERE `entry` = 5708;
-UPDATE `creature_template` SET `PetSpellDataId` = 10543 WHERE `entry` = 5755;
-UPDATE `creature_template` SET `PetSpellDataId` = 8901  WHERE `entry` = 5756;
-UPDATE `creature_template` SET `PetSpellDataId` = 11587 WHERE `entry` = 5762;
-UPDATE `creature_template` SET `PetSpellDataId` = 5820  WHERE `entry` = 5766;
-UPDATE `creature_template` SET `PetSpellDataId` = 5876  WHERE `entry` = 5823;
-UPDATE `creature_template` SET `PetSpellDataId` = 10513 WHERE `entry` = 5856;
-UPDATE `creature_template` SET `PetSpellDataId` = 5877  WHERE `entry` = 5937;
-UPDATE `creature_template` SET `PetSpellDataId` = 8286  WHERE `entry` = 5986;
-UPDATE `creature_template` SET `PetSpellDataId` = 5870  WHERE `entry` = 5987;
-UPDATE `creature_template` SET `PetSpellDataId` = 8858  WHERE `entry` = 5988;
-UPDATE `creature_template` SET `PetSpellDataId` = 5871  WHERE `entry` = 5989;
-UPDATE `creature_template` SET `PetSpellDataId` = 8261  WHERE `entry` = 5992;
-UPDATE `creature_template` SET `PetSpellDataId` = 8306  WHERE `entry` = 6013;
-UPDATE `creature_template` SET `PetSpellDataId` = 5838  WHERE `entry` = 6250;
-UPDATE `creature_template` SET `PetSpellDataId` = 9053  WHERE `entry` = 6516;
-UPDATE `creature_template` SET `PetSpellDataId` = 9051  WHERE `entry` = 6585;
-UPDATE `creature_template` SET `PetSpellDataId` = 5802  WHERE `entry` = 6788;
-UPDATE `creature_template` SET `PetSpellDataId` = 5873  WHERE `entry` = 7022;
-UPDATE `creature_template` SET `PetSpellDataId` = 8298  WHERE `entry` = 7055;
-UPDATE `creature_template` SET `PetSpellDataId` = 8851  WHERE `entry` = 7078;
-UPDATE `creature_template` SET `PetSpellDataId` = 8315  WHERE `entry` = 7097;
-UPDATE `creature_template` SET `PetSpellDataId` = 8316  WHERE `entry` = 7098;
-UPDATE `creature_template` SET `PetSpellDataId` = 5861  WHERE `entry` = 7099;
-UPDATE `creature_template` SET `PetSpellDataId` = 10544 WHERE `entry` = 7268;
-UPDATE `creature_template` SET `PetSpellDataId` = 5914  WHERE `entry` = 7319;
-UPDATE `creature_template` SET `PetSpellDataId` = 8854  WHERE `entry` = 7405;
-UPDATE `creature_template` SET `PetSpellDataId` = 5834  WHERE `entry` = 7430;
-UPDATE `creature_template` SET `PetSpellDataId` = 8270  WHERE `entry` = 7432;
-UPDATE `creature_template` SET `PetSpellDataId` = 8268  WHERE `entry` = 7433;
-UPDATE `creature_template` SET `PetSpellDataId` = 5809  WHERE `entry` = 7444;
-UPDATE `creature_template` SET `PetSpellDataId` = 5811  WHERE `entry` = 7445;
-UPDATE `creature_template` SET `PetSpellDataId` = 5862  WHERE `entry` = 7455;
-UPDATE `creature_template` SET `PetSpellDataId` = 5863  WHERE `entry` = 7456;
-UPDATE `creature_template` SET `PetSpellDataId` = 8855  WHERE `entry` = 7803;
-UPDATE `creature_template` SET `PetSpellDataId` = 8310  WHERE `entry` = 8207;
-UPDATE `creature_template` SET `PetSpellDataId` = 8288  WHERE `entry` = 8208;
-UPDATE `creature_template` SET `PetSpellDataId` = 5962  WHERE `entry` = 8211;
-UPDATE `creature_template` SET `PetSpellDataId` = 5933  WHERE `entry` = 8213;
-UPDATE `creature_template` SET `PetSpellDataId` = 5912  WHERE `entry` = 8277;
-UPDATE `creature_template` SET `PetSpellDataId` = 8313  WHERE `entry` = 8299;
-UPDATE `creature_template` SET `PetSpellDataId` = 8289  WHERE `entry` = 8300;
-UPDATE `creature_template` SET `PetSpellDataId` = 5878  WHERE `entry` = 8301;
-UPDATE `creature_template` SET `PetSpellDataId` = 8262  WHERE `entry` = 8303;
-UPDATE `creature_template` SET `PetSpellDataId` = 8910  WHERE `entry` = 8336;
-UPDATE `creature_template` SET `PetSpellDataId` = 10544 WHERE `entry` = 8437;
-UPDATE `creature_template` SET `PetSpellDataId` = 5787  WHERE `entry` = 8600;
-UPDATE `creature_template` SET `PetSpellDataId` = 5788  WHERE `entry` = 8601;
-UPDATE `creature_template` SET `PetSpellDataId` = 5789  WHERE `entry` = 8602;
-UPDATE `creature_template` SET `PetSpellDataId` = 5905  WHERE `entry` = 8762;
-UPDATE `creature_template` SET `PetSpellDataId` = 5874  WHERE `entry` = 8926;
-UPDATE `creature_template` SET `PetSpellDataId` = 5793  WHERE `entry` = 8927;
-UPDATE `creature_template` SET `PetSpellDataId` = 5907  WHERE `entry` = 8933;
-UPDATE `creature_template` SET `PetSpellDataId` = 5808  WHERE `entry` = 8958;
-UPDATE `creature_template` SET `PetSpellDataId` = 5954  WHERE `entry` = 8959;
-UPDATE `creature_template` SET `PetSpellDataId` = 5955  WHERE `entry` = 8961;
-UPDATE `creature_template` SET `PetSpellDataId` = 8297  WHERE `entry` = 9416;
-UPDATE `creature_template` SET `PetSpellDataId` = 8301  WHERE `entry` = 9521;
-UPDATE `creature_template` SET `PetSpellDataId` = 9050  WHERE `entry` = 9622;
-UPDATE `creature_template` SET `PetSpellDataId` = 8860  WHERE `entry` = 9691;
-UPDATE `creature_template` SET `PetSpellDataId` = 5872  WHERE `entry` = 9695;
-UPDATE `creature_template` SET `PetSpellDataId` = 7344  WHERE `entry` = 9696;
-UPDATE `creature_template` SET `PetSpellDataId` = 8833  WHERE `entry` = 9698;
-UPDATE `creature_template` SET `PetSpellDataId` = 8276  WHERE `entry` = 10200;
-UPDATE `creature_template` SET `PetSpellDataId` = 10497 WHERE `entry` = 10359;
-UPDATE `creature_template` SET `PetSpellDataId` = 10515 WHERE `entry` = 10375;
-UPDATE `creature_template` SET `PetSpellDataId` = 8866  WHERE `entry` = 10644;
-UPDATE `creature_template` SET `PetSpellDataId` = 6706  WHERE `entry` = 11291;
-UPDATE `creature_template` SET `PetSpellDataId` = 9001  WHERE `entry` = 11357;
-UPDATE `creature_template` SET `PetSpellDataId` = 11582 WHERE `entry` = 11359;
-UPDATE `creature_template` SET `PetSpellDataId` = 8274  WHERE `entry` = 11365;
-UPDATE `creature_template` SET `PetSpellDataId` = 10519 WHERE `entry` = 11370;
-UPDATE `creature_template` SET `PetSpellDataId` = 10530 WHERE `entry` = 11371;
-UPDATE `creature_template` SET `PetSpellDataId` = 10530 WHERE `entry` = 11372;
-UPDATE `creature_template` SET `PetSpellDataId` = 10530 WHERE `entry` = 11373;
-UPDATE `creature_template` SET `PetSpellDataId` = 5956  WHERE `entry` = 11614;
-UPDATE `creature_template` SET `PetSpellDataId` = 8859  WHERE `entry` = 11735;
-UPDATE `creature_template` SET `PetSpellDataId` = 8832  WHERE `entry` = 11736;
-UPDATE `creature_template` SET `PetSpellDataId` = 8861  WHERE `entry` = 11737;
-UPDATE `creature_template` SET `PetSpellDataId` = 10516 WHERE `entry` = 11739;
-UPDATE `creature_template` SET `PetSpellDataId` = 5945  WHERE `entry` = 11871;
-UPDATE `creature_template` SET `PetSpellDataId` = 5892  WHERE `entry` = 11921;
-UPDATE `creature_template` SET `PetSpellDataId` = 10500 WHERE `entry` = 12433;
-UPDATE `creature_template` SET `PetSpellDataId` = 5953  WHERE `entry` = 12800;
-UPDATE `creature_template` SET `PetSpellDataId` = 5953  WHERE `entry` = 12801;
-UPDATE `creature_template` SET `PetSpellDataId` = 5953  WHERE `entry` = 12802;
-UPDATE `creature_template` SET `PetSpellDataId` = 5953  WHERE `entry` = 12803;
-UPDATE `creature_template` SET `PetSpellDataId` = 11601 WHERE `entry` = 13599;
-UPDATE `creature_template` SET `PetSpellDataId` = 9062  WHERE `entry` = 13896;
-UPDATE `creature_template` SET `PetSpellDataId` = 5924  WHERE `entry` = 14223;
-UPDATE `creature_template` SET `PetSpellDataId` = 5858  WHERE `entry` = 14233;
-UPDATE `creature_template` SET `PetSpellDataId` = 5890  WHERE `entry` = 14266;
-UPDATE `creature_template` SET `PetSpellDataId` = 8841  WHERE `entry` = 14274;
-UPDATE `creature_template` SET `PetSpellDataId` = 5893  WHERE `entry` = 14279;
-UPDATE `creature_template` SET `PetSpellDataId` = 5954  WHERE `entry` = 14339;
-UPDATE `creature_template` SET `PetSpellDataId` = 5861  WHERE `entry` = 14343;
-UPDATE `creature_template` SET `PetSpellDataId` = 5808  WHERE `entry` = 14344;
-UPDATE `creature_template` SET `PetSpellDataId` = 8861  WHERE `entry` = 14476;
-UPDATE `creature_template` SET `PetSpellDataId` = 10517 WHERE `entry` = 14532;
-UPDATE `creature_template` SET `PetSpellDataId` = 10518 WHERE `entry` = 15041;
-UPDATE `creature_template` SET `PetSpellDataId` = 8272  WHERE `entry` = 15067;
-UPDATE `creature_template` SET `PetSpellDataId` = 8271  WHERE `entry` = 15068;
-UPDATE `creature_template` SET `PetSpellDataId` = 8272  WHERE `entry` = 15101;
-UPDATE `creature_template` SET `PetSpellDataId` = 10481 WHERE `entry` = 15649;
-UPDATE `creature_template` SET `PetSpellDataId` = 10391 WHERE `entry` = 15650;
-UPDATE `creature_template` SET `PetSpellDataId` = 11553 WHERE `entry` = 15651;
-UPDATE `creature_template` SET `PetSpellDataId` = 11094 WHERE `entry` = 15652;
-UPDATE `creature_template` SET `PetSpellDataId` = 11562 WHERE `entry` = 15653;
-UPDATE `creature_template` SET `PetSpellDataId` = 9161  WHERE `entry` = 16117;
-UPDATE `creature_template` SET `PetSpellDataId` = 10522 WHERE `entry` = 16170;
-UPDATE `creature_template` SET `PetSpellDataId` = 10523 WHERE `entry` = 16171;
-UPDATE `creature_template` SET `PetSpellDataId` = 11556 WHERE `entry` = 16347;
-UPDATE `creature_template` SET `PetSpellDataId` = 11092 WHERE `entry` = 16348;
-UPDATE `creature_template` SET `PetSpellDataId` = 11093 WHERE `entry` = 16349;
-UPDATE `creature_template` SET `PetSpellDataId` = 10496 WHERE `entry` = 16350;
-UPDATE `creature_template` SET `PetSpellDataId` = 10499 WHERE `entry` = 16351;
-UPDATE `creature_template` SET `PetSpellDataId` = 10501 WHERE `entry` = 16352;
-UPDATE `creature_template` SET `PetSpellDataId` = 11567 WHERE `entry` = 16932;
-UPDATE `creature_template` SET `PetSpellDataId` = 11565 WHERE `entry` = 16934;
-UPDATE `creature_template` SET `PetSpellDataId` = 10705 WHERE `entry` = 17034;
-UPDATE `creature_template` SET `PetSpellDataId` = 10708 WHERE `entry` = 17035;
-UPDATE `creature_template` SET `PetSpellDataId` = 10705 WHERE `entry` = 17039;
-UPDATE `creature_template` SET `PetSpellDataId` = 8311  WHERE `entry` = 17042;
-UPDATE `creature_template` SET `PetSpellDataId` = 10709 WHERE `entry` = 17053;
-UPDATE `creature_template` SET `PetSpellDataId` = 10711 WHERE `entry` = 17128;
-UPDATE `creature_template` SET `PetSpellDataId` = 10706 WHERE `entry` = 17129;
-UPDATE `creature_template` SET `PetSpellDataId` = 9504  WHERE `entry` = 17178;
-UPDATE `creature_template` SET `PetSpellDataId` = 11593 WHERE `entry` = 17198;
-UPDATE `creature_template` SET `PetSpellDataId` = 11594 WHERE `entry` = 17199;
-UPDATE `creature_template` SET `PetSpellDataId` = 5904  WHERE `entry` = 17236;
-UPDATE `creature_template` SET `PetSpellDataId` = 9613  WHERE `entry` = 17399;
-UPDATE `creature_template` SET `PetSpellDataId` = 9612  WHERE `entry` = 17401;
-UPDATE `creature_template` SET `PetSpellDataId` = 8267  WHERE `entry` = 17411;
-UPDATE `creature_template` SET `PetSpellDataId` = 11563 WHERE `entry` = 17526;
-UPDATE `creature_template` SET `PetSpellDataId` = 11564 WHERE `entry` = 17527;
-UPDATE `creature_template` SET `PetSpellDataId` = 11595 WHERE `entry` = 17556;
-UPDATE `creature_template` SET `PetSpellDataId` = 11596 WHERE `entry` = 17620;
-UPDATE `creature_template` SET `PetSpellDataId` = 11591 WHERE `entry` = 18033;
-UPDATE `creature_template` SET `PetSpellDataId` = 10483 WHERE `entry` = 18155;
-UPDATE `creature_template` SET `PetSpellDataId` = 10710 WHERE `entry` = 18220;
-UPDATE `creature_template` SET `PetSpellDataId` = 10707 WHERE `entry` = 18257;
-UPDATE `creature_template` SET `PetSpellDataId` = 10525 WHERE `entry` = 18464;
-UPDATE `creature_template` SET `PetSpellDataId` = 11577 WHERE `entry` = 18465;
-UPDATE `creature_template` SET `PetSpellDataId` = 10520 WHERE `entry` = 18466;
-UPDATE `creature_template` SET `PetSpellDataId` = 10521 WHERE `entry` = 18467;
-UPDATE `creature_template` SET `PetSpellDataId` = 11592 WHERE `entry` = 18476;
-UPDATE `creature_template` SET `PetSpellDataId` = 9612  WHERE `entry` = 18605;
-UPDATE `creature_template` SET `PetSpellDataId` = 9613  WHERE `entry` = 18614;
-UPDATE `creature_template` SET `PetSpellDataId` = 10480 WHERE `entry` = 18851;
-UPDATE `creature_template` SET `PetSpellDataId` = 10482 WHERE `entry` = 18854;
-UPDATE `creature_template` SET `PetSpellDataId` = 11573 WHERE `entry` = 18878;
-UPDATE `creature_template` SET `PetSpellDataId` = 11576 WHERE `entry` = 18884;
-UPDATE `creature_template` SET `PetSpellDataId` = 10712 WHERE `entry` = 18963;
-UPDATE `creature_template` SET `PetSpellDataId` = 10712 WHERE `entry` = 18996;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19022;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19023;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19024;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19025;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19026;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19027;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19030;
-UPDATE `creature_template` SET `PetSpellDataId` = 5830  WHERE `entry` = 19031;
-UPDATE `creature_template` SET `PetSpellDataId` = 10713 WHERE `entry` = 19055;
-UPDATE `creature_template` SET `PetSpellDataId` = 11566 WHERE `entry` = 19189;
-UPDATE `creature_template` SET `PetSpellDataId` = 11570 WHERE `entry` = 19349;
-UPDATE `creature_template` SET `PetSpellDataId` = 11569 WHERE `entry` = 19350;
-UPDATE `creature_template` SET `PetSpellDataId` = 11586 WHERE `entry` = 19428;
-UPDATE `creature_template` SET `PetSpellDataId` = 10530 WHERE `entry` = 19784;
-UPDATE `creature_template` SET `PetSpellDataId` = 11588 WHERE `entry` = 19785;
-UPDATE `creature_template` SET `PetSpellDataId` = 10487 WHERE `entry` = 20038;
-UPDATE `creature_template` SET `PetSpellDataId` = 11590 WHERE `entry` = 20058;
-UPDATE `creature_template` SET `PetSpellDataId` = 10709 WHERE `entry` = 20109;
-UPDATE `creature_template` SET `PetSpellDataId` = 11589 WHERE `entry` = 20330;
-UPDATE `creature_template` SET `PetSpellDataId` = 10480 WHERE `entry` = 20502;
-UPDATE `creature_template` SET `PetSpellDataId` = 10480 WHERE `entry` = 20517;
-UPDATE `creature_template` SET `PetSpellDataId` = 12153 WHERE `entry` = 20634;
-UPDATE `creature_template` SET `PetSpellDataId` = 11572 WHERE `entry` = 20671;
-UPDATE `creature_template` SET `PetSpellDataId` = 11581 WHERE `entry` = 20673;
-UPDATE `creature_template` SET `PetSpellDataId` = 11586 WHERE `entry` = 20688;
-UPDATE `creature_template` SET `PetSpellDataId` = 11584 WHERE `entry` = 20749;
-UPDATE `creature_template` SET `PetSpellDataId` = 10540 WHERE `entry` = 20797;
-UPDATE `creature_template` SET `PetSpellDataId` = 11583 WHERE `entry` = 20999;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 21022;
-UPDATE `creature_template` SET `PetSpellDataId` = 9071  WHERE `entry` = 21033;
-UPDATE `creature_template` SET `PetSpellDataId` = 12668 WHERE `entry` = 21042;
-UPDATE `creature_template` SET `PetSpellDataId` = 11585 WHERE `entry` = 21123;
-UPDATE `creature_template` SET `PetSpellDataId` = 10709 WHERE `entry` = 21468;
-UPDATE `creature_template` SET `PetSpellDataId` = 10856 WHERE `entry` = 21470;
-UPDATE `creature_template` SET `PetSpellDataId` = 10483 WHERE `entry` = 21544;
-UPDATE `creature_template` SET `PetSpellDataId` = 5918  WHERE `entry` = 21634;
-UPDATE `creature_template` SET `PetSpellDataId` = 10709 WHERE `entry` = 21804;
-UPDATE `creature_template` SET `PetSpellDataId` = 11579 WHERE `entry` = 21864;
-UPDATE `creature_template` SET `PetSpellDataId` = 11091 WHERE `entry` = 21956;
-UPDATE `creature_template` SET `PetSpellDataId` = 10525 WHERE `entry` = 22039;
-UPDATE `creature_template` SET `PetSpellDataId` = 11580 WHERE `entry` = 22100;
-UPDATE `creature_template` SET `PetSpellDataId` = 11568 WHERE `entry` = 22123;
-UPDATE `creature_template` SET `PetSpellDataId` = 11574 WHERE `entry` = 22191;
-UPDATE `creature_template` SET `PetSpellDataId` = 12056 WHERE `entry` = 22193;
-UPDATE `creature_template` SET `PetSpellDataId` = 11575 WHERE `entry` = 22255;
-UPDATE `creature_template` SET `PetSpellDataId` = 11578 WHERE `entry` = 22257;
-UPDATE `creature_template` SET `PetSpellDataId` = 10712 WHERE `entry` = 22265;
-UPDATE `creature_template` SET `PetSpellDataId` = 8841  WHERE `entry` = 22793;
-UPDATE `creature_template` SET `PetSpellDataId` = 11669 WHERE `entry` = 22807;
-UPDATE `creature_template` SET `PetSpellDataId` = 10708 WHERE `entry` = 23051;
-UPDATE `creature_template` SET `PetSpellDataId` = 11576 WHERE `entry` = 23219;
-UPDATE `creature_template` SET `PetSpellDataId` = 7264  WHERE `entry` = 23761;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 23812;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 23877;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 23878;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 23879;
-UPDATE `creature_template` SET `PetSpellDataId` = 11571 WHERE `entry` = 23880;
-UPDATE `creature_template` SET `PetSpellDataId` = 12993 WHERE `entry` = 27946;
-
--- update `creaturespelldata_dbc` with TBC values
-DELETE FROM `creaturespelldata_dbc` WHERE `ID` BETWEEN 5525 AND 12993;
-INSERT INTO `creaturespelldata_dbc` (`ID`, `Spells_1`, `Spells_2`, `Spells_3`, `Spells_4`, 
+CREATE TABLE IF NOT EXISTS `ipp_pet_creaturespelldata` LIKE `creaturespelldata_dbc`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_backup_creaturespelldata` LIKE `creaturespelldata_dbc`;
+DELETE FROM `ipp_pet_creaturespelldata`;
+INSERT INTO `ipp_pet_creaturespelldata` (`ID`, `Spells_1`, `Spells_2`, `Spells_3`, `Spells_4`, 
 `Availability_1`, `Availability_2`, `Availability_3`, `Availability_4`) VALUES
 -- 24605, 24603, 64493 -- 64491, 64492, 64493
 (5525,24450,0,0,0,100,0,0,0),
@@ -1151,7 +1493,6 @@ INSERT INTO `creaturespelldata_dbc` (`ID`, `Spells_1`, `Spells_2`, `Spells_3`, `
 (12153,23110,27050,0,0,100,100,0,0),
 (12668,23148,27051,0,0,100,100,0,0),
 (12993,35323,0,0,0,100,0,0,0);
-
 /* Gore
 35290
 35291 -> 35290

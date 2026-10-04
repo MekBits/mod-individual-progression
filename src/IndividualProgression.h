@@ -193,6 +193,14 @@ enum DungeonKeys
     ITEM_BLESSED_MEDALLION_OF_KARABOR    = 32757
 };
 
+enum RidingSpells
+{
+    SPELL_APPRENTICE_RIDING              = 33388,
+    SPELL_JOURNEYMAN_RIDING              = 33391,
+    SPELL_EXPERT_RIDING                  = 34090,
+    SPELL_ARTISAN_RIDING                 = 34091
+};
+
 enum ShatteredSunOffensive
 {
     FACTION_SHATTERED_SUN                = 1077,
@@ -411,6 +419,9 @@ public:
     bool enabled, questXpFix, enforceGroupRules, EnableSetRepCommand, EnableAllSpellRanks, LimitedSetRepCommand, fishingFix, VanillaHunterPets, WarlockDemonTrainers, simpleConfigOverride, MaxMonsterSight, questMoneyAtLevelCap, repeatableVanillaQuestsXp, disableDefaultProgression, earlyDungeonSet2, earlyScourgeBosses, requireNaxxStrath, doableNaxx40Bosses_4H, doableNaxx40Bosses_Gluth, doableNaxx40Bosses_Patchwerk, doableNaxx40Bosses_Razuvious, DisableQuestMarkers, DisableRDF, VanillaPvpTitlesKeepPostVanilla, VanillaPvpTitlesEarnPostVanilla, VanillaPvpKeepAllEarnedTitles, BotAccountsEarnPvPTitles, BotOnlyAdjustments;
     int progressionLimit, startingProgression, tbcRacesProgressionLevel, tbcRacesStartingProgression, deathKnightProgressionLevel, deathKnightStartingProgression, RequiredZulGurubProgression, RequiredZulAmanProgression, tbcArenaSeason, wotlkArenaSeason, BotAccountsMaxLevel;
     uint32 VanillaPvpKillRank1, VanillaPvpKillRank2, VanillaPvpKillRank3, VanillaPvpKillRank4, VanillaPvpKillRank5, VanillaPvpKillRank6, VanillaPvpKillRank7, VanillaPvpKillRank8, VanillaPvpKillRank9, VanillaPvpKillRank10, VanillaPvpKillRank11, VanillaPvpKillRank12, VanillaPvpKillRank13, VanillaPvpKillRank14;
+    uint32 mountLevelApprentice, mountLevelJourneyman, mountLevelExpert, mountLevelArtisan;
+    uint32 mountCostApprentice, mountCostJourneyman, mountCostExpert, mountCostArtisan;
+    uint32 mountPriceApprentice, mountPriceJourneyman, mountPriceExpert, mountPriceArtisan;
     std::string excludedAccountsRegex, botAccountsRegex, sharedFactionIdsRegex;
 
     // progression is derived from rewarded hidden quests (IDs 66000 + progression)

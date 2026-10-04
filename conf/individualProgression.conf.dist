@@ -574,3 +574,60 @@ IndividualProgression.LimitedSetRepCommand = 1
 #        Default:     "59|270|349|509|510|529|576|589|609|729|730|749|889|890|909"
 #
 IndividualProgression.sharedFactionIdsRegex = "59|270|349|509|510|529|576|589|609|729|730|749|889|890|909"
+
+# IndividualProgression.MountLevel.Apprentice
+# IndividualProgression.MountLevel.Journeyman
+# IndividualProgression.MountLevel.Expert
+# IndividualProgression.MountLevel.Artisan
+#
+#        Description: Level required to learn Apprentice, Journeyman, Expert and Artisan Riding at riding trainers.
+#                     The same level is set on every mount that requires that riding skill (75, 150, 225 or 300 Riding),
+#                     including the Draenei and Blood Elf mounts, flying mounts and reputation, PvP and holiday mounts.
+#                     mounts_and_riding.sql sets 40 / 60 / 70 / 70 for the riding skills.
+#                     AzerothCore's own data (Wrath of the Lich King) uses 20 / 40 / 60 / 70.
+#                     Like the options below, the value is written to the world database when the worldserver starts
+#                     and when the config is reloaded. Restart the worldserver to apply it.
+#                     Setting an option back to 0 does not restore the previous values.
+#
+#        Default:     0 - Leave the database unchanged
+#
+IndividualProgression.MountLevel.Apprentice = 0
+IndividualProgression.MountLevel.Journeyman = 0
+IndividualProgression.MountLevel.Expert = 0
+IndividualProgression.MountLevel.Artisan = 0
+
+# IndividualProgression.MountCost.Apprentice
+# IndividualProgression.MountCost.Journeyman
+# IndividualProgression.MountCost.Expert
+# IndividualProgression.MountCost.Artisan
+#
+#        Description: Cost in copper of Apprentice, Journeyman, Expert and Artisan Riding at riding trainers.
+#                     mounts_and_riding.sql sets 800000 / 10000000 / 8000000 (80 / 1000 / 800 gold),
+#                     and Artisan Riding stays at 50000000 (5000 gold).
+#                     AzerothCore's own data uses 40000 / 500000 / 2500000 / 50000000.
+#
+#        Default:     0 - Leave the database unchanged
+#
+IndividualProgression.MountCost.Apprentice = 0
+IndividualProgression.MountCost.Journeyman = 0
+IndividualProgression.MountCost.Expert = 0
+IndividualProgression.MountCost.Artisan = 0
+
+# IndividualProgression.MountPrice.Apprentice
+# IndividualProgression.MountPrice.Journeyman
+# IndividualProgression.MountPrice.Expert
+# IndividualProgression.MountPrice.Artisan
+#
+#        Description: Price in copper of the regular mounts sold for gold by racial mount vendors (Apprentice: 60% ground
+#                     mounts, Journeyman: 100% ground mounts) and flying mount vendors (Expert: 150% flying mounts,
+#                     Artisan: 280% flying mounts). Reputation, PvP, holiday and other special mounts keep their price.
+#                     A mount's sell price is set to a quarter of the new price, unless it cannot be sold (sell price 0).
+#                     mounts_and_riding.sql and tbc_item_changes.sql set most of them to 100000 / 1000000 / 1000000 / 2000000.
+#                     AzerothCore's own data uses 10000 / 100000 / 500000 / 1000000.
+#
+#        Default:     0 - Leave the database unchanged
+#
+IndividualProgression.MountPrice.Apprentice = 0
+IndividualProgression.MountPrice.Journeyman = 0
+IndividualProgression.MountPrice.Expert = 0
+IndividualProgression.MountPrice.Artisan = 0

@@ -1073,6 +1073,18 @@ private:
         sIndividualProgression->LimitedSetRepCommand = sConfigMgr->GetOption<bool>("IndividualProgression.LimitedSetRepCommand", true);
         sIndividualProgression->sharedFactionIdsRegex = sConfigMgr->GetOption<std::string>("IndividualProgression.sharedFactionIdsRegex", "59|270|349|509|510|529|576|589|609|729|730|749|889|890|909");
         sIndividualProgression->BotAccountsMaxLevel = sConfigMgr->GetOption<uint8>("IndividualProgression.BotAccountsMaxLevel", 80);
+        sIndividualProgression->mountLevelApprentice = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Apprentice", 0);
+        sIndividualProgression->mountLevelJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Journeyman", 0);
+        sIndividualProgression->mountLevelExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Expert", 0);
+        sIndividualProgression->mountLevelArtisan = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Artisan", 0);
+        sIndividualProgression->mountCostApprentice = sConfigMgr->GetOption<uint32>("IndividualProgression.MountCost.Apprentice", 0);
+        sIndividualProgression->mountCostJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountCost.Journeyman", 0);
+        sIndividualProgression->mountCostExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountCost.Expert", 0);
+        sIndividualProgression->mountCostArtisan = sConfigMgr->GetOption<uint32>("IndividualProgression.MountCost.Artisan", 0);
+        sIndividualProgression->mountPriceApprentice = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Apprentice", 0);
+        sIndividualProgression->mountPriceJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Journeyman", 0);
+        sIndividualProgression->mountPriceExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Expert", 0);
+        sIndividualProgression->mountPriceArtisan = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Artisan", 0);
     }
 
     static void LoadXpValues()
@@ -1096,6 +1108,60 @@ private:
         }
     }
 
+    // mounts_and_riding.sql sets the riding skill levels and costs and the mount levels and prices
+    // once, when it is applied. The configured values are written over them here, before
+    // World::SetInitialWorldSettings() loads item templates and trainers. 0 leaves the database as it is.
+    static void ApplyMountSettings()
+    {
+        struct RidingTier
+        {
+            uint32 spellId;
+            uint32 skillRank;
+            uint32 level;
+            uint32 cost;
+            uint32 price;
+            char const* vendorMounts;
+        };
+
+        // vendorMounts are the regular mounts that racial mount vendors and flying mount vendors sell for gold.
+        // Reputation, PvP, holiday and other special mounts keep their price.
+        RidingTier const tiers[] =
+        {
+            { SPELL_APPRENTICE_RIDING, 75, sIndividualProgression->mountLevelApprentice, sIndividualProgression->mountCostApprentice, sIndividualProgression->mountPriceApprentice,
+                "1132,2411,2414,5655,5656,5665,5668,5864,5872,5873,8563,8588,8591,8592,8595,8629,8631,8632,"
+                "13321,13322,13331,13332,13333,15277,15290,28481,28927,29220,29221,29222,29743,29744,46099,46100,46308,47100" },
+            { SPELL_JOURNEYMAN_RIDING, 150, sIndividualProgression->mountLevelJourneyman, sIndividualProgression->mountCostJourneyman, sIndividualProgression->mountPriceJourneyman,
+                "8586,12302,12303,12330,12351,12353,12354,13317,13326,13327,13328,13329,13334,15292,15293,"
+                "18766,18767,18772,18773,18774,18776,18777,18778,18785,18786,18787,18788,18789,18790,18791,18793,18794,18795,18796,18797,18798,18902,"
+                "28936,29223,29224,29745,29746,29747,47101" },
+            { SPELL_EXPERT_RIDING, 225, sIndividualProgression->mountLevelExpert, sIndividualProgression->mountCostExpert, sIndividualProgression->mountPriceExpert,
+                "25470,25471,25472,25474,25475,25476" },
+            { SPELL_ARTISAN_RIDING, 300, sIndividualProgression->mountLevelArtisan, sIndividualProgression->mountCostArtisan, sIndividualProgression->mountPriceArtisan,
+                "25473,25477,25527,25528,25529,25531,25532,25533" }
+        };
+
+        for (RidingTier const& tier : tiers)
+        {
+            // Every mount that requires this riding skill, so that no mount requires a higher level than the skill it needs
+            if (tier.level)
+            {
+                WorldDatabase.DirectExecute("UPDATE `trainer_spell` SET `ReqLevel` = {} WHERE `SpellId` = {}", tier.level, tier.spellId);
+                WorldDatabase.DirectExecute("UPDATE `item_template` SET `RequiredLevel` = {} WHERE `class` = {} AND `subclass` = {} AND `RequiredSkill` = {} AND `RequiredSkillRank` = {}",
+                    tier.level, uint32(ITEM_CLASS_MISC), uint32(ITEM_SUBCLASS_JUNK_MOUNT), uint32(SKILL_RIDING), tier.skillRank);
+            }
+
+            if (tier.cost)
+                WorldDatabase.DirectExecute("UPDATE `trainer_spell` SET `MoneyCost` = {} WHERE `SpellId` = {}", tier.cost, tier.spellId);
+
+            // The sell price follows at a quarter of the price, so a mount cannot be sold back at a profit. Unsellable mounts (0) stay unsellable.
+            if (tier.price)
+                WorldDatabase.DirectExecute("UPDATE `item_template` SET `BuyPrice` = {}, `SellPrice` = IF(`SellPrice` = 0, 0, {}) WHERE `entry` IN ({})", tier.price, tier.price / 4, tier.vendorMounts);
+
+            if (tier.level || tier.cost || tier.price)
+                LOG_INFO("module", "IndividualProgression: riding spell {} set to level {}, cost {}, mount price {} (0 = unchanged)", tier.spellId, tier.level, tier.cost, tier.price);
+        }
+    }
+
 public:
     IndividualPlayerProgression_WorldScript() : WorldScript("IndividualProgression_WorldScript") { }
 
@@ -1107,6 +1173,8 @@ public:
 
     void OnAfterConfigLoad(bool /*reload*/) override
     {
+        ApplyMountSettings();
+
         if (sIndividualProgression->simpleConfigOverride)
         {
             sWorld->setIntConfig(CONFIG_WATER_BREATH_TIMER, 60000);

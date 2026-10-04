@@ -1276,4 +1276,4 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (11626, 2, 0, 'Eeck! Demons appear hungry for the kodos!', 12, 0, 100, 0, 0, 0, 7330, 0, 'Rigger Gizelton'),
 (11626, 3, 0, 'What am I paying you for? The kodos are nearly dead!', 12, 0, 100, 0, 0, 0, 7331, 0, 'Rigger Gizelton'),
 (11626, 4, 0, 'Only if I were about five feet taller, then I would show these blasphemous demons a thing or two! Help!', 12, 0, 100, 0, 0, 0, 7332, 0, 'Rigger Gizelton'),
-(11626, 5, 0, 'Wow! We did it... not sure why we thought we needed the likes of you. Nevertheless, speak with Smeed Scrabblescrew; he will give you your earnings!', 12, 0, 100, 0, 0, 0, 7332, 0, 'Rigger Gizelton');
+(11626, 5, 0, 'Wow! We did it... not sure why we thought we needed the likes of you. Nevertheless, speak with Smeed Scrabblescrew; he will give you your earnings!', 12, 0, 100, 0, 0, 0, 7333, 0, 'Rigger Gizelton');

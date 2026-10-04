@@ -3577,6 +3577,13 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (112050, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Defender - On Respawn - Set Faction Friendly'),
 (112050, 0, 4, 5, 103, 0, 100, 0, 0, 12050, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance - Set Visible'), -- check for AC defender
 (112050, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance - Reset Faction'),
+-- after 25/50/75 scrap turn-ins the core spawns its upgraded defender as the marker
+(112050, 0, 6, 7, 103, 0, 100, 0, 0, 13326, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Seasoned) - Set Visible'),
+(112050, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Seasoned) - Reset Faction'),
+(112050, 0, 8, 9, 103, 0, 100, 0, 0, 13331, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Veteran) - Set Visible'),
+(112050, 0, 9, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Veteran) - Reset Faction'),
+(112050, 0, 10, 11, 103, 0, 100, 0, 0, 13422, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Champion) - Set Visible'),
+(112050, 0, 11, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Champion) - Reset Faction'),
 --
 (112053, 0, 0, 0, 0, 0, 100, 0, 4000, 6000, 8000, 12000, 0, 0, 11, 19130, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Frostwolf Guardian - In Combat - Cast Revenge'),
 (112053, 0, 1, 0, 0, 0, 100, 0, 8000, 11000, 12000, 15000, 0, 0, 11, 12169, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Frostwolf Guardian - In Combat - Cast Shield Block'),
@@ -3584,6 +3591,13 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (112053, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Frostwolf Guardian - On Respawn - Set Faction Friendly'),
 (112053, 0, 4, 5, 103, 0, 100, 0, 0, 12053, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde - Set Visible'), -- check for AC defender
 (112053, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde - Reset Faction'),
+-- after 25/50/75 scrap turn-ins the core spawns its upgraded defender as the marker
+(112053, 0, 6, 7, 103, 0, 100, 0, 0, 13328, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Seasoned) - Set Visible'),
+(112053, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Seasoned) - Reset Faction'),
+(112053, 0, 8, 9, 103, 0, 100, 0, 0, 13332, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Veteran) - Set Visible'),
+(112053, 0, 9, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Veteran) - Reset Faction'),
+(112053, 0, 10, 11, 103, 0, 100, 0, 0, 13421, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Champion) - Set Visible'),
+(112053, 0, 11, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Champion) - Reset Faction'),
 --
 (10981, 0, 0, 0, 0, 0, 100, 0, 8700, 12700, 18400, 34200, 0, 0, 11, 13443, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf - In Combat - Cast Rend'),
 (10990, 0, 0, 0, 4, 0, 100, 1, 0, 0, 0, 0, 0, 0, 11, 22120, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,                  'Alterac Ram - On Aggro - Cast Charge'),

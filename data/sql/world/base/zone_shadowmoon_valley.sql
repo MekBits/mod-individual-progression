@@ -41,13 +41,20 @@ UPDATE `waypoint_data` SET `move_type` = 0 WHERE `id` = 756540; -- walk instead 
 SET @CGUID   := 670000;
 SET @WPID    := 6700000;
 
-DELETE FROM `creature` WHERE `id` IN (22112, 22331, 22332);
+DELETE FROM `creature` WHERE `guid` IN (77644, 86083, 86084, 86093, 86094, 86095, 86096) OR `guid` BETWEEN @CGUID+351 AND @CGUID+363;
 INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, 
 `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 --
 (77644, 22112, 530, 0, 0, 1, 1, 0, -4200.89, 382.464, 118.055, 1.309, 300, 0, 0, 110700, 0, 0, 0, 0, 0, 'npc_karynaku_ipp', 0, 0, NULL),
 --
-(@CGUID+351, 22331, 530, 0, 0, 1, 1, 1, -4205.27, 310.496, 137.986, 1.08210, 10, 0, 0, 5589, 3155, 0, 0, 512, 0, '', NULL, 0, NULL), -- Dragonmaw Elite
+(86083, 22331, 530, 0, 0, 1, 1, 1, -4151.43, 545.892, 13.4938, 1.58127, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL), -- Dragonmaw Elite (AC world spawns)
+(86084, 22331, 530, 0, 0, 1, 1, 1, -4170.62, 552.437, 14.559, 0.905822, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL),
+(86093, 22331, 530, 0, 0, 1, 1, 1, -4274.06, 388.016, 79.4586, 4.16341, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL),
+(86094, 22331, 530, 0, 0, 1, 1, 1, -4279.03, 390.894, 79.5059, 4.16341, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL),
+(86095, 22331, 530, 0, 0, 1, 1, 1, -4266.01, 403.295, 79.83, 1.16058, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL),
+(86096, 22331, 530, 0, 0, 1, 1, 1, -4271.34, 406.059, 79.6921, 0.950088, 300, 0, 0, 5589, 3155, 0, 0, 0, 0, '', 0, 0, NULL),
+--
+(@CGUID+351, 22331, 530, 0, 0, 1, 1, 1, -4205.27, 310.496, 137.986, 1.08210, 10, 0, 0, 5589, 3155, 0, 0, 512, 0, '', NULL, 0, NULL), -- Dragonmaw Elite (event archers)
 (@CGUID+352, 22331, 530, 0, 0, 1, 1, 1, -4191.67, 314.663, 136.221, 2.07694, 10, 0, 0, 5589, 3155, 0, 0, 512, 0, '', NULL, 0, NULL),
 (@CGUID+353, 22331, 530, 0, 0, 1, 1, 1, -4182.75, 320.651, 135.659, 1.76278, 10, 0, 0, 5589, 3155, 0, 0, 512, 0, '', NULL, 0, NULL),
 (@CGUID+354, 22331, 530, 0, 0, 1, 1, 1, -4221.03, 356.127, 137.067, 5.86431, 10, 0, 0, 5589, 3155, 0, 0, 512, 0, '', NULL, 0, NULL),
@@ -65,9 +72,9 @@ UPDATE `creature_template` SET `flags_extra` = 0 WHERE `entry` = 11980; -- remov
 UPDATE `creature_template` SET `unit_flags` = 2  WHERE `entry` = 22332; -- set not attackable
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN (11980, 22331, 22332);
-DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (11980, 22331);
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (11980);
 DELETE FROM `smart_scripts` WHERE `source_type` = 9 AND `entryorguid` IN (1198000, 1198001);
-DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (-(@CGUID+361), -(@CGUID+362), -(@CGUID+363));
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` BETWEEN -(@CGUID+363) AND -(@CGUID+351);
 
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
 `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
@@ -98,13 +105,78 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (1198001, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 11, 38853, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Zuluhed the Whacked - ActionList - Cast Infusion'),
 (1198001, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Zuluhed the Whacked - ActionList - Text'),
 --
-(22331, 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite - Out of Combat - Disable Combat Movement (No Repeat)'),
-(22331, 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite - Within 0-80 Range - Cast Shoot'), -- OOC
-(22331, 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite - Within 0-80 Range - Cast Shoot'), -- IC
-(22331, 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite - In Combat - Cast Serpent Sting'),
-(22331, 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite - In Combat - Cast Aimed Shot'),
-(22331, 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite - On Respawn - Set Visible Off'),
-(22331, 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite - On Respawn - Set Faction Friendly'),
+-- event archers only: entry 22331 keeps AC's script for the world spawns
+(-(@CGUID+351), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+351), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+351), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+351), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+351), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+351), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+351), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+352), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+352), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+352), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+352), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+352), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+352), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+352), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+353), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+353), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+353), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+353), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+353), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+353), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+353), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+354), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+354), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+354), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+354), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+354), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+354), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+354), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+355), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+355), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+355), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+355), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+355), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+355), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+355), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+356), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+356), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+356), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+356), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+356), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+356), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+356), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+357), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+357), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+357), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+357), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+357), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+357), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+357), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+358), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+358), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+358), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+358), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+358), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+358), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+358), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
+--
+(-(@CGUID+359), 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Dragonmaw Elite (event) - Out of Combat - Disable Combat Movement (No Repeat)'),
+(-(@CGUID+359), 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+359), 0, 2, 0, 0, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 38858, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Dragonmaw Elite (event) - Within 0-80 Range - Cast Shoot'),
+(-(@CGUID+359), 0, 3, 0, 0, 0, 100, 0, 4000, 6000, 12000, 16000, 0, 0, 11, 38859, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Dragonmaw Elite (event) - In Combat - Cast Serpent Sting'),
+(-(@CGUID+359), 0, 4, 0, 0, 0, 100, 0, 6000, 9000, 12000, 16000, 0, 0, 11, 38861, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Dragonmaw Elite (event) - In Combat - Cast Aimed Shot'),
+(-(@CGUID+359), 0, 5, 6, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Visible Off'),
+(-(@CGUID+359), 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Dragonmaw Elite (event) - On Respawn - Set Faction Friendly'),
 --
 (-(@CGUID+361), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,             'Brood of Neltharaku - On Respawn - Set Visible Off'),
 (-(@CGUID+361), 0, 1, 0, 108, 0, 100, 0, 6, @WPID+3610, 0, 0, 0, 0, 11, 38906, 0, 0, 0, 0, 0, 1, 0,0,0,0,0,0,0,0,      'Brood of Neltharaku - On Waypoint Reached - Cast Arcane Breath'),

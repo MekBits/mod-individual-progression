@@ -74,6 +74,10 @@ namespace
             if (!defender)
                 continue;
 
+            // Roaming units keep their tier.
+            if (defender->GetFormation() || defender->GetDefaultMovementType() == WAYPOINT_MOTION_TYPE)
+                continue;
+
             for (AVDefenderChain const& chain : chains)
             {
                 if (!chain.entries[0]) // placeholder chain, not filled in yet

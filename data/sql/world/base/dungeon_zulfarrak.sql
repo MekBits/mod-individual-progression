@@ -99,6 +99,10 @@ INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, 
 (@CGUID+101, @CGUID+101, 0, 0, 515, 0, 0),    
 (@CGUID+101, @CGUID+102, 3, 90, 515, 0, 0);
 
+-- existing databases: undo what older versions of this file set on patrols now left to AC (AC 2026_09_21_07)
+UPDATE `creature` SET `spawntimesecs` = 86400 WHERE `guid` IN (45710, 81505, 81581, 81582, 81583, 81587, 81588);
+DELETE FROM `creature_formations` WHERE `memberGUID` = 81601;
+
 DELETE FROM `creature_addon` WHERE `guid` IN (81482, @CGUID+101, @CGUID+103);
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES 
 (81482, 814820, 0, 0, 1, 0, 0, NULL),

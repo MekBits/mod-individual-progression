@@ -2412,23 +2412,23 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 19 AND `SourceEntry` 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
 `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 --
-(19, 0, 7161, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7161 only available during vanilla'), -- first time racial turn-in quests
-(19, 0, 7162, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7162 only available during vanilla'),
-(19, 0, 7163, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7163 only available during vanilla'),
-(19, 0, 7164, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7164 only available during vanilla'),
-(19, 0, 7165, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7165 only available during vanilla'),
-(19, 0, 7166, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7166 only available during vanilla'),
-(19, 0, 7401, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7401 only available during vanilla'),
-(19, 0, 7402, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7402 only available during vanilla'),
+(19, 0, 7161, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7161 only available before patch 1.10'), -- first time racial turn-in quests
+(19, 0, 7162, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7162 only available before patch 1.10'),
+(19, 0, 7163, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7163 only available before patch 1.10'),
+(19, 0, 7164, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7164 only available before patch 1.10'),
+(19, 0, 7165, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7165 only available before patch 1.10'),
+(19, 0, 7166, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7166 only available before patch 1.10'),
+(19, 0, 7401, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7401 only available before patch 1.10'),
+(19, 0, 7402, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7402 only available before patch 1.10'),
 --
-(19, 0, 7421, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7421 only available during vanilla'), -- repeatable racial turn-in quests
-(19, 0, 7422, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7422 only available during vanilla'),
-(19, 0, 7423, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7423 only available during vanilla'),
-(19, 0, 7424, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7424 only available during vanilla'),
-(19, 0, 7425, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7425 only available during vanilla'),
-(19, 0, 7426, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7426 only available during vanilla'),
-(19, 0, 7427, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7427 only available during vanilla'),
-(19, 0, 7428, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7428 only available during vanilla'),
+(19, 0, 7421, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7421 only available before patch 1.10'), -- repeatable racial turn-in quests
+(19, 0, 7422, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7422 only available before patch 1.10'),
+(19, 0, 7423, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7423 only available before patch 1.10'),
+(19, 0, 7424, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7424 only available before patch 1.10'),
+(19, 0, 7425, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7425 only available before patch 1.10'),
+(19, 0, 7426, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7426 only available before patch 1.10'),
+(19, 0, 7427, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7427 only available before patch 1.10'),
+(19, 0, 7428, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7428 only available before patch 1.10'),
 --
 (19, 0, 7181, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest: \'The Legend of Korrak\' only available before patch 1.10'),
 (19, 0, 7381, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest: \'The Return of Korrak\' only available before patch 1.10'),
@@ -2476,21 +2476,21 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (28, 0, 17423, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Storm Crystal only drops inside Alterac Valley Battleground'),
 --
 (28, 1, 18142, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Severed Night Elf Head only drops inside Alterac Valley Battleground'),
-(28, 1, 18142, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Severed Night Elf Head only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18142, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Severed Night Elf Head only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18143, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Tuft of Gnome Hair only drops inside Alterac Valley Battleground'),
-(28, 1, 18143, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Tuft of Gnome Hair only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18143, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Tuft of Gnome Hair only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18144, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Human Bone Chip only drops inside Alterac Valley Battleground'),
-(28, 1, 18144, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Human Bone Chip only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18144, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Human Bone Chip only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18145, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Tauren Hoof only drops inside Alterac Valley Battleground'),
-(28, 0, 18145, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Tauren Hoof only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18145, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Tauren Hoof only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18146, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Darkspear Troll Mojo only drops inside Alterac Valley Battleground'),
-(28, 0, 18146, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Darkspear Troll Mojo only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18146, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Darkspear Troll Mojo only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18147, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Forsaken Heart only drops inside Alterac Valley Battleground'),
-(28, 0, 18147, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Forsaken Heart only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18147, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Forsaken Heart only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18206, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Dwarf Spine only drops inside Alterac Valley Battleground'),
-(28, 1, 18206, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Dwarf Spine only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18206, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Dwarf Spine only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18207, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Orc Tooth only drops inside Alterac Valley Battleground'),
-(28, 0, 18207, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Orc Tooth only drops if the player has NOT completed PROGRESSION_PRE_TBC');
+(28, 0, 18207, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Orc Tooth only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)');
 
 -- only drop Stormpike Soldiers Blood from alliance creatures + correct drop rate and amount
 DELETE FROM `creature_loot_template` WHERE `Item` = 17306;

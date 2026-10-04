@@ -5,17 +5,20 @@ SET @WPID   := 6570000;
 
 /* ORIGINAL VANILLA AV */
 
+/* rows left by earlier versions of the AV files (formerly 00_av_cleanup.sql); no-ops on a fresh DB */
+DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID+1 AND @CGUID+999;
+DELETE FROM `waypoint_data` WHERE `id` BETWEEN @WPID AND @WPID+9999;
+-- templates no longer used
+DELETE FROM `creature_template` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_addon` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_model` WHERE `CreatureID` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_locale` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+
 /* commander and guard patrols */
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN
-(@CGUID+610, @CGUID+613, @CGUID+615, @CGUID+617, @CGUID+619, @CGUID+621, @CGUID+623, @CGUID+625, @CGUID+627, @CGUID+630, @CGUID+638, @CGUID+639,
- @CGUID+701, @CGUID+703, @CGUID+705, @CGUID+707, @CGUID+709, @CGUID+711, @CGUID+713, @CGUID+714, @CGUID+715, @CGUID+716, @CGUID+717, @CGUID+718,
- @CGUID+720, @CGUID+722, @CGUID+724, @CGUID+726, @CGUID+728, @CGUID+730, @CGUID+732, @CGUID+745, @CGUID+748,
- @CGUID+670, @CGUID+673, @CGUID+675, @CGUID+677, @CGUID+679, @CGUID+681, @CGUID+683, @CGUID+685, @CGUID+687, @CGUID+690, @CGUID+698, @CGUID+699, -- TBC
- @CGUID+751, @CGUID+753, @CGUID+755, @CGUID+757, @CGUID+759, @CGUID+761, @CGUID+763, @CGUID+764, @CGUID+765, @CGUID+766, @CGUID+767, @CGUID+768,
- @CGUID+770, @CGUID+772, @CGUID+774, @CGUID+776, @CGUID+778, @CGUID+780, @CGUID+782, @CGUID+795, @CGUID+798,
- @CGUID+810, @CGUID+813, @CGUID+815, @CGUID+817, @CGUID+819, @CGUID+821, @CGUID+823, @CGUID+825, @CGUID+827, @CGUID+830, @CGUID+838, @CGUID+839, -- WOTLK
- @CGUID+851, @CGUID+853, @CGUID+855, @CGUID+857, @CGUID+859, @CGUID+861, @CGUID+863, @CGUID+864, @CGUID+865, @CGUID+866, @CGUID+867, @CGUID+868,
- @CGUID+870, @CGUID+872, @CGUID+874, @CGUID+876, @CGUID+878, @CGUID+880, @CGUID+882, @CGUID+895, @CGUID+898);
+-- PK is memberGUID: clear every formation row in the AV guid range so the file can be re-applied
+DELETE FROM `creature_formations` WHERE `memberGUID` BETWEEN @CGUID+1 AND @CGUID+999 OR `leaderGUID` BETWEEN @CGUID+1 AND @CGUID+999;
 
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
@@ -1281,7 +1284,6 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPID+7480, 13, -1489.75, -664.575, 49.3815, 0, 0, 0, 0, 100, 0),
 (@WPID+7480, 14, -1485.85, -683.43, 47.6697, 0, 0, 0, 0, 100, 0);
 
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN (@CGUID+521, @CGUID+525, @CGUID+911, @CGUID+921, @CGUID+915, @CGUID+925);
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (@CGUID+521, @CGUID+521, 0, 0, 515, 0, 0), -- Primalist Thurloga
@@ -1518,7 +1520,6 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPID+5250, 51, -202.7, -344.94, 6.69, 0, 0, 0, 0, 100, 0);
 
 -- Wolf/Ram Rider Commanders
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN (@CGUID+316, @CGUID+416, @CGUID+317, @CGUID+417, @CGUID+318, @CGUID+418);
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (@CGUID+316, @CGUID+316, 0, 0, 515, 0, 0), -- Ram Rider Commander

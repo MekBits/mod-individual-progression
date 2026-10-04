@@ -3696,6 +3696,17 @@ INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionTex
 (65725, 0, 0, 'Give me the beacon, Slidore! Also, you still stink!', 8796, 1, 1, 0, 0, 0, 0, '', 0, 0),
 (65726, 0, 0, 'I am ready to rock, Vipore! Give me a beacon.', 8799, 1, 1, 0, 0, 0, 0, '', 0, 0);
 
+-- air strikes need Revered (patch 1.6.0); rank mask 192 = Revered | Exalted
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` BETWEEN 65721 AND 65726;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
+`ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15, 65721, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Guse''s beacon requires Revered with Frostwolf Clan'),
+(15, 65722, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Jeztor''s beacon requires Revered with Frostwolf Clan'),
+(15, 65723, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Mulverick''s beacon requires Revered with Frostwolf Clan'),
+(15, 65724, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Ichman''s beacon requires Revered with Stormpike Guard'),
+(15, 65725, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Slidore''s beacon requires Revered with Stormpike Guard'),
+(15, 65726, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Vipore''s beacon requires Revered with Stormpike Guard');
+
 -- gossip text on rescue
 DELETE FROM `gossip_menu_option` WHERE `MenuID` BETWEEN 65711 AND 65716;
 INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES
@@ -3852,6 +3863,13 @@ DELETE FROM `gossip_menu_option` WHERE `MenuID` IN (65701, 65702);
 INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES
 (65701, 0, 0, 'Unleash the cavalry!', 8870, 1, 1, 0, 0, 0, 0, '', 0, 0),
 (65702, 0, 0, 'YAW! Er, to the front lines with you!', 8903, 1, 1, 0, 0, 0, 0, '', 0, 0);
+
+-- cavalry needs Honored (patch 1.6.0); rank mask 224 = Honored | Revered | Exalted
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` IN (65701, 65702);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
+`ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15, 65701, 0, 0, 0, 5, 0, 729, 224, 0, 0, 0, 0, '', 'Frostwolf cavalry requires Honored with Frostwolf Clan'),
+(15, 65702, 0, 0, 0, 5, 0, 730, 224, 0, 0, 0, 0, '', 'Stormpike cavalry requires Honored with Stormpike Guard');
 
 DELETE FROM `npc_text` WHERE `ID` IN (65701, 65702);
 INSERT INTO `npc_text` (`ID`, `text0_0`, `BroadcastTextID0`, `Probability0`) VALUES 

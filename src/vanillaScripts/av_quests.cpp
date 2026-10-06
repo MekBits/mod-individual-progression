@@ -63,8 +63,10 @@ namespace
         return UpgradeReady(state, team) ? texts.ready[tier] : texts.notReady[tier];
     }
 
-    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings DB spawns back already
-    // upgraded. Returns true when the defender is a lower tier of one of the chains.
+    // Dead defenders only get their original entry moved up, which Creature::Respawn() applies to a DB spawn in
+    // compatibility mode. Otherwise (Respawn.ForceCompatibilityMode = 0, the default) a DB spawn is recreated from its
+    // spawn data and ApplyTeamTier() upgrades it in OnCreatureAddWorld; static guards respawn in place and are caught
+    // up from OnBattlegroundUpdate. Returns true when the defender is a lower tier of one of the chains.
     bool UpgradeDefender(Creature* defender, std::array<AVDefenderChain, 3> const& chains, uint8 newTier)
     {
         // Roaming units keep their tier.
@@ -123,6 +125,33 @@ namespace
             if (std::find(deadStatics.begin(), deadStatics.end(), guid) == deadStatics.end())
                 deadStatics.push_back(guid);
         }
+    }
+
+    // A defender that has just (re)spawned takes its team's current tier, at the new tier's full health.
+    void ApplyTeamTier(Creature* defender, AVQuestState const& state)
+    {
+        for (TeamId team : { TEAM_ALLIANCE, TEAM_HORDE })
+        {
+            if (state.defenderTier[team] == AV_DEFENDER_TIER_NONE)
+                continue;
+
+            auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+            if (UpgradeDefender(defender, chains, state.defenderTier[team]))
+            {
+                if (defender->IsAlive())
+                    defender->SetFullHealth();
+                return;
+            }
+        }
+    }
+
+    AVQuestState* FindAVState(Battleground* bg)
+    {
+        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+            return nullptr;
+
+        auto itr = avState.find(bg->GetInstanceID());
+        return itr == avState.end() ? nullptr : &itr->second;
     }
 
     void HandleBossTurnIn(Player* player, AVQuestState& state, TeamId team, uint32 points)
@@ -622,18 +651,13 @@ public:
     // Static guards that were dead at an upgrade take their team's tier once they are back.
     void OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/) override
     {
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+        AVQuestState* state = FindAVState(bg);
+        if (!state)
             return;
 
-        auto itr = avState.find(bg->GetInstanceID());
-        if (itr == avState.end())
-            return;
-
-        AVQuestState& state = itr->second;
-        for (TeamId team : { TEAM_ALLIANCE, TEAM_HORDE })
+        for (std::vector<ObjectGuid>& deadStatics : state->deadStaticDefenders)
         {
-            auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
-            std::erase_if(state.deadStaticDefenders[team], [&](ObjectGuid const& guid)
+            std::erase_if(deadStatics, [&](ObjectGuid const& guid)
             {
                 Creature* defender = bg->GetBgMap()->GetCreature(guid);
                 if (!defender)
@@ -641,10 +665,27 @@ public:
                 if (!defender->IsAlive())
                     return false;
 
-                UpgradeDefender(defender, chains, state.defenderTier[team]);
+                ApplyTeamTier(defender, *state);
                 return true;
             });
         }
+    }
+};
+
+// Without respawn compatibility mode a dead DB spawn is destroyed and recreated from its spawn data, which drops the
+// tier it had; the recreated defender takes its team's tier here.
+class ip_av_quests_defenders : public AllCreatureScript
+{
+public:
+    ip_av_quests_defenders() : AllCreatureScript("ip_av_quests_defenders") {}
+
+    void OnCreatureAddWorld(Creature* creature) override
+    {
+        if (!creature->GetSpawnId() || !creature->GetMap()->IsBattleground())
+            return;
+
+        if (AVQuestState* state = FindAVState(creature->GetMap()->ToBattlegroundMap()->GetBG()))
+            ApplyTeamTier(creature, *state);
     }
 };
 
@@ -653,4 +694,5 @@ void AddSC_mod_individual_progression_av_quests()
     new ip_av_quests_player();
     new ip_av_quests_gossip();
     new ip_av_quests_bg();
+    new ip_av_quests_defenders();
 }

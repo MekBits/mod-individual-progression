@@ -3638,9 +3638,10 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
    and Champion defenders (entry + 100000, brackets likewise). They must not share an entry with the core's invisible
    markers 13326/13331/13422 and 13328/13332/13421: the defenders' NEAR_UNIT rows look for those markers, and a
    defender with a marker's entry finds itself and turns visible and hostile at every graveyard.
-   Level and health step up with the core's tiers; damage, armor and the PvP flag come from the base defender of the
-   same bracket, as in the other chains. No on-kill reputation, like 112050/112053 (the core's rows for 13326/13328
-   credit the wrong faction). */
+   Level and health step up with the core's tiers. Damage, armor, the PvP flag and the random movement stay those of
+   the base defender of the same bracket (the core's values would cut damage from 2.8/4/6 to 1, and its Horde
+   guardians stand still). No on-kill reputation, like 112050/112053 (the core's rows for 13326/13328 both credit
+   Stormpike Guard). */
 DELETE FROM `creature_template` WHERE `entry` IN
 (113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
 DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
@@ -3652,12 +3653,12 @@ UPDATE `ipp_copy` SET `entry` = `entry` + 100000,
     `difficulty_entry_2` = IF(`difficulty_entry_2` = 0, 0, `difficulty_entry_2` + 100000),
     `difficulty_entry_3` = 0, `ScriptName` = '';
 UPDATE `ipp_copy` SET `AIName` = 'SmartAI' WHERE `entry` IN (113326, 113331, 113422, 113328, 113332, 113421);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112050 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (113326, 113331, 113422);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122690 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (122714, 122588, 122608);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 132091 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (132062, 132125, 131932);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112053 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (113328, 113332, 113421);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122674 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (122715, 122589, 122609);
-UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 131981 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags` WHERE `c`.`entry` IN (132063, 132126, 131933);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112050 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (113326, 113331, 113422);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122690 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (122714, 122588, 122608);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 132091 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (132062, 132125, 131932);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112053 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (113328, 113332, 113421);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122674 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (122715, 122589, 122609);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 131981 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (132063, 132126, 131933);
 INSERT INTO `creature_template` SELECT * FROM `ipp_copy`;
 DROP TEMPORARY TABLE `ipp_copy`;
 

@@ -3706,8 +3706,8 @@ DROP TEMPORARY TABLE `ipp_copy`;
       reward for the base tiers and for upgraded tiers too, with caps that vary (Friendly, Honored, none shown).
    2. Every template with a 729 or 730 reward hands the same row to its bracket templates: these guards, the tower
       bowmen, lieutenants, commanders and the rest. Not the generals and captains (11946-11949): the battleground
-      already pays their whole team the same amount for that kill in every bracket (BattlegroundAV::HandleKillUnit;
-      the generals' amount is Battleground.Alterac.ReputationOnBossDeath).
+      already pays their whole team a reward for that kill in every bracket (BattlegroundAV::HandleKillUnit; 350/125
+      by default, the generals' from Battleground.Alterac.ReputationOnBossDeath, 525/185 on a holiday weekend).
    Sentinels and Warriors keep no reward, as in the core and on Wowhead (Classic). */
 DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN
 (112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326,

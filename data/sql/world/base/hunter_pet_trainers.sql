@@ -705,6 +705,7 @@ INSERT INTO `ipp_pet_spell_data_id` (`entry`, `PetSpellDataId`) VALUES
 (22162, 0),
 (22163, 0),
 (22173, 0),
+(22737, 0), -- Frostwolf, AV bracket copy of 10981
 (22767, 0),
 (23163, 0),
 (23326, 0),
@@ -1077,7 +1078,8 @@ INSERT INTO `ipp_pet_spell_data_id` (`entry`, `PetSpellDataId`) VALUES
 (23878, 11571),
 (23879, 11571),
 (23880, 11571),
-(27946, 12993);
+(27946, 12993),
+(31975, 0); -- Frostwolf, AV bracket copy of 10981
 
 CREATE TABLE IF NOT EXISTS `ipp_pet_creaturespelldata` LIKE `creaturespelldata_dbc`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_applied_creaturespelldata` LIKE `creaturespelldata_dbc`;

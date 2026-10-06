@@ -12,10 +12,12 @@
 #include "Player.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
+#include <algorithm>
 #include <unordered_map>
 
 namespace
 {
+    // One entry per running AV instance; only ip_av_quests_bg inserts and erases (see there).
     std::unordered_map<uint32, AVQuestState> avState;
 
     uint32 ScrapsThreshold(uint8 tier)
@@ -62,46 +64,95 @@ namespace
         return UpgradeReady(state, team) ? texts.ready[tier] : texts.notReady[tier];
     }
 
-    // Upgrade every DB-spawned defender of `team` to `newTier`, summons are not effected.
-    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings them back already upgraded. 
-    void UpgradeDefenders(Battleground* bg, TeamId team, uint8 newTier)
+    // Dead defenders only get their original entry moved up, which Creature::Respawn() applies to a DB spawn in
+    // compatibility mode. Otherwise (Respawn.ForceCompatibilityMode = 0, the default) a DB spawn is recreated from its
+    // spawn data and ApplyTeamTier() upgrades it in OnCreatureAddWorld; static guards respawn in place and are caught
+    // up from OnBattlegroundUpdate. Returns true when the defender is a lower tier of one of the chains.
+    bool UpgradeDefender(Creature* defender, std::array<AVDefenderChain, 3> const& chains, uint8 newTier)
     {
-        auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+        // Roaming units keep their tier.
+        if (defender->GetFormation() || defender->GetDefaultMovementType() == WAYPOINT_MOTION_TYPE)
+            return false;
 
-        for (auto const& pair : bg->GetBgMap()->GetCreatureBySpawnIdStore())
+        for (AVDefenderChain const& chain : chains)
         {
-            Creature* defender = pair.second;
-            if (!defender)
+            if (!chain.entries[0]) // placeholder chain, not filled in yet
                 continue;
 
-            for (AVDefenderChain const& chain : chains)
+            bool isLowerTier = false;
+            for (uint8 tier = 0; tier < newTier; ++tier)
             {
-                if (!chain.entries[0]) // placeholder chain, not filled in yet
-                    continue;
-
-                bool isLowerTier = false;
-                for (uint8 tier = 0; tier < newTier; ++tier)
+                if (defender->GetEntry() == chain.entries[tier])
                 {
-                    if (defender->GetEntry() == chain.entries[tier])
-                    {
-                        isLowerTier = true;
-                        break;
-                    }
+                    isLowerTier = true;
+                    break;
                 }
+            }
 
-                if (!isLowerTier)
-                    continue;
+            if (!isLowerTier)
+                continue;
 
-                defender->SetOriginalEntry(chain.entries[newTier]);
-                if (chain.upgradeAliveImmediately && defender->IsAlive())
-                {
-                    uint16 currentFaction = defender->GetFaction();
-                    defender->UpdateEntry(chain.entries[newTier], defender->GetCreatureData(), true);
-                    defender->SetFaction(currentFaction);
-                }
-                break;
+            defender->SetOriginalEntry(chain.entries[newTier]);
+            if (chain.upgradeAliveImmediately && defender->IsAlive())
+            {
+                uint16 currentFaction = defender->GetFaction();
+                defender->UpdateEntry(chain.entries[newTier], defender->GetCreatureData(), true);
+                defender->SetFaction(currentFaction);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    // Upgrade every defender of `team` to `newTier`: the DB spawns and the core's static guards (BattlegroundAV's
+    // static table; with core-av-overhaul.patch the stationary Frostwolf Legionnaires). Summons are not affected.
+    void UpgradeDefenders(Battleground* bg, AVQuestState& state, TeamId team, uint8 newTier)
+    {
+        auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+        Map* map = bg->GetBgMap();
+
+        for (auto const& pair : map->GetCreatureBySpawnIdStore())
+            if (Creature* defender = pair.second)
+                UpgradeDefender(defender, chains, newTier);
+
+        std::vector<ObjectGuid>& deadStatics = state.deadStaticDefenders[team];
+        for (ObjectGuid const& guid : bg->BgCreatures)
+        {
+            Creature* defender = map->GetCreature(guid);
+            if (!defender || !UpgradeDefender(defender, chains, newTier) || defender->IsAlive())
+                continue;
+
+            if (std::find(deadStatics.begin(), deadStatics.end(), guid) == deadStatics.end())
+                deadStatics.push_back(guid);
+        }
+    }
+
+    // A defender that has just (re)spawned takes its team's current tier, at the new tier's full health.
+    void ApplyTeamTier(Creature* defender, AVQuestState const& state)
+    {
+        for (TeamId team : { TEAM_ALLIANCE, TEAM_HORDE })
+        {
+            if (state.defenderTier[team] == AV_DEFENDER_TIER_NONE)
+                continue;
+
+            auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+            if (UpgradeDefender(defender, chains, state.defenderTier[team]))
+            {
+                if (defender->IsAlive())
+                    defender->SetFullHealth();
+                return;
             }
         }
+    }
+
+    AVQuestState* FindAVState(Battleground* bg)
+    {
+        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+            return nullptr;
+
+        auto itr = avState.find(bg->GetInstanceID());
+        return itr == avState.end() ? nullptr : &itr->second;
     }
 
     void HandleBossTurnIn(Player* player, AVQuestState& state, TeamId team, uint32 points)
@@ -394,11 +445,11 @@ public:
         if (!player || !quest)
             return;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+        AVQuestState* matchState = FindAVState(player->GetBattleground());
+        if (!matchState)
             return;
 
-        AVQuestState& state = avState[bg->GetInstanceID()];
+        AVQuestState& state = *matchState;
 
         switch (quest->GetQuestId())
         {
@@ -546,7 +597,7 @@ public:
             if (state && UpgradeReady(*state, team))
             {
                 ++state->defenderTier[team];
-                UpgradeDefenders(player->GetBattleground(), team, state->defenderTier[team]);
+                UpgradeDefenders(player->GetBattleground(), *state, team, state->defenderTier[team]);
                 creature->SetNpcFlag(UNIT_NPC_FLAG_QUESTGIVER); // resume turn-ins
             }
             if (state)
@@ -563,12 +614,8 @@ private:
         if (entry != NPC_MURGOT_DEEPFORGE && entry != NPC_SMITH_REGZAR)
             return nullptr;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
-            return nullptr;
-
         team = entry == NPC_MURGOT_DEEPFORGE ? TEAM_ALLIANCE : TEAM_HORDE;
-        return &avState[bg->GetInstanceID()];
+        return FindAVState(player->GetBattleground());
     }
 
     static AVQuestState* GetStateStables(Player* player, Creature* creature, TeamId& team)
@@ -577,25 +624,69 @@ private:
         if (entry != NPC_CAV_CMDR_A && entry != NPC_CAV_CMDR_H)
             return nullptr;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
-            return nullptr;
-
         team = entry == NPC_CAV_CMDR_A ? TEAM_ALLIANCE : TEAM_HORDE;
-        return &avState[bg->GetInstanceID()];
+        return FindAVState(player->GetBattleground());
     }
 };
 
-// Clear per-match state when the BG is destroyed so avState can't grow forever.
+// avState gets its entries only here and loses them in OnBattlegroundDestroy, both in the world thread outside
+// the map update; the map threads (quest and gossip handlers, creature hooks) only look entries up, so two AV
+// instances never touch the container's structure at the same time.
 class ip_av_quests_bg : public AllBattlegroundScript
 {
 public:
     ip_av_quests_bg() : AllBattlegroundScript("ip_av_quests_bg") {}
 
+    void OnBattlegroundCreate(Battleground* bg) override
+    {
+        if (bg && bg->GetInstanceID() && bg->GetBgTypeID(true) == BATTLEGROUND_AV)
+            avState.try_emplace(bg->GetInstanceID());
+    }
+
     void OnBattlegroundDestroy(Battleground* bg) override
     {
         if (bg)
             avState.erase(bg->GetInstanceID());
+    }
+
+    // Static guards that were dead at an upgrade take their team's tier once they are back.
+    void OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/) override
+    {
+        AVQuestState* state = FindAVState(bg);
+        if (!state)
+            return;
+
+        for (std::vector<ObjectGuid>& deadStatics : state->deadStaticDefenders)
+        {
+            std::erase_if(deadStatics, [&](ObjectGuid const& guid)
+            {
+                Creature* defender = bg->GetBgMap()->GetCreature(guid);
+                if (!defender)
+                    return true; // despawned by the core
+                if (!defender->IsAlive())
+                    return false;
+
+                ApplyTeamTier(defender, *state);
+                return true;
+            });
+        }
+    }
+};
+
+// Without respawn compatibility mode a dead DB spawn is destroyed and recreated from its spawn data, which drops the
+// tier it had; the recreated defender takes its team's tier here.
+class ip_av_quests_defenders : public AllCreatureScript
+{
+public:
+    ip_av_quests_defenders() : AllCreatureScript("ip_av_quests_defenders") {}
+
+    void OnCreatureAddWorld(Creature* creature) override
+    {
+        if (!creature->GetSpawnId() || !creature->GetMap()->IsBattleground())
+            return;
+
+        if (AVQuestState* state = FindAVState(creature->GetMap()->ToBattlegroundMap()->GetBG()))
+            ApplyTeamTier(creature, *state);
     }
 };
 
@@ -604,4 +695,5 @@ void AddSC_mod_individual_progression_av_quests()
     new ip_av_quests_player();
     new ip_av_quests_gossip();
     new ip_av_quests_bg();
+    new ip_av_quests_defenders();
 }

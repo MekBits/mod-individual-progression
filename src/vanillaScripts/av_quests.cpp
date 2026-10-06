@@ -17,6 +17,7 @@
 
 namespace
 {
+    // One entry per running AV instance; only ip_av_quests_bg inserts and erases (see there).
     std::unordered_map<uint32, AVQuestState> avState;
 
     uint32 ScrapsThreshold(uint8 tier)
@@ -444,11 +445,11 @@ public:
         if (!player || !quest)
             return;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+        AVQuestState* matchState = FindAVState(player->GetBattleground());
+        if (!matchState)
             return;
 
-        AVQuestState& state = avState[bg->GetInstanceID()];
+        AVQuestState& state = *matchState;
 
         switch (quest->GetQuestId())
         {
@@ -613,12 +614,8 @@ private:
         if (entry != NPC_MURGOT_DEEPFORGE && entry != NPC_SMITH_REGZAR)
             return nullptr;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
-            return nullptr;
-
         team = entry == NPC_MURGOT_DEEPFORGE ? TEAM_ALLIANCE : TEAM_HORDE;
-        return &avState[bg->GetInstanceID()];
+        return FindAVState(player->GetBattleground());
     }
 
     static AVQuestState* GetStateStables(Player* player, Creature* creature, TeamId& team)
@@ -627,20 +624,24 @@ private:
         if (entry != NPC_CAV_CMDR_A && entry != NPC_CAV_CMDR_H)
             return nullptr;
 
-        Battleground* bg = player->GetBattleground();
-        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
-            return nullptr;
-
         team = entry == NPC_CAV_CMDR_A ? TEAM_ALLIANCE : TEAM_HORDE;
-        return &avState[bg->GetInstanceID()];
+        return FindAVState(player->GetBattleground());
     }
 };
 
-// Clear per-match state when the BG is destroyed so avState can't grow forever.
+// avState gets its entries only here and loses them in OnBattlegroundDestroy, both in the world thread outside
+// the map update; the map threads (quest and gossip handlers, creature hooks) only look entries up, so two AV
+// instances never touch the container's structure at the same time.
 class ip_av_quests_bg : public AllBattlegroundScript
 {
 public:
     ip_av_quests_bg() : AllBattlegroundScript("ip_av_quests_bg") {}
+
+    void OnBattlegroundCreate(Battleground* bg) override
+    {
+        if (bg && bg->GetInstanceID() && bg->GetBgTypeID(true) == BATTLEGROUND_AV)
+            avState.try_emplace(bg->GetInstanceID());
+    }
 
     void OnBattlegroundDestroy(Battleground* bg) override
     {

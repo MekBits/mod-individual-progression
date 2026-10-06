@@ -3,8 +3,39 @@
     In WotLK grimoires became absolete, new ranks and spells were now automatically learned on the respective levels.
 */
 
+/*
+    Demon trainers as grimoire vendors, the grimoires' learn spells and the demon trainer vendor lists.
+    Kept in ipp_pet_* tables and written to creature_template/npc_vendor/item_template at startup only
+    while IndividualProgression.WarlockDemonTrainers = 1; with 0 AzerothCore's values are restored
+    (IndividualProgression.cpp, ApplyPetDatabaseSettings). Changing the key needs a restart.
+*/
+-- Whether the startup step has written the ipp_pet_* data to the core tables (rows written by C++ only).
+CREATE TABLE IF NOT EXISTS `ipp_pet_state` (
+    `feature` varchar(16) NOT NULL,
+    `applied` tinyint unsigned NOT NULL DEFAULT 0,
+    PRIMARY KEY (`feature`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_trainer_npcflag` (
+    `entry` int unsigned NOT NULL,
+    `npcflag` int unsigned NOT NULL,
+    PRIMARY KEY (`entry`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_backup_trainer_npcflag` LIKE `ipp_pet_trainer_npcflag`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_npc_vendor` LIKE `npc_vendor`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_backup_npc_vendor` LIKE `npc_vendor`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_grimoire` (
+    `entry` int unsigned NOT NULL,
+    `spellid_1` int NOT NULL,
+    `spellid_2` int NOT NULL,
+    `spelltrigger_2` tinyint unsigned NOT NULL,
+    `description` varchar(255) NOT NULL,
+    PRIMARY KEY (`entry`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_backup_grimoire` LIKE `ipp_pet_grimoire`;
+
 /* Label all vanilla warlock demon trainers as vendors  - npcflag was 2, set to 130 */
-UPDATE `creature_template` SET `npcflag` = 130 WHERE `entry` IN 
+DELETE FROM `ipp_pet_trainer_npcflag`;
+INSERT INTO `ipp_pet_trainer_npcflag` (`entry`, `npcflag`) SELECT `entry`, 130 FROM `creature_template` WHERE `entry` IN 
 (5520, 5749, 5750, 5753, 5815, 6027, 6328, 6373, 6374, 6376, 6382, 12776, 12807, 15494, 16267, 16649, 23535);
 
 
@@ -12,16 +43,16 @@ UPDATE `creature_template` SET `npcflag` = 130 WHERE `entry` IN
 /* Three versions, because demon trainers sell 20, 46 or 83 grimoires */
 
 /* Demon Trainer with 20 items */
-DELETE FROM `npc_vendor` WHERE `entry` = 200001;
-INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
+DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200001;
+INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200001, 16302 ,0), (200001, 16316 ,0), (200001, 16317 ,0), (200001, 16318 ,0), (200001, 16319 ,0),
 (200001, 16320 ,0), (200001, 16321 ,0), (200001, 16322 ,0), (200001, 16323 ,0), (200001, 16324 ,0),
 (200001, 16325 ,0), (200001, 16326 ,0), (200001, 16327 ,0), (200001, 16328 ,0), (200001, 16329 ,0),
 (200001, 16330 ,0), (200001, 16331 ,0), (200001, 22179 ,0), (200001, 22180 ,0), (200001, 22181 ,0);
 
 /* Demon Trainer with 46 items */
-DELETE FROM `npc_vendor` WHERE `entry` = 200002;
-INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
+DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200002;
+INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
 (200002, 16346 ,0), (200002, 16347 ,0), (200002, 16348 ,0), (200002, 16349 ,0), (200002, 16350 ,0),
 (200002, 16351 ,0), (200002, 16352 ,0), (200002, 16353 ,0), (200002, 16354 ,0), (200002, 16355 ,0),
 (200002, 16356 ,0), (200002, 16357 ,0), (200002, 16358 ,0), (200002, 16359 ,0), (200002, 16360 ,0),
@@ -30,8 +61,8 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200002, 28068 ,0);
 
 /* Demon Trainer with 83 items for sale */
-DELETE FROM `npc_vendor` WHERE `entry` = 200003;
-INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
+DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200003;
+INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200003, 16368 ,0), (200003, 16371 ,0), (200003, 16372 ,0), (200003, 16373 ,0), (200003, 16374 ,0),
 (200003, 16375 ,0), (200003, 16376 ,0), (200003, 16377 ,0), (200003, 16378 ,0), (200003, 16379 ,0),
 (200003, 16380 ,0), (200003, 16381 ,0), (200003, 16382 ,0), (200003, 16383 ,0), (200003, 16388 ,0),
@@ -42,8 +73,8 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200003, 28072 ,0), (200003, 28073 ,0);
 
 /* Add correct amount of grimoires to Demon Trainers */
-DELETE FROM `npc_vendor` WHERE `entry` IN (5520, 5749, 5750, 5753, 5815, 6027, 6328, 6373, 6374, 6376, 6382, 12776, 12807, 15494, 16267, 16649, 23535);
-INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
+DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` IN (5520, 5749, 5750, 5753, 5815, 6027, 6328, 6373, 6374, 6376, 6382, 12776, 12807, 15494, 16267, 16649, 23535);
+INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
  (5520, -200001 ,0), (5520, -200002 ,0), (5520, -200003 ,0),
  (5749, -200001 ,0),
  (5750, -200001 ,0), (5750, -200002 ,0),
@@ -63,105 +94,106 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (23535, -200001 ,0), (23535, -200002 ,0), (23535, -200003 ,0);
 
 -- learn dummy spells after using grimoires
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607799, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 2).' WHERE `entry` = 16302;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607800, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 3).' WHERE `entry` = 16316;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607801, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 4).' WHERE `entry` = 16317;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607802, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 5).' WHERE `entry` = 16318;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611762, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 6).' WHERE `entry` = 16319;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611763, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 7).' WHERE `entry` = 16320;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627267, `spelltrigger_2` = 6, `description` = 'Teaches Imp Firebolt (Rank 8).' WHERE `entry` = 22179;
+DELETE FROM `ipp_pet_grimoire`;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16302, 483, 607799, 6, 'Teaches Imp Firebolt (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16316, 483, 607800, 6, 'Teaches Imp Firebolt (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16317, 483, 607801, 6, 'Teaches Imp Firebolt (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16318, 483, 607802, 6, 'Teaches Imp Firebolt (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16319, 483, 611762, 6, 'Teaches Imp Firebolt (Rank 6).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16320, 483, 611763, 6, 'Teaches Imp Firebolt (Rank 7).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22179, 483, 627267, 6, 'Teaches Imp Firebolt (Rank 8).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 606307, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 1).' WHERE `entry` = 16321;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607804, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 2).' WHERE `entry` = 16322;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607805, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 3).' WHERE `entry` = 16323;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611766, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 4).' WHERE `entry` = 16324;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611767, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 5).' WHERE `entry` = 16325;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627268, `spelltrigger_2` = 6, `description` = 'Teaches Imp Blood Pact (Rank 6).' WHERE `entry` = 22180;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16321, 483, 606307, 6, 'Teaches Imp Blood Pact (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16322, 483, 607804, 6, 'Teaches Imp Blood Pact (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16323, 483, 607805, 6, 'Teaches Imp Blood Pact (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16324, 483, 611766, 6, 'Teaches Imp Blood Pact (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16325, 483, 611767, 6, 'Teaches Imp Blood Pact (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22180, 483, 627268, 6, 'Teaches Imp Blood Pact (Rank 6).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 602947, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 1).' WHERE `entry` = 16326;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 608316, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 2).' WHERE `entry` = 16327;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 608317, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 3).' WHERE `entry` = 16328;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611770, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 4).' WHERE `entry` = 16329;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611771, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 5).' WHERE `entry` = 16330;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627269, `spelltrigger_2` = 6, `description` = 'Teaches Imp Fire Shield (Rank 6).' WHERE `entry` = 22181;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16326, 483, 602947, 6, 'Teaches Imp Fire Shield (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16327, 483, 608316, 6, 'Teaches Imp Fire Shield (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16328, 483, 608317, 6, 'Teaches Imp Fire Shield (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16329, 483, 611770, 6, 'Teaches Imp Fire Shield (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16330, 483, 611771, 6, 'Teaches Imp Fire Shield (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22181, 483, 627269, 6, 'Teaches Imp Fire Shield (Rank 6).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 604511, `spelltrigger_2` = 6, `description` = 'Teaches Imp Phase Shift.' WHERE `entry` = 16331;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16331, 483, 604511, 6, 'Teaches Imp Phase Shift.');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607809, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 2).' WHERE `entry` = 16346;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607810, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 3).' WHERE `entry` = 16347;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607811, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 4).' WHERE `entry` = 16348;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611774, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 5).' WHERE `entry` = 16349;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611775, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 6).' WHERE `entry` = 16350;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627270, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Torment (Rank 7).' WHERE `entry` = 22182;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16346, 483, 607809, 6, 'Teaches Voidwalker Torment (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16347, 483, 607810, 6, 'Teaches Voidwalker Torment (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16348, 483, 607811, 6, 'Teaches Voidwalker Torment (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16349, 483, 611774, 6, 'Teaches Voidwalker Torment (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16350, 483, 611775, 6, 'Teaches Voidwalker Torment (Rank 6).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22182, 483, 627270, 6, 'Teaches Voidwalker Torment (Rank 7).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607812, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 1).' WHERE `entry` = 16351;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619438, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 2).' WHERE `entry` = 16352;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619440, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 3).' WHERE `entry` = 16353;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619441, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 4).' WHERE `entry` = 16354;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619442, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 5).' WHERE `entry` = 16355;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619443, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 6).' WHERE `entry` = 16356;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627273, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Sacrifice (Rank 7).' WHERE `entry` = 22185;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16351, 483, 607812, 6, 'Teaches Voidwalker Sacrifice (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16352, 483, 619438, 6, 'Teaches Voidwalker Sacrifice (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16353, 483, 619440, 6, 'Teaches Voidwalker Sacrifice (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16354, 483, 619441, 6, 'Teaches Voidwalker Sacrifice (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16355, 483, 619442, 6, 'Teaches Voidwalker Sacrifice (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16356, 483, 619443, 6, 'Teaches Voidwalker Sacrifice (Rank 6).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22185, 483, 627273, 6, 'Teaches Voidwalker Sacrifice (Rank 7).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617767, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 1).' WHERE `entry` = 16357;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617850, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 2).' WHERE `entry` = 16358;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617851, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 3).' WHERE `entry` = 16359;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617852, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 4).' WHERE `entry` = 16360;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617853, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 5).' WHERE `entry` = 16361;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617854, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 6).' WHERE `entry` = 16362;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627272, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Consume Shadows (Rank 7).' WHERE `entry` = 22184;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16357, 483, 617767, 6, 'Teaches Voidwalker Consume Shadows (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16358, 483, 617850, 6, 'Teaches Voidwalker Consume Shadows (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16359, 483, 617851, 6, 'Teaches Voidwalker Consume Shadows (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16360, 483, 617852, 6, 'Teaches Voidwalker Consume Shadows (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16361, 483, 617853, 6, 'Teaches Voidwalker Consume Shadows (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16362, 483, 617854, 6, 'Teaches Voidwalker Consume Shadows (Rank 6).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22184, 483, 627272, 6, 'Teaches Voidwalker Consume Shadows (Rank 7).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617735, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 1).' WHERE `entry` = 16363;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617750, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 2).' WHERE `entry` = 16364;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617751, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 3).' WHERE `entry` = 16365;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 617752, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 4).' WHERE `entry` = 16366;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627271, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 5).' WHERE `entry` = 22183;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 633701, `spelltrigger_2` = 6, `description` = 'Teaches Voidwalker Suffering (Rank 6).' WHERE `entry` = 28068;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16363, 483, 617735, 6, 'Teaches Voidwalker Suffering (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16364, 483, 617750, 6, 'Teaches Voidwalker Suffering (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16365, 483, 617751, 6, 'Teaches Voidwalker Suffering (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16366, 483, 617752, 6, 'Teaches Voidwalker Suffering (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22183, 483, 627271, 6, 'Teaches Voidwalker Suffering (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (28068, 483, 633701, 6, 'Teaches Voidwalker Suffering (Rank 6).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607815, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 2).' WHERE `entry` = 16368;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607816, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 3).' WHERE `entry` = 16371;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611778, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 4).' WHERE `entry` = 16372;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611779, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 5).' WHERE `entry` = 16373;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611780, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 6).' WHERE `entry` = 16374;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627274, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lash of Pain (Rank 7).' WHERE `entry` = 22186;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16368, 483, 607815, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16371, 483, 607816, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16372, 483, 611778, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16373, 483, 611779, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16374, 483, 611780, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 6).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22186, 483, 627274, 6, 'Teaches Succubus or Incubus Lash of Pain (Rank 7).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 606360, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Soothing Kiss (Rank 1).' WHERE `entry` = 16375;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607813, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Soothing Kiss (Rank 2).' WHERE `entry` = 16376;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611784, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Soothing Kiss (Rank 3).' WHERE `entry` = 16377;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 611785, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Soothing Kiss (Rank 4).' WHERE `entry` = 16378;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627275, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Soothing Kiss (Rank 5).' WHERE `entry` = 22187;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16375, 483, 606360, 6, 'Teaches Succubus or Incubus Soothing Kiss (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16376, 483, 607813, 6, 'Teaches Succubus or Incubus Soothing Kiss (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16377, 483, 611784, 6, 'Teaches Succubus or Incubus Soothing Kiss (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16378, 483, 611785, 6, 'Teaches Succubus or Incubus Soothing Kiss (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22187, 483, 627275, 6, 'Teaches Succubus or Incubus Soothing Kiss (Rank 5).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619731, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Devour Magic (Rank 2).' WHERE `entry` = 16381;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619734, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Devour Magic (Rank 3).' WHERE `entry` = 16382;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619736, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Devour Magic (Rank 4).' WHERE `entry` = 16383;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627276, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Devour Magic (Rank 5).' WHERE `entry` = 22188;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627277, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Devour Magic (Rank 6).' WHERE `entry` = 22189;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16381, 483, 619731, 6, 'Teaches Felhunter Devour Magic (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16382, 483, 619734, 6, 'Teaches Felhunter Devour Magic (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16383, 483, 619736, 6, 'Teaches Felhunter Devour Magic (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22188, 483, 627276, 6, 'Teaches Felhunter Devour Magic (Rank 5).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22189, 483, 627277, 6, 'Teaches Felhunter Devour Magic (Rank 6).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 620429, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Tainted Blood (Rank 1).' WHERE `entry` = 16384;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 620430, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Tainted Blood (Rank 2).' WHERE `entry` = 16385;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 620431, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Tainted Blood (Rank 3).' WHERE `entry` = 16386;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 620432, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Tainted Blood (Rank 4).' WHERE `entry` = 16387;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 627497, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Tainted Blood (Rank 5).' WHERE `entry` = 22190;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16384, 483, 620429, 6, 'Teaches Felhunter Tainted Blood (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16385, 483, 620430, 6, 'Teaches Felhunter Tainted Blood (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16386, 483, 620431, 6, 'Teaches Felhunter Tainted Blood (Rank 3).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16387, 483, 620432, 6, 'Teaches Felhunter Tainted Blood (Rank 4).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (22190, 483, 627497, 6, 'Teaches Felhunter Tainted Blood (Rank 5).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619244, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Spell Lock (Rank 1).' WHERE `entry` = 16388;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619647, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Spell Lock (Rank 2).' WHERE `entry` = 16389;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16388, 483, 619244, 6, 'Teaches Felhunter Spell Lock (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16389, 483, 619647, 6, 'Teaches Felhunter Spell Lock (Rank 2).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630154, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Intercept (Rank 1).' WHERE `entry` = 23711;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630199, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Intercept (Rank 2).' WHERE `entry` = 23730;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630200, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Intercept (Rank 3).' WHERE `entry` = 23731;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23711, 483, 630154, 6, 'Teaches Felguard Intercept (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23730, 483, 630199, 6, 'Teaches Felguard Intercept (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23731, 483, 630200, 6, 'Teaches Felguard Intercept (Rank 3).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630214, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Cleave (Rank 1).' WHERE `entry` = 23734;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630222, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Cleave (Rank 2).' WHERE `entry` = 23745;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 630224, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Cleave (Rank 3).' WHERE `entry` = 23755;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23734, 483, 630214, 6, 'Teaches Felguard Cleave (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23745, 483, 630222, 6, 'Teaches Felguard Cleave (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (23755, 483, 630224, 6, 'Teaches Felguard Cleave (Rank 3).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 633704, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Anguish (Rank 1).' WHERE `entry` = 28071;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 633705, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Anguish (Rank 2).' WHERE `entry` = 28072;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 633706, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Anguish (Rank 3).' WHERE `entry` = 28073;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (28071, 483, 633704, 6, 'Teaches Felguard Anguish (Rank 1).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (28072, 483, 633705, 6, 'Teaches Felguard Anguish (Rank 2).');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (28073, 483, 633706, 6, 'Teaches Felguard Anguish (Rank 3).');
 
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 606358, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Seduction.' WHERE `entry` = 16379;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 607870, `spelltrigger_2` = 6, `description` = 'Teaches Succubus or Incubus Lesser Invisibility.' WHERE `entry` = 16380;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 619481, `spelltrigger_2` = 6, `description` = 'Teaches Felhunter Paranoia.' WHERE `entry` = 16390;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 632234, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Avoidance.' WHERE `entry` = 25469;
-UPDATE `item_template` SET `spellid_1` = 483, `spellid_2` = 632852, `spelltrigger_2` = 6, `description` = 'Teaches Felguard Demonic Frenzy.' WHERE `entry` = 25900;
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16379, 483, 606358, 6, 'Teaches Succubus or Incubus Seduction.');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16380, 483, 607870, 6, 'Teaches Succubus or Incubus Lesser Invisibility.');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (16390, 483, 619481, 6, 'Teaches Felhunter Paranoia.');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (25469, 483, 632234, 6, 'Teaches Felguard Avoidance.');
+REPLACE INTO `ipp_pet_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) VALUES (25900, 483, 632852, 6, 'Teaches Felguard Demonic Frenzy.');
 
 DELETE FROM `spell_dbc` WHERE `ID` IN 
 (602947, 604511, 606307, 606358, 606360, 607799, 607800, 607801, 607802, 607804, 607805, 607809, 607810, 607811, 607812, 607813, 607815, 607816, 607870, 608316, 608317, 

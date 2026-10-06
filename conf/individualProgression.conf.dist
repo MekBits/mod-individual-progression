@@ -176,6 +176,9 @@ IndividualProgression.FishingFix = 1
 #                     New pet spells and ranks were now automatically learned on the respective levels.
 #                     Enable this option to restore Vanilla/TBC behavior so that specific beasts need to be tamed to learn new pet spells and ranks.
 #                     Once the player gets to WotLK, hunter pets learn their spells automatically again.
+#                     Disabled, hunter pets behave as in AzerothCore: the module's pet data (PetSpellDataId,
+#                     creaturespelldata_dbc) is not written to the core tables, or is taken out again at startup.
+#                     Changing this option needs a restart.
 #
 #        Default:     1 - Enabled
 #                     0 - Disabled
@@ -186,6 +189,9 @@ IndividualProgression.VanillaHunterPets = 1
 #
 #        Description: In WotLK grimoires became absolete, new ranks and spells were now automatically learned on the respective levels.
 #                     Enable this option to restore Vanilla/TBC behavior so that grimoires need to be purchased.
+#                     Disabled, demons behave as in AzerothCore and demon trainers sell no grimoires: the module's
+#                     vendor, npcflag and grimoire data is not written to the core tables, or is taken out again at startup.
+#                     Changing this option needs a restart.
 #
 #        Default:     1 - Enabled
 #                     0 - Disabled

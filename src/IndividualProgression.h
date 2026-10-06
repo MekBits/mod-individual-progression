@@ -451,6 +451,8 @@ public:
     void SyncBotsProgressionToLeader(Group* group);
     void checkHunterPetSpells(Player* player);
     void checkWarlockPetSpells(Player* player);
+    bool HunterPetsActive() const { return enabled && VanillaHunterPets; }
+    bool DemonTrainersActive() const { return enabled && WarlockDemonTrainers; }
     bool isAttuned(Player* player);
     bool isPlayerInDungeonOrRaid(Player* player);
     void checkIPPhasing(Player* player, uint32 newArea);

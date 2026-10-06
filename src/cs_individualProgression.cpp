@@ -6,9 +6,9 @@
 
 using namespace Acore::ChatCommands;
 
-void checkLearnedPetSpells(Player* player, const std::string& playerClass, uint32 petSpell, std::initializer_list<uint32> dummyIds)
+void checkLearnedPetSpells(ChatHandler* handler, Player* player, uint32 petSpell, std::initializer_list<uint32> dummyIds)
 {
-    if (!player || !petSpell)
+    if (!handler || !player || !petSpell)
         return;
 
     if (player->getClass() != CLASS_HUNTER && player->getClass() != CLASS_WARLOCK)
@@ -20,8 +20,8 @@ void checkLearnedPetSpells(Player* player, const std::string& playerClass, uint3
     const SpellEntry* spellInfo = sSpellStore.LookupEntry(petSpell);
     std::string SpellName = spellInfo ? spellInfo->SpellName[0] : std::to_string(petSpell);
 
-    ChatHandler(player->GetSession()).PSendSysMessage("--");
-    ChatHandler(player->GetSession()).PSendSysMessage("# {}:", SpellName);
+    handler->SendSysMessage("--");
+    handler->PSendSysMessage("# {}:", SpellName);
 
     for (uint32 id : dummyIds)
     {
@@ -36,7 +36,7 @@ void checkLearnedPetSpells(Player* player, const std::string& playerClass, uint3
         if (result)
             SpellRank = (*result)[0].Get<uint8>();
         
-        ChatHandler(player->GetSession()).PSendSysMessage("+ Rank {}", SpellRank);
+        handler->PSendSysMessage("+ Rank {}", SpellRank);
     }
 };
 
@@ -387,6 +387,13 @@ public:
             return false;
         }
 
+        if ((target->getClass() == CLASS_HUNTER && !sIndividualProgression->HunterPetsActive()) ||
+            (target->getClass() == CLASS_WARLOCK && !sIndividualProgression->DemonTrainersActive()))
+        {
+            handler->SendSysMessage("Vanilla/TBC pet training is disabled (IndividualProgression.VanillaHunterPets / WarlockDemonTrainers).");
+            return true;
+        }
+
         // normalize to lowercase
         for (char& c : pet)
             c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
@@ -394,7 +401,7 @@ public:
         // Helper to invoke checkLearnedPetSpells with a list
         auto check = [&](uint32 realSpell, std::initializer_list<uint32> ids)
             {
-                checkLearnedPetSpells(target, "", realSpell, ids);
+                checkLearnedPetSpells(handler, target, realSpell, ids);
             };
 
         // Hunter families

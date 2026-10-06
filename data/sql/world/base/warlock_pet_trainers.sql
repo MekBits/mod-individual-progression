@@ -13,15 +13,25 @@
 CREATE TABLE IF NOT EXISTS `ipp_pet_state` (
     `feature` varchar(16) NOT NULL,
     `applied` tinyint unsigned NOT NULL DEFAULT 0,
+    `commit_token` int unsigned NOT NULL DEFAULT 0,
     PRIMARY KEY (`feature`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- commit_token was added later; a table created before that gets it here.
+SET @ipp_pet_ddl = IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()
+    AND TABLE_NAME = 'ipp_pet_state' AND COLUMN_NAME = 'commit_token') = 0,
+    'ALTER TABLE `ipp_pet_state` ADD COLUMN `commit_token` int unsigned NOT NULL DEFAULT 0', 'DO 0');
+PREPARE ipp_pet_stmt FROM @ipp_pet_ddl;
+EXECUTE ipp_pet_stmt;
+DEALLOCATE PREPARE ipp_pet_stmt;
 CREATE TABLE IF NOT EXISTS `ipp_pet_trainer_npcflag` (
     `entry` int unsigned NOT NULL,
     `npcflag` int unsigned NOT NULL,
     PRIMARY KEY (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_trainer_npcflag` LIKE `ipp_pet_trainer_npcflag`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_trainer_npcflag` LIKE `ipp_pet_trainer_npcflag`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_npc_vendor` LIKE `npc_vendor`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_npc_vendor` LIKE `npc_vendor`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_npc_vendor` LIKE `npc_vendor`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_grimoire` (
     `entry` int unsigned NOT NULL,
@@ -31,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `ipp_pet_grimoire` (
     `description` varchar(255) NOT NULL,
     PRIMARY KEY (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_grimoire` LIKE `ipp_pet_grimoire`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_grimoire` LIKE `ipp_pet_grimoire`;
 
 /* Label all vanilla warlock demon trainers as vendors  - npcflag was 2, set to 130 */
@@ -42,8 +53,10 @@ INSERT INTO `ipp_pet_trainer_npcflag` (`entry`, `npcflag`) SELECT `entry`, 130 F
 /* Add warlock pet spells to warlock pet trainer vendor inventories */
 /* Three versions, because demon trainers sell 20, 46 or 83 grimoires */
 
+-- The whole table is rebuilt, so a vendor dropped from this file is dropped from it too.
+DELETE FROM `ipp_pet_npc_vendor`;
+
 /* Demon Trainer with 20 items */
-DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200001;
 INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200001, 16302 ,0), (200001, 16316 ,0), (200001, 16317 ,0), (200001, 16318 ,0), (200001, 16319 ,0),
 (200001, 16320 ,0), (200001, 16321 ,0), (200001, 16322 ,0), (200001, 16323 ,0), (200001, 16324 ,0),
@@ -51,7 +64,6 @@ INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200001, 16330 ,0), (200001, 16331 ,0), (200001, 22179 ,0), (200001, 22180 ,0), (200001, 22181 ,0);
 
 /* Demon Trainer with 46 items */
-DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200002;
 INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
 (200002, 16346 ,0), (200002, 16347 ,0), (200002, 16348 ,0), (200002, 16349 ,0), (200002, 16350 ,0),
 (200002, 16351 ,0), (200002, 16352 ,0), (200002, 16353 ,0), (200002, 16354 ,0), (200002, 16355 ,0),
@@ -61,7 +73,6 @@ INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200002, 28068 ,0);
 
 /* Demon Trainer with 83 items for sale */
-DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` = 200003;
 INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200003, 16368 ,0), (200003, 16371 ,0), (200003, 16372 ,0), (200003, 16373 ,0), (200003, 16374 ,0),
 (200003, 16375 ,0), (200003, 16376 ,0), (200003, 16377 ,0), (200003, 16378 ,0), (200003, 16379 ,0),
@@ -73,7 +84,6 @@ INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES
 (200003, 28072 ,0), (200003, 28073 ,0);
 
 /* Add correct amount of grimoires to Demon Trainers */
-DELETE FROM `ipp_pet_npc_vendor` WHERE `entry` IN (5520, 5749, 5750, 5753, 5815, 6027, 6328, 6373, 6374, 6376, 6382, 12776, 12807, 15494, 16267, 16649, 23535);
 INSERT INTO `ipp_pet_npc_vendor` (`entry`, `item`, `VerifiedBuild`) VALUES 
  (5520, -200001 ,0), (5520, -200002 ,0), (5520, -200003 ,0),
  (5749, -200001 ,0),

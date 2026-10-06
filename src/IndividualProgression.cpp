@@ -1183,49 +1183,50 @@ private:
     }
 
     // hunter_pet_trainers.sql and warlock_pet_trainers.sql keep their data in ipp_pet_* tables. It is written
-    // to the core tables here, before they are loaded, only while the feature is on; the core values it
-    // replaces are kept in ipp_pet_backup_* and put back when the feature is turned off, so that with the
-    // feature off pets, demon trainers and grimoires behave as in AzerothCore.
+    // to the core tables here, before they are loaded, only while the feature is on, so that with the feature
+    // off pets, demon trainers and grimoires behave as in AzerothCore. For each core table:
+    //   ipp_pet_<x>          what the module wants written; the SQL file replaces it on every module update
+    //   ipp_pet_applied_<x>  what this step wrote last
+    //   ipp_pet_backup_<x>   the core values it replaced
+    // Undoing goes by what was written, not by the current ipp_pet_<x>, so a module update that changes or
+    // drops rows still gets the core values back: a re-apply restores the rows that were dropped, and the
+    // restore after turning the feature off covers everything. A core row changed since by something else
+    // (e.g. an AzerothCore update) keeps its new value; the next apply backs that value up instead.
     struct PetDatabaseFeature
     {
         char const* name;
-        std::vector<char const*> backup;  // first apply only: save the core rows about to be replaced
+        std::vector<char const*> seed;    // applied by a version without ipp_pet_applied_*: that wrote ipp_pet_<x>
         std::vector<char const*> apply;   // every startup while on
         std::vector<char const*> restore; // first startup after turning it off
-        std::vector<char const*> clear;   // after restore
     };
 
     static void ApplyPetDatabaseFeature(PetDatabaseFeature const& feature, bool on)
     {
         bool applied = false;
-        if (QueryResult result = WorldDatabase.Query("SELECT `applied` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name))
+        uint32 commitToken = 0;
+        if (QueryResult result = WorldDatabase.Query("SELECT `applied`, `commit_token` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name))
+        {
             applied = (*result)[0].Get<uint8>() != 0;
+            commitToken = (*result)[1].Get<uint32>();
+        }
 
         if (!on && !applied)
             return;
 
         auto trans = WorldDatabase.BeginTransaction();
-        if (on)
-        {
-            if (!applied)
-                for (char const* sql : feature.backup)
-                    trans->Append(sql);
-            for (char const* sql : feature.apply)
+        if (applied)
+            for (char const* sql : feature.seed)
                 trans->Append(sql);
-        }
-        else
-        {
-            for (char const* sql : feature.restore)
-                trans->Append(sql);
-            for (char const* sql : feature.clear)
-                trans->Append(sql);
-        }
-        trans->Append("REPLACE INTO `ipp_pet_state` (`feature`, `applied`) VALUES ('{}', {})", feature.name, on ? 1 : 0);
+        for (char const* sql : on ? feature.apply : feature.restore)
+            trans->Append(sql);
+        trans->Append("REPLACE INTO `ipp_pet_state` (`feature`, `applied`, `commit_token`) VALUES ('{}', {}, {})",
+            feature.name, on ? 1 : 0, commitToken + 1);
         WorldDatabase.DirectCommitTransaction(trans);
 
-        // DirectCommitTransaction rolls back and only logs on failure; the state row tells whether it went through.
-        QueryResult result = WorldDatabase.Query("SELECT `applied` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
-        if (!result || ((*result)[0].Get<uint8>() != 0) != on)
+        // DirectCommitTransaction rolls back and only logs on failure. The token changes only if this transaction
+        // went through, also when a re-apply leaves `applied` as it was.
+        QueryResult result = WorldDatabase.Query("SELECT `commit_token` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
+        if (!result || (*result)[0].Get<uint32>() != commitToken + 1)
         {
             LOG_ERROR("module", "IndividualProgression: writing the {} pet data failed, see the SQL errors above", feature.name);
             return;
@@ -1242,28 +1243,51 @@ private:
             return;
         }
 
+        // Per table the apply steps are: put back the core rows of keys no longer in ipp_pet_<x> (where they
+        // still hold what was written) and forget them; back up the core rows about to be replaced that are not
+        // ours; write ipp_pet_<x>; record it as written.
         static PetDatabaseFeature const hunter
         {
             "hunter",
             {
-                "DELETE FROM `ipp_pet_backup_spell_data_id`",
-                "INSERT INTO `ipp_pet_backup_spell_data_id` (`entry`, `PetSpellDataId`) SELECT ct.`entry`, ct.`PetSpellDataId` FROM `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry`",
-                "DELETE FROM `ipp_pet_backup_creaturespelldata`",
-                "INSERT INTO `ipp_pet_backup_creaturespelldata` SELECT c.* FROM `creaturespelldata_dbc` c JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = c.`ID`",
+                "INSERT INTO `ipp_pet_applied_spell_data_id` SELECT * FROM `ipp_pet_spell_data_id` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_spell_data_id`)",
+                "INSERT INTO `ipp_pet_applied_creaturespelldata` SELECT * FROM `ipp_pet_creaturespelldata` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_creaturespelldata`)",
             },
             {
+                // creature_template.PetSpellDataId
+                "UPDATE `creature_template` ct JOIN `ipp_pet_applied_spell_data_id` a ON a.`entry` = ct.`entry` JOIN `ipp_pet_backup_spell_data_id` b ON b.`entry` = a.`entry` "
+                    "LEFT JOIN `ipp_pet_spell_data_id` m ON m.`entry` = a.`entry` SET ct.`PetSpellDataId` = b.`PetSpellDataId` WHERE m.`entry` IS NULL AND ct.`PetSpellDataId` = a.`PetSpellDataId`",
+                "DELETE b FROM `ipp_pet_backup_spell_data_id` b LEFT JOIN `ipp_pet_spell_data_id` m ON m.`entry` = b.`entry` WHERE m.`entry` IS NULL",
+                "REPLACE INTO `ipp_pet_backup_spell_data_id` (`entry`, `PetSpellDataId`) SELECT ct.`entry`, ct.`PetSpellDataId` FROM `creature_template` ct "
+                    "JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry` LEFT JOIN `ipp_pet_applied_spell_data_id` a ON a.`entry` = ct.`entry` "
+                    "WHERE a.`entry` IS NULL OR ct.`PetSpellDataId` <> a.`PetSpellDataId`",
                 "UPDATE `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry` SET ct.`PetSpellDataId` = m.`PetSpellDataId`",
+                "DELETE FROM `ipp_pet_applied_spell_data_id`",
+                "INSERT INTO `ipp_pet_applied_spell_data_id` SELECT * FROM `ipp_pet_spell_data_id`",
+                // creaturespelldata_dbc
+                "DELETE c FROM `creaturespelldata_dbc` c JOIN `ipp_pet_applied_creaturespelldata` a ON a.`ID` = c.`ID` LEFT JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = a.`ID` "
+                    "WHERE m.`ID` IS NULL AND (c.`Spells_1`, c.`Spells_2`, c.`Spells_3`, c.`Spells_4`, c.`Availability_1`, c.`Availability_2`, c.`Availability_3`, c.`Availability_4`) "
+                    "= (a.`Spells_1`, a.`Spells_2`, a.`Spells_3`, a.`Spells_4`, a.`Availability_1`, a.`Availability_2`, a.`Availability_3`, a.`Availability_4`)",
+                "INSERT IGNORE INTO `creaturespelldata_dbc` SELECT b.* FROM `ipp_pet_backup_creaturespelldata` b LEFT JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = b.`ID` WHERE m.`ID` IS NULL",
+                "DELETE b FROM `ipp_pet_backup_creaturespelldata` b LEFT JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = b.`ID` WHERE m.`ID` IS NULL",
+                "REPLACE INTO `ipp_pet_backup_creaturespelldata` SELECT c.* FROM `creaturespelldata_dbc` c JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = c.`ID` "
+                    "LEFT JOIN `ipp_pet_applied_creaturespelldata` a ON a.`ID` = c.`ID` WHERE a.`ID` IS NULL "
+                    "OR (c.`Spells_1`, c.`Spells_2`, c.`Spells_3`, c.`Spells_4`, c.`Availability_1`, c.`Availability_2`, c.`Availability_3`, c.`Availability_4`) "
+                    "<> (a.`Spells_1`, a.`Spells_2`, a.`Spells_3`, a.`Spells_4`, a.`Availability_1`, a.`Availability_2`, a.`Availability_3`, a.`Availability_4`)",
                 "REPLACE INTO `creaturespelldata_dbc` SELECT * FROM `ipp_pet_creaturespelldata`",
+                "DELETE FROM `ipp_pet_applied_creaturespelldata`",
+                "INSERT INTO `ipp_pet_applied_creaturespelldata` SELECT * FROM `ipp_pet_creaturespelldata`",
             },
             {
-                // A row changed since by something else (e.g. an AzerothCore update) keeps its new value.
-                "UPDATE `creature_template` ct JOIN `ipp_pet_spell_data_id` m ON m.`entry` = ct.`entry` JOIN `ipp_pet_backup_spell_data_id` b ON b.`entry` = ct.`entry` "
-                    "SET ct.`PetSpellDataId` = b.`PetSpellDataId` WHERE ct.`PetSpellDataId` = m.`PetSpellDataId`",
-                "DELETE c FROM `creaturespelldata_dbc` c JOIN `ipp_pet_creaturespelldata` m ON m.`ID` = c.`ID`",
+                "UPDATE `creature_template` ct JOIN `ipp_pet_applied_spell_data_id` a ON a.`entry` = ct.`entry` JOIN `ipp_pet_backup_spell_data_id` b ON b.`entry` = a.`entry` "
+                    "SET ct.`PetSpellDataId` = b.`PetSpellDataId` WHERE ct.`PetSpellDataId` = a.`PetSpellDataId`",
+                "DELETE c FROM `creaturespelldata_dbc` c JOIN `ipp_pet_applied_creaturespelldata` a ON a.`ID` = c.`ID` "
+                    "WHERE (c.`Spells_1`, c.`Spells_2`, c.`Spells_3`, c.`Spells_4`, c.`Availability_1`, c.`Availability_2`, c.`Availability_3`, c.`Availability_4`) "
+                    "= (a.`Spells_1`, a.`Spells_2`, a.`Spells_3`, a.`Spells_4`, a.`Availability_1`, a.`Availability_2`, a.`Availability_3`, a.`Availability_4`)",
                 "INSERT IGNORE INTO `creaturespelldata_dbc` SELECT * FROM `ipp_pet_backup_creaturespelldata`",
-            },
-            {
+                "DELETE FROM `ipp_pet_applied_spell_data_id`",
                 "DELETE FROM `ipp_pet_backup_spell_data_id`",
+                "DELETE FROM `ipp_pet_applied_creaturespelldata`",
                 "DELETE FROM `ipp_pet_backup_creaturespelldata`",
             }
         };
@@ -1272,33 +1296,61 @@ private:
         {
             "warlock",
             {
-                "DELETE FROM `ipp_pet_backup_trainer_npcflag`",
-                "INSERT INTO `ipp_pet_backup_trainer_npcflag` (`entry`, `npcflag`) SELECT ct.`entry`, ct.`npcflag` FROM `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry`",
-                "DELETE FROM `ipp_pet_backup_npc_vendor`",
-                "INSERT INTO `ipp_pet_backup_npc_vendor` SELECT v.* FROM `npc_vendor` v WHERE v.`entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
-                "DELETE FROM `ipp_pet_backup_grimoire`",
-                "INSERT INTO `ipp_pet_backup_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) "
-                    "SELECT it.`entry`, it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description` FROM `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry`",
+                "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_trainer_npcflag`)",
+                "INSERT INTO `ipp_pet_applied_npc_vendor` SELECT * FROM `ipp_pet_npc_vendor` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_npc_vendor`)",
+                "INSERT INTO `ipp_pet_applied_grimoire` SELECT * FROM `ipp_pet_grimoire` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_grimoire`)",
             },
             {
+                // creature_template.npcflag
+                "UPDATE `creature_template` ct JOIN `ipp_pet_applied_trainer_npcflag` a ON a.`entry` = ct.`entry` JOIN `ipp_pet_backup_trainer_npcflag` b ON b.`entry` = a.`entry` "
+                    "LEFT JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = a.`entry` SET ct.`npcflag` = b.`npcflag` WHERE m.`entry` IS NULL AND ct.`npcflag` = a.`npcflag`",
+                "DELETE b FROM `ipp_pet_backup_trainer_npcflag` b LEFT JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = b.`entry` WHERE m.`entry` IS NULL",
+                "REPLACE INTO `ipp_pet_backup_trainer_npcflag` (`entry`, `npcflag`) SELECT ct.`entry`, ct.`npcflag` FROM `creature_template` ct "
+                    "JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry` LEFT JOIN `ipp_pet_applied_trainer_npcflag` a ON a.`entry` = ct.`entry` "
+                    "WHERE a.`entry` IS NULL OR ct.`npcflag` <> a.`npcflag`",
                 "UPDATE `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry` SET ct.`npcflag` = m.`npcflag`",
+                "DELETE FROM `ipp_pet_applied_trainer_npcflag`",
+                "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag`",
+                // npc_vendor: the module replaces the whole list of each vendor in ipp_pet_npc_vendor
+                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` "
+                    "WHERE v.`entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "INSERT IGNORE INTO `npc_vendor` SELECT * FROM `ipp_pet_backup_npc_vendor` WHERE `entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "DELETE FROM `ipp_pet_backup_npc_vendor` WHERE `entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "INSERT IGNORE INTO `ipp_pet_backup_npc_vendor` SELECT v.* FROM `npc_vendor` v "
+                    "LEFT JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` "
+                    "WHERE v.`entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`) AND a.`entry` IS NULL",
                 "DELETE FROM `npc_vendor` WHERE `entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
                 "INSERT INTO `npc_vendor` SELECT * FROM `ipp_pet_npc_vendor`",
+                "DELETE FROM `ipp_pet_applied_npc_vendor`",
+                "INSERT INTO `ipp_pet_applied_npc_vendor` SELECT * FROM `ipp_pet_npc_vendor`",
+                // item_template: the grimoires' learn spells
+                "UPDATE `item_template` it JOIN `ipp_pet_applied_grimoire` a ON a.`entry` = it.`entry` JOIN `ipp_pet_backup_grimoire` b ON b.`entry` = a.`entry` "
+                    "LEFT JOIN `ipp_pet_grimoire` m ON m.`entry` = a.`entry` "
+                    "SET it.`spellid_1` = b.`spellid_1`, it.`spellid_2` = b.`spellid_2`, it.`spelltrigger_2` = b.`spelltrigger_2`, it.`description` = b.`description` "
+                    "WHERE m.`entry` IS NULL AND (it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description`) = (a.`spellid_1`, a.`spellid_2`, a.`spelltrigger_2`, a.`description`)",
+                "DELETE b FROM `ipp_pet_backup_grimoire` b LEFT JOIN `ipp_pet_grimoire` m ON m.`entry` = b.`entry` WHERE m.`entry` IS NULL",
+                "REPLACE INTO `ipp_pet_backup_grimoire` (`entry`, `spellid_1`, `spellid_2`, `spelltrigger_2`, `description`) "
+                    "SELECT it.`entry`, it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description` FROM `item_template` it "
+                    "JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry` LEFT JOIN `ipp_pet_applied_grimoire` a ON a.`entry` = it.`entry` "
+                    "WHERE a.`entry` IS NULL OR (it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description`) <> (a.`spellid_1`, a.`spellid_2`, a.`spelltrigger_2`, a.`description`)",
                 "UPDATE `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry` "
                     "SET it.`spellid_1` = m.`spellid_1`, it.`spellid_2` = m.`spellid_2`, it.`spelltrigger_2` = m.`spelltrigger_2`, it.`description` = m.`description`",
+                "DELETE FROM `ipp_pet_applied_grimoire`",
+                "INSERT INTO `ipp_pet_applied_grimoire` SELECT * FROM `ipp_pet_grimoire`",
             },
             {
-                "UPDATE `creature_template` ct JOIN `ipp_pet_trainer_npcflag` m ON m.`entry` = ct.`entry` JOIN `ipp_pet_backup_trainer_npcflag` b ON b.`entry` = ct.`entry` "
-                    "SET ct.`npcflag` = b.`npcflag` WHERE ct.`npcflag` = m.`npcflag`",
-                "DELETE FROM `npc_vendor` WHERE `entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
+                "UPDATE `creature_template` ct JOIN `ipp_pet_applied_trainer_npcflag` a ON a.`entry` = ct.`entry` JOIN `ipp_pet_backup_trainer_npcflag` b ON b.`entry` = a.`entry` "
+                    "SET ct.`npcflag` = b.`npcflag` WHERE ct.`npcflag` = a.`npcflag`",
+                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost`",
                 "INSERT IGNORE INTO `npc_vendor` SELECT * FROM `ipp_pet_backup_npc_vendor`",
-                "UPDATE `item_template` it JOIN `ipp_pet_grimoire` m ON m.`entry` = it.`entry` JOIN `ipp_pet_backup_grimoire` b ON b.`entry` = it.`entry` "
+                "UPDATE `item_template` it JOIN `ipp_pet_applied_grimoire` a ON a.`entry` = it.`entry` JOIN `ipp_pet_backup_grimoire` b ON b.`entry` = a.`entry` "
                     "SET it.`spellid_1` = b.`spellid_1`, it.`spellid_2` = b.`spellid_2`, it.`spelltrigger_2` = b.`spelltrigger_2`, it.`description` = b.`description` "
-                    "WHERE it.`spellid_1` = m.`spellid_1` AND it.`spellid_2` = m.`spellid_2` AND it.`spelltrigger_2` = m.`spelltrigger_2` AND it.`description` = m.`description`",
-            },
-            {
+                    "WHERE (it.`spellid_1`, it.`spellid_2`, it.`spelltrigger_2`, it.`description`) = (a.`spellid_1`, a.`spellid_2`, a.`spelltrigger_2`, a.`description`)",
+                "DELETE FROM `ipp_pet_applied_trainer_npcflag`",
                 "DELETE FROM `ipp_pet_backup_trainer_npcflag`",
+                "DELETE FROM `ipp_pet_applied_npc_vendor`",
                 "DELETE FROM `ipp_pet_backup_npc_vendor`",
+                "DELETE FROM `ipp_pet_applied_grimoire`",
                 "DELETE FROM `ipp_pet_backup_grimoire`",
             }
         };

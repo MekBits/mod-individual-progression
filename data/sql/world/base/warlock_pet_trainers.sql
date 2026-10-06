@@ -13,15 +13,25 @@
 CREATE TABLE IF NOT EXISTS `ipp_pet_state` (
     `feature` varchar(16) NOT NULL,
     `applied` tinyint unsigned NOT NULL DEFAULT 0,
+    `commit_token` int unsigned NOT NULL DEFAULT 0,
     PRIMARY KEY (`feature`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- commit_token was added later; a table created before that gets it here.
+SET @ipp_pet_ddl = IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()
+    AND TABLE_NAME = 'ipp_pet_state' AND COLUMN_NAME = 'commit_token') = 0,
+    'ALTER TABLE `ipp_pet_state` ADD COLUMN `commit_token` int unsigned NOT NULL DEFAULT 0', 'DO 0');
+PREPARE ipp_pet_stmt FROM @ipp_pet_ddl;
+EXECUTE ipp_pet_stmt;
+DEALLOCATE PREPARE ipp_pet_stmt;
 CREATE TABLE IF NOT EXISTS `ipp_pet_trainer_npcflag` (
     `entry` int unsigned NOT NULL,
     `npcflag` int unsigned NOT NULL,
     PRIMARY KEY (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_trainer_npcflag` LIKE `ipp_pet_trainer_npcflag`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_trainer_npcflag` LIKE `ipp_pet_trainer_npcflag`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_npc_vendor` LIKE `npc_vendor`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_npc_vendor` LIKE `npc_vendor`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_npc_vendor` LIKE `npc_vendor`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_grimoire` (
     `entry` int unsigned NOT NULL,
@@ -31,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `ipp_pet_grimoire` (
     `description` varchar(255) NOT NULL,
     PRIMARY KEY (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_grimoire` LIKE `ipp_pet_grimoire`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_grimoire` LIKE `ipp_pet_grimoire`;
 
 /* Label all vanilla warlock demon trainers as vendors  - npcflag was 2, set to 130 */

@@ -242,13 +242,22 @@ INSERT INTO `spell_dbc` (`ID`, `Category`, `DispelType`, `Mechanic`, `Attributes
 CREATE TABLE IF NOT EXISTS `ipp_pet_state` (
     `feature` varchar(16) NOT NULL,
     `applied` tinyint unsigned NOT NULL DEFAULT 0,
+    `commit_token` int unsigned NOT NULL DEFAULT 0,
     PRIMARY KEY (`feature`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- commit_token was added later; a table created before that gets it here.
+SET @ipp_pet_ddl = IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()
+    AND TABLE_NAME = 'ipp_pet_state' AND COLUMN_NAME = 'commit_token') = 0,
+    'ALTER TABLE `ipp_pet_state` ADD COLUMN `commit_token` int unsigned NOT NULL DEFAULT 0', 'DO 0');
+PREPARE ipp_pet_stmt FROM @ipp_pet_ddl;
+EXECUTE ipp_pet_stmt;
+DEALLOCATE PREPARE ipp_pet_stmt;
 CREATE TABLE IF NOT EXISTS `ipp_pet_spell_data_id` (
     `entry` int unsigned NOT NULL,
     `PetSpellDataId` int unsigned NOT NULL,
     PRIMARY KEY (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_spell_data_id` LIKE `ipp_pet_spell_data_id`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_spell_data_id` LIKE `ipp_pet_spell_data_id`;
 
 -- During Vanilla/TBC some beasts had no PetSpellDataId (0); the others get their Vanilla/TBC value.
@@ -1071,6 +1080,7 @@ INSERT INTO `ipp_pet_spell_data_id` (`entry`, `PetSpellDataId`) VALUES
 (27946, 12993);
 
 CREATE TABLE IF NOT EXISTS `ipp_pet_creaturespelldata` LIKE `creaturespelldata_dbc`;
+CREATE TABLE IF NOT EXISTS `ipp_pet_applied_creaturespelldata` LIKE `creaturespelldata_dbc`;
 CREATE TABLE IF NOT EXISTS `ipp_pet_backup_creaturespelldata` LIKE `creaturespelldata_dbc`;
 DELETE FROM `ipp_pet_creaturespelldata`;
 INSERT INTO `ipp_pet_creaturespelldata` (`ID`, `Spells_1`, `Spells_2`, `Spells_3`, `Spells_4`, 

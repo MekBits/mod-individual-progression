@@ -3640,8 +3640,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
    defender with a marker's entry finds itself and turns visible and hostile at every graveyard.
    Level and health step up with the core's tiers. Damage, armor, the PvP flag and the random movement stay those of
    the base defender of the same bracket (the core's values would cut damage from 2.8/4/6 to 1, and its Horde
-   guardians stand still). No on-kill reputation, like 112050/112053 (the core's rows for 13326/13328 both credit
-   Stormpike Guard). */
+   guardians stand still). Their kill reputation is set in KILL REPUTATION below. */
 DELETE FROM `creature_template` WHERE `entry` IN
 (113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
 DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
@@ -3694,6 +3693,26 @@ UPDATE `ipp_copy` SET `entryorguid` = 113328; INSERT INTO `smart_scripts` SELECT
 UPDATE `ipp_copy` SET `entryorguid` = 113332; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
 UPDATE `ipp_copy` SET `entryorguid` = 113421; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
 DROP TEMPORARY TABLE `ipp_copy`;
+
+
+/* KILL REPUTATION
+   Killing a stationary guard gives the killer's side 5 reputation, up to Revered: Frostwolf Clan (729) for Alliance
+   guards, Stormpike Guard (730) for Horde ones, at every tier and in every bracket. The core looks the reward up by
+   the bracket's template, and its rows only cover some 51-60 tiers (13324/13326 with the wrong faction), so an
+   upgrade or a higher bracket paid nothing. The values are the core's for 12050/12053/12051/12127. Wowhead lists
+   5 for every graveyard tier and for the base Guardsman and Legionnaire (Classic), and in TBC and Wrath; it lists
+   nothing for the upgraded Guardsmen and Legionnaires, which are seldom killed, so they follow their base. Its caps
+   vary (Friendly, Honored); the core's Revered is kept. Patrols (Sentinels, Warriors) give none, in the core and on
+   Wowhead. */
+DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN
+(112050, 122690, 132091, 113326, 122714, 132062, 113331, 122588, 132125, 113422, 122608, 131932, 12127, 22666, 32094, 13324, 22687, 32064, 13333, 22719, 32127, 13424, 22533, 31934,
+112053, 122674, 131981, 113328, 122715, 132063, 113332, 122589, 132126, 113421, 122609, 131933, 12051, 22665, 31983, 13329, 22688, 32069, 13334, 22720, 32132, 13425, 22538, 31939);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 729, 6, 5 FROM `creature_template` WHERE `entry` IN
+(112050, 122690, 132091, 113326, 122714, 132062, 113331, 122588, 132125, 113422, 122608, 131932, 12127, 22666, 32094, 13324, 22687, 32064, 13333, 22719, 32127, 13424, 22533, 31934);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 730, 6, 5 FROM `creature_template` WHERE `entry` IN
+(112053, 122674, 131981, 113328, 122715, 132063, 113332, 122589, 132126, 113421, 122609, 131933, 12051, 22665, 31983, 13329, 22688, 32069, 13334, 22720, 32132, 13425, 22538, 31939);
 
 
 /* MISC */

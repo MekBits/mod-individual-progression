@@ -1195,26 +1195,29 @@ private:
     struct PetDatabaseFeature
     {
         char const* name;
-        std::vector<char const*> seed;    // applied by a version without ipp_pet_applied_*: that wrote ipp_pet_<x>
+        std::vector<char const*> seed;    // applied by the version before ipp_pet_applied_*: that wrote ipp_pet_<x>
         std::vector<char const*> apply;   // every startup while on
         std::vector<char const*> restore; // first startup after turning it off
     };
 
     static void ApplyPetDatabaseFeature(PetDatabaseFeature const& feature, bool on)
     {
-        bool applied = false;
-        uint32 commitToken = 0;
-        if (QueryResult result = WorldDatabase.Query("SELECT `applied`, `commit_token` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name))
+        // Always one row unless the query fails, e.g. when the SQL files that add commit_token have not run yet.
+        QueryResult state = WorldDatabase.Query("SELECT IFNULL(MAX(`applied`), 0), IFNULL(MAX(`commit_token`), 0) FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
+        if (!state)
         {
-            applied = (*result)[0].Get<uint8>() != 0;
-            commitToken = (*result)[1].Get<uint32>();
+            LOG_ERROR("module", "IndividualProgression: reading ipp_pet_state failed, {} pet data left as it is (are the module's world SQL files applied?)", feature.name);
+            return;
         }
+
+        bool applied = (*state)[0].Get<uint8>() != 0;
+        uint32 commitToken = (*state)[1].Get<uint32>();
 
         if (!on && !applied)
             return;
 
         auto trans = WorldDatabase.BeginTransaction();
-        if (applied)
+        if (applied && commitToken == 0)
             for (char const* sql : feature.seed)
                 trans->Append(sql);
         for (char const* sql : on ? feature.apply : feature.restore)
@@ -1224,7 +1227,8 @@ private:
         WorldDatabase.DirectCommitTransaction(trans);
 
         // DirectCommitTransaction rolls back and only logs on failure. The token changes only if this transaction
-        // went through, also when a re-apply leaves `applied` as it was.
+        // went through, also when a re-apply leaves `applied` as it was. (Not if the connection drops halfway:
+        // MySQLConnection reconnects and runs the remaining statements in autocommit, everywhere in AzerothCore.)
         QueryResult result = WorldDatabase.Query("SELECT `commit_token` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
         if (!result || (*result)[0].Get<uint32>() != commitToken + 1)
         {
@@ -1250,8 +1254,10 @@ private:
         {
             "hunter",
             {
-                "INSERT INTO `ipp_pet_applied_spell_data_id` SELECT * FROM `ipp_pet_spell_data_id` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_spell_data_id`)",
-                "INSERT INTO `ipp_pet_applied_creaturespelldata` SELECT * FROM `ipp_pet_creaturespelldata` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_creaturespelldata`)",
+                "DELETE FROM `ipp_pet_applied_spell_data_id`",
+                "INSERT INTO `ipp_pet_applied_spell_data_id` SELECT * FROM `ipp_pet_spell_data_id`",
+                "DELETE FROM `ipp_pet_applied_creaturespelldata`",
+                "INSERT INTO `ipp_pet_applied_creaturespelldata` SELECT * FROM `ipp_pet_creaturespelldata`",
             },
             {
                 // creature_template.PetSpellDataId
@@ -1296,9 +1302,12 @@ private:
         {
             "warlock",
             {
-                "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_trainer_npcflag`)",
-                "INSERT INTO `ipp_pet_applied_npc_vendor` SELECT * FROM `ipp_pet_npc_vendor` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_npc_vendor`)",
-                "INSERT INTO `ipp_pet_applied_grimoire` SELECT * FROM `ipp_pet_grimoire` WHERE NOT EXISTS (SELECT 1 FROM `ipp_pet_applied_grimoire`)",
+                "DELETE FROM `ipp_pet_applied_trainer_npcflag`",
+                "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag`",
+                "DELETE FROM `ipp_pet_applied_npc_vendor`",
+                "INSERT INTO `ipp_pet_applied_npc_vendor` SELECT * FROM `ipp_pet_npc_vendor`",
+                "DELETE FROM `ipp_pet_applied_grimoire`",
+                "INSERT INTO `ipp_pet_applied_grimoire` SELECT * FROM `ipp_pet_grimoire`",
             },
             {
                 // creature_template.npcflag
@@ -1312,12 +1321,12 @@ private:
                 "DELETE FROM `ipp_pet_applied_trainer_npcflag`",
                 "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag`",
                 // npc_vendor: the module replaces the whole list of each vendor in ipp_pet_npc_vendor
-                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` "
+                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` AND a.`slot` = v.`slot` AND a.`maxcount` = v.`maxcount` AND a.`incrtime` = v.`incrtime` AND a.`VerifiedBuild` <=> v.`VerifiedBuild` "
                     "WHERE v.`entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
                 "INSERT IGNORE INTO `npc_vendor` SELECT * FROM `ipp_pet_backup_npc_vendor` WHERE `entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
                 "DELETE FROM `ipp_pet_backup_npc_vendor` WHERE `entry` NOT IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
-                "INSERT IGNORE INTO `ipp_pet_backup_npc_vendor` SELECT v.* FROM `npc_vendor` v "
-                    "LEFT JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` "
+                "REPLACE INTO `ipp_pet_backup_npc_vendor` SELECT v.* FROM `npc_vendor` v "
+                    "LEFT JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` AND a.`slot` = v.`slot` AND a.`maxcount` = v.`maxcount` AND a.`incrtime` = v.`incrtime` AND a.`VerifiedBuild` <=> v.`VerifiedBuild` "
                     "WHERE v.`entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`) AND a.`entry` IS NULL",
                 "DELETE FROM `npc_vendor` WHERE `entry` IN (SELECT `entry` FROM `ipp_pet_npc_vendor`)",
                 "INSERT INTO `npc_vendor` SELECT * FROM `ipp_pet_npc_vendor`",
@@ -1341,7 +1350,7 @@ private:
             {
                 "UPDATE `creature_template` ct JOIN `ipp_pet_applied_trainer_npcflag` a ON a.`entry` = ct.`entry` JOIN `ipp_pet_backup_trainer_npcflag` b ON b.`entry` = a.`entry` "
                     "SET ct.`npcflag` = b.`npcflag` WHERE ct.`npcflag` = a.`npcflag`",
-                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost`",
+                "DELETE v FROM `npc_vendor` v JOIN `ipp_pet_applied_npc_vendor` a ON a.`entry` = v.`entry` AND a.`item` = v.`item` AND a.`ExtendedCost` = v.`ExtendedCost` AND a.`slot` = v.`slot` AND a.`maxcount` = v.`maxcount` AND a.`incrtime` = v.`incrtime` AND a.`VerifiedBuild` <=> v.`VerifiedBuild`",
                 "INSERT IGNORE INTO `npc_vendor` SELECT * FROM `ipp_pet_backup_npc_vendor`",
                 "UPDATE `item_template` it JOIN `ipp_pet_applied_grimoire` a ON a.`entry` = it.`entry` JOIN `ipp_pet_backup_grimoire` b ON b.`entry` = a.`entry` "
                     "SET it.`spellid_1` = b.`spellid_1`, it.`spellid_2` = b.`spellid_2`, it.`spelltrigger_2` = b.`spelltrigger_2`, it.`description` = b.`description` "

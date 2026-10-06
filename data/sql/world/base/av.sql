@@ -3640,8 +3640,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
    defender with a marker's entry finds itself and turns visible and hostile at every graveyard.
    Level and health step up with the core's tiers. Damage, armor, the PvP flag and the random movement stay those of
    the base defender of the same bracket (the core's values would cut damage from 2.8/4/6 to 1, and its Horde
-   guardians stand still). No on-kill reputation, like 112050/112053 (the core's rows for 13326/13328 both credit
-   Stormpike Guard). */
+   guardians stand still). Their kill reputation is set in KILL REPUTATION below. */
 DELETE FROM `creature_template` WHERE `entry` IN
 (113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
 DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
@@ -3694,6 +3693,42 @@ UPDATE `ipp_copy` SET `entryorguid` = 113328; INSERT INTO `smart_scripts` SELECT
 UPDATE `ipp_copy` SET `entryorguid` = 113332; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
 UPDATE `ipp_copy` SET `entryorguid` = 113421; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
 DROP TEMPORARY TABLE `ipp_copy`;
+
+
+/* KILL REPUTATION
+   The core pays kill reputation by the template the creature uses in its bracket, and its Frostwolf Clan (729) and
+   Stormpike Guard (730) rows only exist on the 51-60 templates, so in the higher brackets no AV kill paid anything.
+   Among the graveyard defenders, Guardsmen and Legionnaires only some 51-60 tiers had a row, two of them with the
+   wrong faction (13324 and the marker 13326, Alliance, with Stormpike Guard), and the module's own graveyard
+   defenders and their copies had none.
+   1. Every tier of those four chains gives the killer's side 5 up to Revered, the core's row for 12050/12127/12051/
+      12053: Frostwolf Clan for Alliance guards, Stormpike Guard for Horde ones. Wowhead (Classic) lists such a
+      reward for the base tiers and for upgraded tiers too, with caps that vary (Friendly, Honored, none shown).
+   2. Every template with a 729 or 730 reward hands the same row to its bracket templates: these guards, the tower
+      bowmen, lieutenants, commanders and the rest. Not the generals and captains (11946-11949): the battleground
+      already pays their whole team a reward for that kill in every bracket (BattlegroundAV::HandleKillUnit; 350/125
+      by default, the generals' from Battleground.Alterac.ReputationOnBossDeath, 525/185 on a holiday weekend).
+   Sentinels and Warriors keep no reward, as in the core and on Wowhead (Classic). */
+DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN
+(112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326,
+112053, 113328, 113332, 113421, 12051, 13329, 13334, 13425);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 729, 6, 5 FROM `creature_template` WHERE `entry` IN (112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 730, 6, 5 FROM `creature_template` WHERE `entry` IN (112053, 113328, 113332, 113421, 12051, 13329, 13334, 13425);
+DROP TEMPORARY TABLE IF EXISTS `ipp_av_rep`;
+CREATE TEMPORARY TABLE `ipp_av_rep` SELECT d.`entry` AS `creature_id`, r.`RewOnKillRepFaction1`, r.`RewOnKillRepFaction2`,
+    r.`MaxStanding1`, r.`IsTeamAward1`, r.`RewOnKillRepValue1`, r.`MaxStanding2`, r.`IsTeamAward2`, r.`RewOnKillRepValue2`,
+    r.`TeamDependent`
+FROM `creature_onkill_reputation` r
+JOIN `creature_template` ct ON ct.`entry` = r.`creature_id`
+JOIN `creature_template` d ON d.`entry` IN (ct.`difficulty_entry_1`, ct.`difficulty_entry_2`, ct.`difficulty_entry_3`)
+WHERE (r.`RewOnKillRepFaction1` IN (729, 730) OR r.`RewOnKillRepFaction2` IN (729, 730))
+    AND r.`creature_id` NOT IN (11946, 11947, 11948, 11949);
+REPLACE INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`,
+    `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`)
+SELECT * FROM `ipp_av_rep`;
+DROP TEMPORARY TABLE `ipp_av_rep`;
 
 
 /* MISC */

@@ -72,12 +72,12 @@ UPDATE `creature_template` SET `flags_extra` = 0 WHERE `entry` = 11980; -- remov
 UPDATE `creature_template` SET `unit_flags` = 2  WHERE `entry` = 22332; -- set not attackable
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN (11980, 22331, 22332);
--- A DB that ran Grimfeather's badbc3d version of this file lost AzerothCore's script on entry 22331 and got 7 event
--- rows instead, whose On Respawn - Set Visible Off and faction 35 make the six world spawns invisible and friendly.
--- AC's script has no On Respawn - Set Visible row, so that row marks such a DB; it gets AC's 20 rows back (base dump
--- at Playerbot f19a18799, no update since touches them). Any other DB keeps the rows it has.
+-- A DB that ran one of Grimfeather's versions of this file (5aa21f5 up to badbc3d) lost AzerothCore's script on entry
+-- 22331 and got the Zuluhed event's rows instead, which turn the six world spawns invisible and friendly or hostile on
+-- respawn. AC's script never sets visibility (action 47), so such a row marks that DB; it gets AC's 20 rows back (base
+-- dump at Playerbot f19a18799, no update since touches them). Any other DB keeps the rows it has.
 SET @ipp_22331_grimfeather = (SELECT COUNT(*) FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 22331
-    AND `event_type` = 11 AND `action_type` = 47);
+    AND `action_type` = 47);
 DROP TEMPORARY TABLE IF EXISTS `ipp_22331_ac`;
 CREATE TEMPORARY TABLE `ipp_22331_ac` LIKE `smart_scripts`;
 INSERT INTO `ipp_22331_ac` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`,
@@ -104,8 +104,11 @@ INSERT INTO `ipp_22331_ac` (`entryorguid`, `source_type`, `id`, `link`, `event_t
 (22331,0,17,18,61,0,100,512,0,0,0,0,0,0,21,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Between 0-15% Health - Enable Combat Movement (No Repeat)'),
 (22331,0,18,0,61,0,100,512,0,0,0,0,0,0,25,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (22331,0,19,0,7,0,100,1,0,0,0,0,0,0,40,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - On Evade - Set Sheath Melee (No Repeat)');
+-- one transaction: the DELETE also removes the marker, so a run stopped in between could not repair it again
+START TRANSACTION;
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 22331 AND @ipp_22331_grimfeather > 0;
 INSERT INTO `smart_scripts` SELECT * FROM `ipp_22331_ac` WHERE @ipp_22331_grimfeather > 0;
+COMMIT;
 DROP TEMPORARY TABLE `ipp_22331_ac`;
 
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (11980);
@@ -233,19 +236,20 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (13, 1, 38866, 0, 0, 31, 0, 3, 22331, 0, 0, 0, 0, "", "Set Dragonmaw Elite as target of Arcane Breath"),
 (13, 2, 38866, 0, 0, 31, 0, 3, 22331, 0, 0, 0, 0, "", "Set Dragonmaw Elite as target of Arcane Breath");
 
-DELETE FROM `creature_movement_override` WHERE `SpawnId` BETWEEN @CGUID+361 AND @CGUID+363;
+-- 351-353 held the Brood in Grimfeather's 5aa21f5 (flying, on paths 3510-3530); they are the archers now
+DELETE FROM `creature_movement_override` WHERE `SpawnId` BETWEEN @CGUID+351 AND @CGUID+363;
 INSERT INTO `creature_movement_override` (`SpawnId`, `Ground`, `Swim`, `Flight`, `Rooted`) VALUES
 (@CGUID+361, 1, 0, 2, 0),
 (@CGUID+362, 1, 0, 2, 0),
 (@CGUID+363, 1, 0, 2, 0);
 
-DELETE FROM `creature_addon` WHERE `guid` IN (@CGUID+361, @CGUID+362, @CGUID+363);
+DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID+351 AND @CGUID+363;
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES
 (@CGUID+361, @WPID+3610, 0, 0, 0, 0, 0, NULL),
 (@CGUID+362, @WPID+3620, 0, 0, 0, 0, 0, NULL),
 (@CGUID+363, @WPID+3630, 0, 0, 0, 0, 0, NULL);
 
-DELETE FROM `waypoint_data` WHERE `id` IN (@WPID+3610, @WPID+3620, @WPID+3630);
+DELETE FROM `waypoint_data` WHERE `id` IN (@WPID+3510, @WPID+3520, @WPID+3530, @WPID+3610, @WPID+3620, @WPID+3630);
 INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES 
 --
 (@WPID+3610, 1, -4086.10, 298.374, 141.729, 0, 5000, 1, 0, 100, 0),

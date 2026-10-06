@@ -62,50 +62,56 @@ namespace
         return UpgradeReady(state, team) ? texts.ready[tier] : texts.notReady[tier];
     }
 
-    // Upgrade every DB-spawned defender of `team` to `newTier`, summons are not effected.
-    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings them back already upgraded. 
+    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings them back already upgraded.
+    void UpgradeDefender(Creature* defender, std::array<AVDefenderChain, 3> const& chains, uint8 newTier)
+    {
+        // Roaming units keep their tier.
+        if (defender->GetFormation() || defender->GetDefaultMovementType() == WAYPOINT_MOTION_TYPE)
+            return;
+
+        for (AVDefenderChain const& chain : chains)
+        {
+            if (!chain.entries[0]) // placeholder chain, not filled in yet
+                continue;
+
+            bool isLowerTier = false;
+            for (uint8 tier = 0; tier < newTier; ++tier)
+            {
+                if (defender->GetEntry() == chain.entries[tier])
+                {
+                    isLowerTier = true;
+                    break;
+                }
+            }
+
+            if (!isLowerTier)
+                continue;
+
+            defender->SetOriginalEntry(chain.entries[newTier]);
+            if (chain.upgradeAliveImmediately && defender->IsAlive())
+            {
+                uint16 currentFaction = defender->GetFaction();
+                defender->UpdateEntry(chain.entries[newTier], defender->GetCreatureData(), true);
+                defender->SetFaction(currentFaction);
+            }
+            return;
+        }
+    }
+
+    // Upgrade every defender of `team` to `newTier`: the DB spawns and the core's static guards (BattlegroundAV's
+    // static table, which holds the stationary Horde Legionnaires). Summons are not affected.
     void UpgradeDefenders(Battleground* bg, TeamId team, uint8 newTier)
     {
         auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+        Map* map = bg->GetBgMap();
 
-        for (auto const& pair : bg->GetBgMap()->GetCreatureBySpawnIdStore())
-        {
-            Creature* defender = pair.second;
-            if (!defender)
-                continue;
+        for (auto const& pair : map->GetCreatureBySpawnIdStore())
+            if (Creature* defender = pair.second)
+                UpgradeDefender(defender, chains, newTier);
 
-            // Roaming units keep their tier.
-            if (defender->GetFormation() || defender->GetDefaultMovementType() == WAYPOINT_MOTION_TYPE)
-                continue;
-
-            for (AVDefenderChain const& chain : chains)
-            {
-                if (!chain.entries[0]) // placeholder chain, not filled in yet
-                    continue;
-
-                bool isLowerTier = false;
-                for (uint8 tier = 0; tier < newTier; ++tier)
-                {
-                    if (defender->GetEntry() == chain.entries[tier])
-                    {
-                        isLowerTier = true;
-                        break;
-                    }
-                }
-
-                if (!isLowerTier)
-                    continue;
-
-                defender->SetOriginalEntry(chain.entries[newTier]);
-                if (chain.upgradeAliveImmediately && defender->IsAlive())
-                {
-                    uint16 currentFaction = defender->GetFaction();
-                    defender->UpdateEntry(chain.entries[newTier], defender->GetCreatureData(), true);
-                    defender->SetFaction(currentFaction);
-                }
-                break;
-            }
-        }
+        for (ObjectGuid const& guid : bg->BgCreatures)
+            if (Creature* defender = map->GetCreature(guid))
+                UpgradeDefender(defender, chains, newTier);
     }
 
     void HandleBossTurnIn(Player* player, AVQuestState& state, TeamId team, uint32 points)

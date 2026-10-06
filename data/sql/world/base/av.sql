@@ -3633,6 +3633,65 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (14284, 0, 3, 0, 0, 0, 100, 0, 3000, 5000, 5000, 7000, 0, 0, 11, 22591, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,      'Stormpike Battleguard - In Combat - Cast Strike');
 
 
+/* UPGRADED GRAVEYARD DEFENDERS
+   Armor scrap upgrades turn the graveyard defenders 112050/112053 into these copies of the core's Seasoned, Veteran
+   and Champion defenders (entry + 100000, brackets likewise). They must not share an entry with the core's invisible
+   markers 13326/13331/13422 and 13328/13332/13421: the defenders' NEAR_UNIT rows look for those markers, and a
+   defender with a marker's entry finds itself and turns visible and hostile at every graveyard. */
+DELETE FROM `creature_template` WHERE `entry` IN
+(113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
+DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template` WHERE `entry` IN
+(13326, 13331, 13422, 13328, 13332, 13421, 22714, 32062, 22588, 32125, 22608, 31932, 22715, 32063, 22589, 32126, 22609, 31933);
+UPDATE `ipp_copy` SET `KillCredit1` = `entry`;
+UPDATE `ipp_copy` SET `entry` = `entry` + 100000,
+    `difficulty_entry_1` = IF(`difficulty_entry_1` = 0, 0, `difficulty_entry_1` + 100000),
+    `difficulty_entry_2` = IF(`difficulty_entry_2` = 0, 0, `difficulty_entry_2` + 100000),
+    `difficulty_entry_3` = 0, `ScriptName` = '';
+UPDATE `ipp_copy` SET `AIName` = 'SmartAI' WHERE `entry` IN (113326, 113331, 113422, 113328, 113332, 113421);
+INSERT INTO `creature_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_model` WHERE `CreatureID` IN
+(113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_model` WHERE `CreatureID` IN
+(13326, 13331, 13422, 13328, 13332, 13421, 22714, 32062, 22588, 32125, 22608, 31932, 22715, 32063, 22589, 32126, 22609, 31933);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 100000;
+INSERT INTO `creature_template_model` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_equip_template` WHERE `CreatureID` IN (13326, 13331, 13422, 13328, 13332, 13421);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 100000;
+INSERT INTO `creature_equip_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_locale` WHERE `entry` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_locale` WHERE `entry` IN (13326, 13331, 13422, 13328, 13332, 13421);
+UPDATE `ipp_copy` SET `entry` = `entry` + 100000;
+INSERT INTO `creature_template_locale` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_onkill_reputation` WHERE `creature_id` IN (13326, 13331, 13422, 13328, 13332, 13421);
+UPDATE `ipp_copy` SET `creature_id` = `creature_id` + 100000;
+INSERT INTO `creature_onkill_reputation` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+-- same SmartAI as the base defender, so a respawned or reset copy behaves like it
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 112050;
+UPDATE `ipp_copy` SET `entryorguid` = 113326; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113331; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113422; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 112053;
+UPDATE `ipp_copy` SET `entryorguid` = 113328; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113332; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113421; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+
 /* MISC */
 UPDATE `creature_template` SET `name` = 'Commander Dardosh' WHERE `entry` = 13140;
 UPDATE `creature_template` SET `name` = 'Lieutenant Murp' WHERE `entry` = 13146;

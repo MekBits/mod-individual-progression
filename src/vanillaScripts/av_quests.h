@@ -145,14 +145,16 @@ uint8 constexpr AV_DEFENDER_TIER_CHAMPION = 3;
 
 // Mine units are not upgraded (vmangos 1.12; Wowpedia: "players, officers, and roaming, mine and tower units are exempt").
 // Roaming guards are skipped in UpgradeDefenders().
+// The graveyard chains use copies (entry + 100000, av.sql) of the core's upgraded defenders: the core spawns 13326/13328
+// and up as invisible markers, and the defenders' NEAR_UNIT rows would match a defender carrying the marker's entry.
 std::array<AVDefenderChain, 3> constexpr AV_ALLIANCE_DEFENDER_CHAINS = { {
-    { { 112050, 13326, 13331, 13422 }, true  }, // graveyard defenders
+    { { 112050, 113326, 113331, 113422 }, true  }, // graveyard defenders
     { { 12048, 13327, 13336, 13427 }, true  }, // Sentinel
     { { 12127, 13324, 13333, 13424 }, true  }, // Guardsman
 } };
 
 std::array<AVDefenderChain, 3> constexpr AV_HORDE_DEFENDER_CHAINS = { {
-    { { 112053, 13328, 13332, 13421 }, true  }, // graveyard guardians
+    { { 112053, 113328, 113332, 113421 }, true  }, // graveyard guardians
     { { 12051, 13329, 13334, 13425 }, true  }, // Legionnaire
     { { 12052, 13330, 13337, 13428 }, true  }, // Warrior
 } };

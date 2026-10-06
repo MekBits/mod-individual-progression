@@ -72,6 +72,42 @@ UPDATE `creature_template` SET `flags_extra` = 0 WHERE `entry` = 11980; -- remov
 UPDATE `creature_template` SET `unit_flags` = 2  WHERE `entry` = 22332; -- set not attackable
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN (11980, 22331, 22332);
+-- A DB that ran Grimfeather's badbc3d version of this file lost AzerothCore's script on entry 22331 and got 7 event
+-- rows instead, whose On Respawn - Set Visible Off and faction 35 make the six world spawns invisible and friendly.
+-- AC's script has no On Respawn - Set Visible row, so that row marks such a DB; it gets AC's 20 rows back (base dump
+-- at Playerbot f19a18799, no update since touches them). Any other DB keeps the rows it has.
+SET @ipp_22331_grimfeather = (SELECT COUNT(*) FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 22331
+    AND `event_type` = 11 AND `action_type` = 47);
+DROP TEMPORARY TABLE IF EXISTS `ipp_22331_ac`;
+CREATE TEMPORARY TABLE `ipp_22331_ac` LIKE `smart_scripts`;
+INSERT INTO `ipp_22331_ac` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`,
+`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+(22331,0,0,1,1,0,100,513,0,0,0,0,0,0,21,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Out of Combat - Disable Combat Movement (No Repeat)'),
+(22331,0,1,0,61,0,100,512,0,0,0,0,0,0,20,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Out of Combat - Stop Attacking (No Repeat)'),
+(22331,0,2,3,4,0,100,1,0,0,0,0,0,0,11,38858,0,0,0,0,0,2,0,0,0,0,0,0,0,0,'Dragonmaw Elite - On Aggro - Cast \'Shoot\' (No Repeat)'),
+(22331,0,3,0,61,0,100,512,0,0,0,0,0,0,23,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - On Aggro - Increment Phase By 1 (No Repeat)'),
+(22331,0,4,5,9,1,100,0,0,0,2300,3900,5,80,11,38858,0,0,0,0,0,2,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 5-80 Range - Cast \'Shoot\' (Phase 1)'),
+(22331,0,5,0,61,1,100,0,0,0,0,0,0,0,40,2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 5-80 Range - Set Sheath Ranged (Phase 1)'),
+(22331,0,6,7,9,1,100,512,0,0,0,0,45,80,21,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 45-80 Range - Enable Combat Movement (Phase 1)'),
+(22331,0,7,0,61,1,100,512,0,0,0,0,0,0,20,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 45-80 Range - Start Attacking (Phase 1)'),
+(22331,0,8,9,9,1,100,512,0,0,0,0,0,5,21,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 0-5 Range - Enable Combat Movement (Phase 1)'),
+(22331,0,9,10,61,1,100,512,0,0,0,0,0,0,40,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 0-5 Range - Set Sheath Melee (Phase 1)'),
+(22331,0,10,0,61,1,100,512,0,0,0,0,0,0,20,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 0-5 Range - Start Attacking (Phase 1)'),
+(22331,0,11,12,9,1,100,512,0,0,0,0,5,15,21,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 5-15 Range - Disable Combat Movement (Phase 1)'),
+(22331,0,12,0,61,1,100,512,0,0,0,0,0,0,20,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Within 5-15 Range - Stop Attacking (Phase 1)'),
+(22331,0,13,14,0,0,100,0,6000,9000,12000,16000,0,0,11,38861,1,0,0,0,0,5,0,0,0,0,0,0,0,0,'Dragonmaw Elite - In Combat - Cast \'Aimed Shot\''),
+(22331,0,14,0,61,0,100,0,0,0,0,0,0,0,40,2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - In Combat - Set Sheath Ranged'),
+(22331,0,15,0,0,0,100,0,4000,6000,12000,16000,0,0,11,38859,32,0,0,0,0,5,0,0,0,38859,0,0,0,0,'Dragonmaw Elite - In Combat - Cast \'Serpent Sting\''),
+(22331,0,16,17,2,0,100,513,0,15,0,0,0,0,23,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Between 0-15% Health - Increment Phase By 1 (No Repeat)'),
+(22331,0,17,18,61,0,100,512,0,0,0,0,0,0,21,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Between 0-15% Health - Enable Combat Movement (No Repeat)'),
+(22331,0,18,0,61,0,100,512,0,0,0,0,0,0,25,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'Dragonmaw Elite - Between 0-15% Health - Flee For Assist (No Repeat)'),
+(22331,0,19,0,7,0,100,1,0,0,0,0,0,0,40,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Dragonmaw Elite - On Evade - Set Sheath Melee (No Repeat)');
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 22331 AND @ipp_22331_grimfeather > 0;
+INSERT INTO `smart_scripts` SELECT * FROM `ipp_22331_ac` WHERE @ipp_22331_grimfeather > 0;
+DROP TEMPORARY TABLE `ipp_22331_ac`;
+
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (11980);
 DELETE FROM `smart_scripts` WHERE `source_type` = 9 AND `entryorguid` IN (1198000, 1198001);
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` BETWEEN -(@CGUID+363) AND -(@CGUID+351);

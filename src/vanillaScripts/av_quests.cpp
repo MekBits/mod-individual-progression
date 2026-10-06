@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
+#include <algorithm>
 #include <unordered_map>
 
 namespace
@@ -62,12 +63,13 @@ namespace
         return UpgradeReady(state, team) ? texts.ready[tier] : texts.notReady[tier];
     }
 
-    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings them back already upgraded.
-    void UpgradeDefender(Creature* defender, std::array<AVDefenderChain, 3> const& chains, uint8 newTier)
+    // Dead defenders only get their original entry moved up; Creature::Respawn() then brings DB spawns back already
+    // upgraded. Returns true when the defender is a lower tier of one of the chains.
+    bool UpgradeDefender(Creature* defender, std::array<AVDefenderChain, 3> const& chains, uint8 newTier)
     {
         // Roaming units keep their tier.
         if (defender->GetFormation() || defender->GetDefaultMovementType() == WAYPOINT_MOTION_TYPE)
-            return;
+            return false;
 
         for (AVDefenderChain const& chain : chains)
         {
@@ -94,13 +96,15 @@ namespace
                 defender->UpdateEntry(chain.entries[newTier], defender->GetCreatureData(), true);
                 defender->SetFaction(currentFaction);
             }
-            return;
+            return true;
         }
+
+        return false;
     }
 
     // Upgrade every defender of `team` to `newTier`: the DB spawns and the core's static guards (BattlegroundAV's
-    // static table, which holds the stationary Horde Legionnaires). Summons are not affected.
-    void UpgradeDefenders(Battleground* bg, TeamId team, uint8 newTier)
+    // static table; with core-av-overhaul.patch the stationary Frostwolf Legionnaires). Summons are not affected.
+    void UpgradeDefenders(Battleground* bg, AVQuestState& state, TeamId team, uint8 newTier)
     {
         auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
         Map* map = bg->GetBgMap();
@@ -109,9 +113,16 @@ namespace
             if (Creature* defender = pair.second)
                 UpgradeDefender(defender, chains, newTier);
 
+        std::vector<ObjectGuid>& deadStatics = state.deadStaticDefenders[team];
         for (ObjectGuid const& guid : bg->BgCreatures)
-            if (Creature* defender = map->GetCreature(guid))
-                UpgradeDefender(defender, chains, newTier);
+        {
+            Creature* defender = map->GetCreature(guid);
+            if (!defender || !UpgradeDefender(defender, chains, newTier) || defender->IsAlive())
+                continue;
+
+            if (std::find(deadStatics.begin(), deadStatics.end(), guid) == deadStatics.end())
+                deadStatics.push_back(guid);
+        }
     }
 
     void HandleBossTurnIn(Player* player, AVQuestState& state, TeamId team, uint32 points)
@@ -556,7 +567,7 @@ public:
             if (state && UpgradeReady(*state, team))
             {
                 ++state->defenderTier[team];
-                UpgradeDefenders(player->GetBattleground(), team, state->defenderTier[team]);
+                UpgradeDefenders(player->GetBattleground(), *state, team, state->defenderTier[team]);
                 creature->SetNpcFlag(UNIT_NPC_FLAG_QUESTGIVER); // resume turn-ins
             }
             if (state)
@@ -606,6 +617,34 @@ public:
     {
         if (bg)
             avState.erase(bg->GetInstanceID());
+    }
+
+    // Static guards that were dead at an upgrade take their team's tier once they are back.
+    void OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/) override
+    {
+        if (!bg || bg->GetBgTypeID(true) != BATTLEGROUND_AV)
+            return;
+
+        auto itr = avState.find(bg->GetInstanceID());
+        if (itr == avState.end())
+            return;
+
+        AVQuestState& state = itr->second;
+        for (TeamId team : { TEAM_ALLIANCE, TEAM_HORDE })
+        {
+            auto const& chains = team == TEAM_ALLIANCE ? AV_ALLIANCE_DEFENDER_CHAINS : AV_HORDE_DEFENDER_CHAINS;
+            std::erase_if(state.deadStaticDefenders[team], [&](ObjectGuid const& guid)
+            {
+                Creature* defender = bg->GetBgMap()->GetCreature(guid);
+                if (!defender)
+                    return true; // despawned by the core
+                if (!defender->IsAlive())
+                    return false;
+
+                UpgradeDefender(defender, chains, state.defenderTier[team]);
+                return true;
+            });
+        }
     }
 };
 

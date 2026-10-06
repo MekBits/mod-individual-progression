@@ -6,8 +6,10 @@
 #ifndef MOD_IP_AV_QUESTS_H
 #define MOD_IP_AV_QUESTS_H
 
+#include "ObjectGuid.h"
 #include "SharedDefines.h"
 #include <array>
+#include <vector>
 
 enum AVTurnInQuests : uint32
 {
@@ -202,6 +204,10 @@ struct AVQuestState
     std::array<bool, 2> HidesCompleted = { false, false };
 
     std::array<uint8, 2> defenderTier = { AV_DEFENDER_TIER_NONE, AV_DEFENDER_TIER_NONE };
+
+    // Core static guards (no spawn id) that were dead at an upgrade. Creature::Respawn() only applies the original
+    // entry to DB spawns, so these are upgraded from OnBattlegroundUpdate once they are alive again.
+    std::array<std::vector<ObjectGuid>, 2> deadStaticDefenders;
 
     std::array<uint32, 2> bossPoints = { 0, 0 };
     std::array<uint32, 2> scrapTurnIns = { 0, 0 };

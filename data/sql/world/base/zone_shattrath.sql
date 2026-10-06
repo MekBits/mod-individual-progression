@@ -4,13 +4,15 @@ INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `Exte
 (18756, 0, 38089, 1, 1800, 0, 0);
 
 /* Hide certain quests until the player has reached the progression tier for them */
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 19 AND `ConditionTypeOrReference` = 8 AND `SourceEntry` IN (11130, 11481, 11482);
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 19 AND `ConditionTypeOrReference` = 8 AND `SourceEntry` IN (11130, 11481, 11482, 11499, 11500);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
 `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 --
 -- (19, 0, 11130, 0, 0, 8, 0, 66010, 0, 0, 0, 0, 0, '', 'Hide \'Oooh, Shinies!\' until the player reaches TBC T4'),
 (19, 0, 11481, 0, 0, 8, 0, 66012, 0, 0, 0, 0, 0, '', 'Hide \'Crisis at the Sunwell\' until the player reaches TBC T5'),
-(19, 0, 11482, 0, 0, 8, 0, 66012, 0, 0, 0, 0, 0, '', 'Hide \'Duty Calls\' until the player reaches TBC T5');
+(19, 0, 11482, 0, 0, 8, 0, 66012, 0, 0, 0, 0, 0, '', 'Hide \'Duty Calls\' until the player reaches TBC T5'),
+(19, 0, 11499, 0, 0, 8, 0, 66012, 0, 0, 0, 0, 0, '', 'Hide \'Wanted: The Signet Ring of Prince Kael\'thas\' until Magisters\' Terrace opens (TBC T5)'),
+(19, 0, 11500, 0, 0, 8, 0, 66012, 0, 0, 0, 0, 0, '', 'Hide \'Wanted: Sisters of Torment\' until Magisters\' Terrace opens (TBC T5)');
 
 -- fix quest: The Skettis Offensive
 UPDATE `quest_template` SET `RequiredNpcOrGo1` = 22375, `RequiredNpcOrGoCount1` = 1 WHERE `ID` = 10879;
@@ -55,14 +57,15 @@ DELETE FROM `creature` WHERE `guid` IN (63451, 88251, 88252, 88254, 207710, 2077
 -- change Shattered Sun Marksmen into Warriors. Marksmen refuse to use waypoints to run towards the Quel'Danas portal
 UPDATE `creature` SET `id` = 25115 WHERE `guid` IN (165106, 165107, 165108, 165109);
 
--- Wind Trader Zhareem(24369) & Nether-Stalker Mah'duun(24370): remove Magisters' Terrace dailies, so players don't get them before they can go there.
--- (by the time players get to MT they don't care about daily rewards anymore anyways.)
-DELETE FROM `creature_queststarter` WHERE `id` = 24369 AND `quest` = 11499;
-DELETE FROM `creature_questender`   WHERE `id` = 24369 AND `quest` = 11499;
-DELETE FROM `creature_queststarter` WHERE `id` = 24370 AND `quest` = 11500;
-DELETE FROM `creature_questender`   WHERE `id` = 24370 AND `quest` = 11500;
-DELETE FROM `pool_quest` WHERE `pool_entry` = 356 AND `entry` = 11499;
-DELETE FROM `pool_quest` WHERE `pool_entry` = 357 AND `entry` = 11500;
+-- Wind Trader Zhareem(24369) & Nether-Stalker Mah'duun(24370): Magisters' Terrace dailies, hidden by the conditions above until MT opens
+DELETE FROM `creature_queststarter` WHERE (`id` = 24369 AND `quest` = 11499) OR (`id` = 24370 AND `quest` = 11500);
+INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES (24369, 11499), (24370, 11500);
+DELETE FROM `creature_questender` WHERE (`id` = 24369 AND `quest` = 11499) OR (`id` = 24370 AND `quest` = 11500);
+INSERT INTO `creature_questender` (`id`, `quest`) VALUES (24369, 11499), (24370, 11500);
+DELETE FROM `pool_quest` WHERE `entry` IN (11499, 11500);
+INSERT INTO `pool_quest` (`entry`, `pool_entry`, `description`) VALUES
+(11499, 356, 'Wanted: The Signet Ring of Prince Kael\'thas'),
+(11500, 357, 'Wanted: Sisters of Torment');
 
 /* Scryer's Tier */
 SET @CGUID    := 672000;

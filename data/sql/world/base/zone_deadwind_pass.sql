@@ -2034,3 +2034,97 @@ DELETE FROM `smart_scripts` WHERE `entryorguid` IN (12381, 12382);
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 (12381, 0, 0, 0, 6, 0, 100, 512, 0, 0, 0, 0, 0, 11, 20789, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 'Cast Spell on Death'),
 (12382, 0, 0, 0, 6, 0, 100, 512, 0, 0, 0, 0, 0, 11, 20789, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 'Cast Spell on Death');
+
+/* Karazhan exterior undead: 1.12 levels before TBC, AC's 68-70 from TBC (phased in checkIPPhasing).
+   Vanilla copies are entry + 600000, spawned at the AC spawns' positions. */
+SET @CGUID       := 677000;
+SET @IPPPHASE    := 65536;
+SET @IPPPHASE_II := 131072;
+
+DELETE FROM `creature_template` WHERE `entry` IN (607370, 612377, 612378, 612379, 612380);
+DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template` WHERE `entry` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `KillCredit1` = `entry`;
+UPDATE `ipp_copy` SET `entry` = `entry` + 600000;
+UPDATE `ipp_copy` SET `minlevel` = 58, `maxlevel` = 60, `HealthModifier` = 1.35, `ArmorModifier` = 1.45, `unit_class` = 1 WHERE `entry` = 607370;                       -- Restless Shade
+UPDATE `ipp_copy` SET `minlevel` = 58, `maxlevel` = 60, `DamageModifier` = 0.95, `HealthModifier` = 1.35, `ArmorModifier` = 0.95 WHERE `entry` = 612377;               -- Wailing Spectre
+UPDATE `ipp_copy` SET `minlevel` = 59, `maxlevel` = 60, `DamageModifier` = 2.15, `HealthModifier` = 1.35 WHERE `entry` = 612378;                                      -- Damned Soul
+UPDATE `ipp_copy` SET `minlevel` = 59, `maxlevel` = 60, `DamageModifier` = 1.0, `HealthModifier` = 1.35, `ArmorModifier` = 1.05, `unit_class` = 1 WHERE `entry` = 612379;  -- Unliving Caretaker
+UPDATE `ipp_copy` SET `minlevel` = 59, `maxlevel` = 60, `DamageModifier` = 1.25, `HealthModifier` = 1.35, `ArmorModifier` = 1.05, `unit_class` = 1 WHERE `entry` = 612380; -- Unliving Resident
+INSERT INTO `creature_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_model` WHERE `CreatureID` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_model` WHERE `CreatureID` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 600000;
+INSERT INTO `creature_template_model` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_addon` WHERE `entry` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_addon` WHERE `entry` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `entry` = `entry` + 600000;
+INSERT INTO `creature_template_addon` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_locale` WHERE `entry` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_locale` WHERE `entry` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `entry` = `entry` + 600000;
+INSERT INTO `creature_template_locale` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_movement` WHERE `CreatureId` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_movement` WHERE `CreatureId` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureId` = `CreatureId` + 600000;
+INSERT INTO `creature_template_movement` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_resistance` WHERE `CreatureID` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_resistance` WHERE `CreatureID` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 600000;
+INSERT INTO `creature_template_resistance` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_spell` WHERE `CreatureID` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_spell` WHERE `CreatureID` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 600000;
+INSERT INTO `creature_template_spell` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_equip_template` WHERE `CreatureID` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 600000;
+INSERT INTO `creature_equip_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_questitem` WHERE `CreatureEntry` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_questitem` WHERE `CreatureEntry` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureEntry` = `CreatureEntry` + 600000;
+INSERT INTO `creature_questitem` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_text` WHERE `CreatureID` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_text` WHERE `CreatureID` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 600000;
+INSERT INTO `creature_text` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (607370, 612377, 612378, 612379, 612380);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (7370, 12377, 12378, 12379, 12380);
+UPDATE `ipp_copy` SET `entryorguid` = `entryorguid` + 600000;
+INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+-- spawns: AC guids 3961-4060 -> @CGUID+0..99
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID AND @CGUID+99;
+DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID AND @CGUID+99;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature` WHERE `id` IN (7370, 12377, 12378, 12379, 12380) AND `guid` BETWEEN 3961 AND 4060;
+UPDATE `ipp_copy` SET `guid` = `guid` - 3961 + @CGUID, `id` = `id` + 600000, `phaseMask` = @IPPPHASE;
+INSERT INTO `creature` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+CREATE TEMPORARY TABLE `ipp_copy` SELECT a.* FROM `creature_addon` a JOIN `creature` c ON c.`guid` = a.`guid` WHERE c.`id` IN (7370, 12377, 12378, 12379, 12380) AND a.`guid` BETWEEN 3961 AND 4060;
+UPDATE `ipp_copy` SET `guid` = `guid` - 3961 + @CGUID;
+INSERT INTO `creature_addon` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+UPDATE `creature` SET `phaseMask` = @IPPPHASE_II WHERE `id` IN (7370, 12377, 12378, 12379, 12380);

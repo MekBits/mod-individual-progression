@@ -3704,10 +3704,12 @@ DROP TEMPORARY TABLE `ipp_copy`;
    1. Every tier of those four chains gives the killer's side 5 up to Revered, the core's row for 12050/12127/12051/
       12053: Frostwolf Clan for Alliance guards, Stormpike Guard for Horde ones. Wowhead (Classic) lists such a
       reward for the base tiers and for upgraded tiers too, with caps that vary (Friendly, Honored, none shown).
-   2. Every template with a 729 or 730 reward hands the same row to its bracket templates: these guards, the tower
-      bowmen, lieutenants, commanders and the rest. Not the generals and captains (11946-11949): the battleground
-      already pays their whole team a reward for that kill in every bracket (BattlegroundAV::HandleKillUnit; 350/125
-      by default, the generals' from Battleground.Alterac.ReputationOnBossDeath, 525/185 on a holiday weekend).
+   2. The generals and captains (11946-11949) get no kill reward: the battleground already pays their whole team for
+      that kill in every bracket (BattlegroundAV::HandleKillUnit; 350/125 by default, the generals' from
+      Battleground.Alterac.ReputationOnBossDeath, 525/185 on a holiday weekend), and the core's rows of the same
+      amount paid the killer's group a second time.
+   3. Every template with a 729 or 730 reward hands the same row to its bracket templates: these guards, the tower
+      bowmen, lieutenants, commanders and the rest.
    Sentinels and Warriors keep no reward, as in the core and on Wowhead (Classic). */
 DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN
 (112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326,
@@ -3716,6 +3718,9 @@ INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,
 SELECT `entry`, 729, 6, 5 FROM `creature_template` WHERE `entry` IN (112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326);
 INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
 SELECT `entry`, 730, 6, 5 FROM `creature_template` WHERE `entry` IN (112053, 113328, 113332, 113421, 12051, 13329, 13334, 13425);
+DELETE r FROM `creature_onkill_reputation` r JOIN `creature_template` ct
+    ON r.`creature_id` IN (ct.`entry`, ct.`difficulty_entry_1`, ct.`difficulty_entry_2`, ct.`difficulty_entry_3`)
+WHERE ct.`entry` IN (11946, 11947, 11948, 11949);
 DROP TEMPORARY TABLE IF EXISTS `ipp_av_rep`;
 CREATE TEMPORARY TABLE `ipp_av_rep` SELECT d.`entry` AS `creature_id`, r.`RewOnKillRepFaction1`, r.`RewOnKillRepFaction2`,
     r.`MaxStanding1`, r.`IsTeamAward1`, r.`RewOnKillRepValue1`, r.`MaxStanding2`, r.`IsTeamAward2`, r.`RewOnKillRepValue2`,
@@ -3723,8 +3728,7 @@ CREATE TEMPORARY TABLE `ipp_av_rep` SELECT d.`entry` AS `creature_id`, r.`RewOnK
 FROM `creature_onkill_reputation` r
 JOIN `creature_template` ct ON ct.`entry` = r.`creature_id`
 JOIN `creature_template` d ON d.`entry` IN (ct.`difficulty_entry_1`, ct.`difficulty_entry_2`, ct.`difficulty_entry_3`)
-WHERE (r.`RewOnKillRepFaction1` IN (729, 730) OR r.`RewOnKillRepFaction2` IN (729, 730))
-    AND r.`creature_id` NOT IN (11946, 11947, 11948, 11949);
+WHERE r.`RewOnKillRepFaction1` IN (729, 730) OR r.`RewOnKillRepFaction2` IN (729, 730);
 REPLACE INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`,
     `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`)
 SELECT * FROM `ipp_av_rep`;

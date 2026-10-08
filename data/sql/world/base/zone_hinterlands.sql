@@ -177,7 +177,7 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 
 
 -- Troll Necklace Bounty quest should be for Alliance only
-UPDATE `quest_template` SET `AllowableRaces` = 1101 WHERE `ID` = 2880;
+UPDATE `quest_template` SET `AllowableRaces` = 1101 WHERE `ID` IN (2880) AND (`AllowableRaces` = 0 OR `AllowableRaces` & 690);
 
 -- Shadra incorrect display scale and missing smart AI
 UPDATE `creature_template_model` SET `DisplayScale` = 5  WHERE `CreatureID` = 2707;

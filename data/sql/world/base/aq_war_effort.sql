@@ -75,8 +75,8 @@ UPDATE `creature_template` SET `gossip_menu_id` = 3118103, `npcflag` = 3 WHERE `
 UPDATE `creature_template` SET `gossip_menu_id` = 3118105, `npcflag` = 3 WHERE `entry` = 15703;
 UPDATE `creature_template` SET `gossip_menu_id` = 3118107, `npcflag` = 3 WHERE `entry` IN (15702, 15704, 21155);
 
-UPDATE `quest_template` SET `AllowableRaces` = 690 WHERE `ID` IN (8792, 8793, 8794, 10500);
-UPDATE `quest_template` SET `AllowableRaces` = 1101 WHERE `ID` IN (8795, 8796, 8797, 10501);
+UPDATE `quest_template` SET `AllowableRaces` = 690 WHERE `ID` IN (8792, 8793, 8794, 10500) AND (`AllowableRaces` = 0 OR `AllowableRaces` & 1101);
+UPDATE `quest_template` SET `AllowableRaces` = 1101 WHERE `ID` IN (8795, 8796, 8797, 10501) AND (`AllowableRaces` = 0 OR `AllowableRaces` & 690);
 
 DELETE FROM `creature_queststarter` WHERE `quest` IN (8792, 8793, 8794, 8795, 8796, 8797, 10500, 10501);
 INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES (15702, 8792), (15703, 8792), (15704, 8792), (21155, 8792), (15707, 8795), (15708, 8795), (15709, 8795), (21156, 8795);

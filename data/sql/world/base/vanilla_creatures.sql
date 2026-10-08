@@ -1,3 +1,6 @@
+-- av.sql and av_mines.sql recreate creature_template rows this file adjusts, so it
+-- has to run again whenever one of them changes.
+
 /*  Flesh Eater  */
 UPDATE `creature_template` SET `speed_walk` = 0.777776 WHERE `entry` = 3;
 

@@ -507,6 +507,20 @@ IndividualProgression.BotAccountsEarnPvPTitles = 0
 #
 IndividualProgression.BotAccountsMaxLevel = 80
 
+# IndividualProgression.BotAccountsFollowGroupCap
+#
+#        Description: Bot accounts in a group with players stop earning XP at the lowest level cap
+#                     among those players instead of BotAccountsMaxLevel: 60 before progression 8,
+#                     70 before progression 13, otherwise the max level. A bot grouped with a
+#                     Vanilla player stays at 60, while a bot grouped only with WotLK players can
+#                     reach 80. Bots without a player in their group use BotAccountsMaxLevel.
+#                     Excluded accounts count as players without a cap.
+#
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+IndividualProgression.BotAccountsFollowGroupCap = 0
+
 # IndividualProgression.BotAccountsRegex
 #
 #        Description: A regular expression to match account names that should be excluded from Individual Progression.

@@ -123,7 +123,7 @@ public:
 
         if (sIndividualProgression->isBotAccount(player))
         {
-            if (player->GetLevel() >= sIndividualProgression->BotAccountsMaxLevel)
+            if (player->GetLevel() >= sIndividualProgression->GetBotXpCap(player))
             {
                 // Still award XP to pets - they won't be able to pass the player's level
                 Pet* pet = player->GetPet();

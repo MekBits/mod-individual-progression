@@ -6,6 +6,7 @@
 #include "naxxramas_40.h"
 #include "ReputationMgr.h"
 #include "PetDefines.h"
+#include "World.h"
 
 IndividualProgression* IndividualProgression::instance()
 {
@@ -369,6 +370,37 @@ bool IndividualProgression::isNormalAccount(Player* player)
         return false;
 
     return true;
+}
+
+// The level a bot account stops earning XP at. With BotAccountsFollowGroupCap and a player in the
+// bot's group, it is the lowest cap among those players (60 before PROGRESSION_PRE_TBC, 70 before
+// PROGRESSION_TBC_TIER_5, the max level after), so a bot never outlevels the tier it plays in.
+// Otherwise it is BotAccountsMaxLevel.
+uint8 IndividualProgression::GetBotXpCap(Player* bot)
+{
+    Group* group = bot->GetGroup();
+    if (!BotAccountsFollowGroupCap || !group)
+        return BotAccountsMaxLevel;
+
+    bool hasPlayer = false;
+    uint8 cap = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+    for (GroupReference* itr = group->GetFirstMember(); itr; itr = itr->next())
+    {
+        Player* member = itr->GetSource();
+        if (!member || !member->IsInWorld() || isBotAccount(member))
+            continue;
+
+        hasPlayer = true;
+        if (isExcludedAccount(member)) // no progression, so no cap
+            continue;
+
+        if (!hasPassedProgression(member, PROGRESSION_PRE_TBC))
+            cap = std::min<uint8>(cap, 60);
+        else if (!hasPassedProgression(member, PROGRESSION_TBC_TIER_5))
+            cap = std::min<uint8>(cap, 70);
+    }
+
+    return hasPlayer ? cap : BotAccountsMaxLevel;
 }
 
 bool IndividualProgression::isPlayerInDungeonOrRaid(Player* player)
@@ -1093,6 +1125,7 @@ private:
         sIndividualProgression->LimitedSetRepCommand = sConfigMgr->GetOption<bool>("IndividualProgression.LimitedSetRepCommand", true);
         sIndividualProgression->sharedFactionIdsRegex = sConfigMgr->GetOption<std::string>("IndividualProgression.sharedFactionIdsRegex", "59|270|349|509|510|529|576|589|609|729|730|749|889|890|909");
         sIndividualProgression->BotAccountsMaxLevel = sConfigMgr->GetOption<uint8>("IndividualProgression.BotAccountsMaxLevel", 80);
+        sIndividualProgression->BotAccountsFollowGroupCap = sConfigMgr->GetOption<bool>("IndividualProgression.BotAccountsFollowGroupCap", false);
         sIndividualProgression->mountLevelApprentice = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Apprentice", 0);
         sIndividualProgression->mountLevelJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Journeyman", 0);
         sIndividualProgression->mountLevelExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Expert", 0);

@@ -1306,39 +1306,39 @@ UPDATE `item_template` SET `RequiredReputationFaction` = 510, `RequiredReputatio
 UPDATE `item_template` SET `RequiredReputationFaction` = 510, `RequiredReputationRank` = 7 WHERE `entry` IN
 (20068, 20158, 20175, 20176, 20184, 20194, 20203, 20212, 20214, 20220);
 
+-- Stormpike and Frostwolf Supply Officers: only the items unique to one side. Items both sides sell stay hidden below.
+UPDATE `item_template` SET `RequiredReputationFaction` = 730, `RequiredReputationRank` = 4 WHERE `entry` = 19032;
+UPDATE `item_template` SET `RequiredReputationFaction` = 730, `RequiredReputationRank` = 5 WHERE `entry` IN
+(19084, 19086, 19091, 19092, 19093, 19094, 19097, 19098);
+UPDATE `item_template` SET `RequiredReputationFaction` = 730, `RequiredReputationRank` = 6 WHERE `entry` IN
+(19045, 19100, 19102, 19104);
+UPDATE `item_template` SET `RequiredReputationFaction` = 730, `RequiredReputationRank` = 7 WHERE `entry` = 19030;
+UPDATE `item_template` SET `RequiredReputationFaction` = 729, `RequiredReputationRank` = 4 WHERE `entry` = 19031;
+UPDATE `item_template` SET `RequiredReputationFaction` = 729, `RequiredReputationRank` = 5 WHERE `entry` IN
+(19083, 19085, 19087, 19088, 19089, 19090, 19095, 19096);
+UPDATE `item_template` SET `RequiredReputationFaction` = 729, `RequiredReputationRank` = 6 WHERE `entry` IN
+(19046, 19099, 19101, 19103);
+UPDATE `item_template` SET `RequiredReputationFaction` = 729, `RequiredReputationRank` = 7 WHERE `entry` = 19029;
+
     
 -- these need to be hidden. they cannot get a reputation requirement, because some of these items have the same ID for both alliance and horde.
 -- you can only set 1 reputation requirement for an item.
--- AB is an exception. all AB items are unique to either faction
+-- AB is an exception. all AB items are unique to either faction, and so are the AV and WSG items given a requirement above
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 23 AND `SourceGroup` IN (13216, 13217, 13218, 13219, 14753, 14754);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES 
 -- Gaelden Hammersmith <Stormpike Supply Officer>
 (23, 13216, 17349, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 17352, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19032, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19307, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19318, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 17348, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 17351, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19301, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19084, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19086, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19097, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19098, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19094, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19093, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19092, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19091, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19316, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19317, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19045, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19100, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19102, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19104, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19320, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19319, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13216, 19030, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19312, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19315, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13216, 19308, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
@@ -1353,29 +1353,15 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Thanthaldis Snowgleam <Stormpike Supply Officer>
 (23, 13217, 17349, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 17352, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19032, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19307, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19318, 5, 730, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 17348, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 17351, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19301, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19084, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19086, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19097, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19098, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19094, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19093, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19092, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19091, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19316, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19317, 5, 730, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19045, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19100, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19102, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19104, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19320, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19319, 5, 730, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13217, 19030, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19312, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19315, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13217, 19308, 5, 730, 128, 'Vanilla PvP Gear Conditions'),
@@ -1390,29 +1376,15 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Grunnda Wolfheart <Frostwolf Supply Officer>
 (23, 13218, 17349, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 17352, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19031, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19307, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19318, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 17348, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 17351, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19301, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19083, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19085, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19095, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19096, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19090, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19089, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19088, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19087, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19316, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19317, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19046, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19099, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19101, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19103, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19320, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19319, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13218, 19029, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19312, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19315, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13218, 19308, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
@@ -1427,29 +1399,15 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Jekyll Flandring <Frostwolf Supply Officer>
 (23, 13219, 17349, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 17352, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19031, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19307, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19318, 5, 729, 16 + 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 17348, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 17351, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19301, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19083, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19085, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19095, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19096, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19090, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19089, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19088, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19087, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19316, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19317, 5, 729, 32 + 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19046, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19099, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19101, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19103, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19320, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19319, 5, 729, 64 + 128, 'Vanilla PvP Gear Conditions'),
-(23, 13219, 19029, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19312, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19315, 5, 729, 128, 'Vanilla PvP Gear Conditions'),
 (23, 13219, 19308, 5, 729, 128, 'Vanilla PvP Gear Conditions'),

@@ -5,17 +5,20 @@ SET @WPID   := 6570000;
 
 /* ORIGINAL VANILLA AV */
 
+/* rows left by earlier versions of the AV files (formerly 00_av_cleanup.sql); no-ops on a fresh DB */
+DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID+1 AND @CGUID+999;
+DELETE FROM `waypoint_data` WHERE `id` BETWEEN @WPID AND @WPID+9999;
+-- templates no longer used
+DELETE FROM `creature_template` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_addon` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_model` WHERE `CreatureID` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_template_locale` WHERE `entry` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (110981, 110990, 112051, 112127, 113358, 113359, 114282, 114283, 114284, 122739, 122766, 131978, 132089);
+
 /* commander and guard patrols */
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN
-(@CGUID+610, @CGUID+613, @CGUID+615, @CGUID+617, @CGUID+619, @CGUID+621, @CGUID+623, @CGUID+625, @CGUID+627, @CGUID+630, @CGUID+638, @CGUID+639,
- @CGUID+701, @CGUID+703, @CGUID+705, @CGUID+707, @CGUID+709, @CGUID+711, @CGUID+713, @CGUID+714, @CGUID+715, @CGUID+716, @CGUID+717, @CGUID+718,
- @CGUID+720, @CGUID+722, @CGUID+724, @CGUID+726, @CGUID+728, @CGUID+730, @CGUID+732, @CGUID+745, @CGUID+748,
- @CGUID+670, @CGUID+673, @CGUID+675, @CGUID+677, @CGUID+679, @CGUID+681, @CGUID+683, @CGUID+685, @CGUID+687, @CGUID+690, @CGUID+698, @CGUID+699, -- TBC
- @CGUID+751, @CGUID+753, @CGUID+755, @CGUID+757, @CGUID+759, @CGUID+761, @CGUID+763, @CGUID+764, @CGUID+765, @CGUID+766, @CGUID+767, @CGUID+768,
- @CGUID+770, @CGUID+772, @CGUID+774, @CGUID+776, @CGUID+778, @CGUID+780, @CGUID+782, @CGUID+795, @CGUID+798,
- @CGUID+810, @CGUID+813, @CGUID+815, @CGUID+817, @CGUID+819, @CGUID+821, @CGUID+823, @CGUID+825, @CGUID+827, @CGUID+830, @CGUID+838, @CGUID+839, -- WOTLK
- @CGUID+851, @CGUID+853, @CGUID+855, @CGUID+857, @CGUID+859, @CGUID+861, @CGUID+863, @CGUID+864, @CGUID+865, @CGUID+866, @CGUID+867, @CGUID+868,
- @CGUID+870, @CGUID+872, @CGUID+874, @CGUID+876, @CGUID+878, @CGUID+880, @CGUID+882, @CGUID+895, @CGUID+898);
+-- PK is memberGUID: clear every formation row in the AV guid range so the file can be re-applied
+DELETE FROM `creature_formations` WHERE `memberGUID` BETWEEN @CGUID+1 AND @CGUID+999 OR `leaderGUID` BETWEEN @CGUID+1 AND @CGUID+999;
 
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
@@ -1281,7 +1284,6 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPID+7480, 13, -1489.75, -664.575, 49.3815, 0, 0, 0, 0, 100, 0),
 (@WPID+7480, 14, -1485.85, -683.43, 47.6697, 0, 0, 0, 0, 100, 0);
 
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN (@CGUID+521, @CGUID+525, @CGUID+911, @CGUID+921, @CGUID+915, @CGUID+925);
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (@CGUID+521, @CGUID+521, 0, 0, 515, 0, 0), -- Primalist Thurloga
@@ -1518,7 +1520,6 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPID+5250, 51, -202.7, -344.94, 6.69, 0, 0, 0, 0, 100, 0);
 
 -- Wolf/Ram Rider Commanders
-DELETE FROM `creature_formations` WHERE `leaderGUID` IN (@CGUID+316, @CGUID+416, @CGUID+317, @CGUID+417, @CGUID+318, @CGUID+418);
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (@CGUID+316, @CGUID+316, 0, 0, 515, 0, 0), -- Ram Rider Commander
@@ -2411,23 +2412,23 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 19 AND `SourceEntry` 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
 `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 --
-(19, 0, 7161, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7161 only available during vanilla'), -- first time racial turn-in quests
-(19, 0, 7162, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7162 only available during vanilla'),
-(19, 0, 7163, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7163 only available during vanilla'),
-(19, 0, 7164, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7164 only available during vanilla'),
-(19, 0, 7165, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7165 only available during vanilla'),
-(19, 0, 7166, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7166 only available during vanilla'),
-(19, 0, 7401, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7401 only available during vanilla'),
-(19, 0, 7402, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7402 only available during vanilla'),
+(19, 0, 7161, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7161 only available before patch 1.10'), -- first time racial turn-in quests
+(19, 0, 7162, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7162 only available before patch 1.10'),
+(19, 0, 7163, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7163 only available before patch 1.10'),
+(19, 0, 7164, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7164 only available before patch 1.10'),
+(19, 0, 7165, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7165 only available before patch 1.10'),
+(19, 0, 7166, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7166 only available before patch 1.10'),
+(19, 0, 7401, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7401 only available before patch 1.10'),
+(19, 0, 7402, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7402 only available before patch 1.10'),
 --
-(19, 0, 7421, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7421 only available during vanilla'), -- repeatable racial turn-in quests
-(19, 0, 7422, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7422 only available during vanilla'),
-(19, 0, 7423, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7423 only available during vanilla'),
-(19, 0, 7424, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7424 only available during vanilla'),
-(19, 0, 7425, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7425 only available during vanilla'),
-(19, 0, 7426, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7426 only available during vanilla'),
-(19, 0, 7427, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7427 only available during vanilla'),
-(19, 0, 7428, 0, 0, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Quest 7428 only available during vanilla'),
+(19, 0, 7421, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7421 only available before patch 1.10'), -- repeatable racial turn-in quests
+(19, 0, 7422, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7422 only available before patch 1.10'),
+(19, 0, 7423, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7423 only available before patch 1.10'),
+(19, 0, 7424, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7424 only available before patch 1.10'),
+(19, 0, 7425, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7425 only available before patch 1.10'),
+(19, 0, 7426, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7426 only available before patch 1.10'),
+(19, 0, 7427, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7427 only available before patch 1.10'),
+(19, 0, 7428, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest 7428 only available before patch 1.10'),
 --
 (19, 0, 7181, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest: \'The Legend of Korrak\' only available before patch 1.10'),
 (19, 0, 7381, 0, 0, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Quest: \'The Return of Korrak\' only available before patch 1.10'),
@@ -2475,21 +2476,21 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (28, 0, 17423, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Storm Crystal only drops inside Alterac Valley Battleground'),
 --
 (28, 1, 18142, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Severed Night Elf Head only drops inside Alterac Valley Battleground'),
-(28, 1, 18142, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Severed Night Elf Head only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18142, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Severed Night Elf Head only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18143, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Tuft of Gnome Hair only drops inside Alterac Valley Battleground'),
-(28, 1, 18143, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Tuft of Gnome Hair only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18143, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Tuft of Gnome Hair only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18144, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Human Bone Chip only drops inside Alterac Valley Battleground'),
-(28, 1, 18144, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Human Bone Chip only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18144, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Human Bone Chip only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18145, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Tauren Hoof only drops inside Alterac Valley Battleground'),
-(28, 0, 18145, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Tauren Hoof only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18145, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Tauren Hoof only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18146, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Darkspear Troll Mojo only drops inside Alterac Valley Battleground'),
-(28, 0, 18146, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Darkspear Troll Mojo only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18146, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Darkspear Troll Mojo only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18147, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Forsaken Heart only drops inside Alterac Valley Battleground'),
-(28, 0, 18147, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Forsaken Heart only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 0, 18147, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Forsaken Heart only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 1, 18206, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Dwarf Spine only drops inside Alterac Valley Battleground'),
-(28, 1, 18206, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Dwarf Spine only drops if the player has NOT completed PROGRESSION_PRE_TBC'),
+(28, 1, 18206, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Dwarf Spine only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)'),
 (28, 0, 18207, 0, 1, 22, 0, 30, 0, 0, 0, 0, 0, '',   'Orc Tooth only drops inside Alterac Valley Battleground'),
-(28, 0, 18207, 0, 1, 8, 0, 66008, 0, 0, 1, 0, 0, '', 'Orc Tooth only drops if the player has NOT completed PROGRESSION_PRE_TBC');
+(28, 0, 18207, 0, 1, 8, 0, 66005, 0, 0, 1, 0, 0, '', 'Orc Tooth only drops if the player has NOT completed PROGRESSION_AQ_WAR (before patch 1.10)');
 
 -- only drop Stormpike Soldiers Blood from alliance creatures + correct drop rate and amount
 DELETE FROM `creature_loot_template` WHERE `Item` = 17306;
@@ -2658,12 +2659,12 @@ INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entr
 (22691,0,0,0,0,0,'Stormpike Ram Rider (1)',NULL,NULL,0,68,68,0,1216,0,1,1.14286,1,1,20,1,0,5,2000,2000,1,1,1,0,2048,0,0,7,0,13576,0,0,0,0,786,1036,'',0,1,5,1,1,1,0,0,1,0,0,'',0), -- TBC
 (32100,0,0,0,0,0,'Stormpike Ram Rider (2)',NULL,NULL,0,78,78,0,1216,0,1,1.14286,1,1,20,1,0,7.5,2000,2000,1,1,1,0,2048,0,0,7,0,13576,0,0,0,0,7860,10360,'',0,1,6.5,1,1,1,0,0,1,0,0,'',0), -- WOTLK
 --
-(10981,22737,31975,0,0,0,'Frostwolf',NULL,NULL,0,50,51,0,1275,0,1,2.57143,1,1,18,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,0,0,0,0,'SmartAI',1,1,1.02,1,1,1,0,0,1,0,0,'',0),
+(10981,22737,31975,0,0,0,'Frostwolf',NULL,NULL,0,50,51,0,1275,0,1,2.57143,1,1,18,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,13040,0,0,0,'SmartAI',1,1,1.02,1,1,1,0,0,1,0,0,'',0),
 (10990,22726,31921,0,0,0,'Alterac Ram',NULL,NULL,0,50,51,0,1274,0,1,2.57143,1,1,18,0,0,1,2000,2000,1,1,1,0,2048,0,0,1,0,10990,0,10990,0,0,0,0,'SmartAI',1,1,1.3,1,1,1,0,0,1,0,0,'',0),
 (22726,0,0,0,0,0,'Alterac Ram (1)',NULL,NULL,0,60,61,0,1274,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,0,1,0,10990,0,10990,0,0,0,0,'',1,1,1,1,1,1,0,0,1,0,0,'',0), -- TBC
-(22737,0,0,0,0,0,'Frostwolf (1)',NULL,NULL,0,60,61,0,1275,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,0,0,0,0,'',1,1,1.02,1,1,1,0,0,1,0,0,'',0),
+(22737,0,0,0,0,0,'Frostwolf (1)',NULL,NULL,0,60,61,0,1275,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,13040,0,0,0,'',1,1,1.02,1,1,1,0,0,1,0,0,'',0),
 (31921,0,0,0,0,0,'Alterac Ram (2)',NULL,NULL,0,70,71,0,1274,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,0,1,0,10990,0,10990,0,0,0,0,'',1,1,1.69,1,1,1,0,0,1,0,0,'',0), -- WOTLK
-(31975,0,0,0,0,0,'Frostwolf (2)',NULL,NULL,0,70,71,0,1275,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,0,0,0,0,'',1,1,1.326,1,1,1,0,0,1,0,0,'',0),
+(31975,0,0,0,0,0,'Frostwolf (2)',NULL,NULL,0,70,71,0,1275,0,1.26,2.57143,1,1,20,0,0,1,2000,2000,1,1,1,0,2048,0,1,1,1,10981,0,10981,13040,0,0,0,'',1,1,1.326,1,1,1,0,0,1,0,0,'',0),
 --
 (113179,122721,131828,0,0,0,'Wing Commander Guse',NULL,NULL,0,59,59,0,1215,3,1,1.14286,1,1,40,1,0,2,2000,2000,1,1,1,4928,2048,0,0,7,0,13179,0,0,0,0,1,858,'SmartAI',1,1,10,1,1.05,1,0,0,1,-386,2,'',0),
 (113180,122697,131826,0,0,0,'Wing Commander Jeztor',NULL,NULL,0,58,58,0,1215,3,1,1.14286,1,1,40,1,0,2,2000,2000,1,1,1,4160,2048,0,0,7,0,13180,0,0,0,0,1,817,'SmartAI',1,1,10,1,1,1,0,0,1,-386,2,'',0),
@@ -3462,7 +3463,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (113577, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Ram Rider Commander - On Respawn - Set Faction Friendly'),
 (113577, 0, 2, 0, 0, 0, 100, 0, 5000, 8000, 9000, 13000, 0, 0, 11, 16856, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Stormpike Ram Rider Commander - In Combat - Cast Mortal Strike'),
 (113577, 0, 3, 0, 0, 0, 100, 0, 4000, 7000, 7000, 9000, 0, 0, 11, 15284, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,     'Stormpike Ram Rider Commander - In Combat - Cast Cleave'),
-(113577, 0, 4, 5, 62, 0, 100, 0, 65701, 0,0,0,0,0, 12, 113419, 3, 10000, 0,0,0,8,0,0,0,0, 600.03, -2.925, 42.08, 0,    'Stormpike Ram Rider Commander - On Gossip Select - Summon NPC_AV_DUMMY_A'),
+(113577, 0, 4, 5, 62, 0, 100, 0, 65702, 0,0,0,0,0, 12, 113419, 3, 10000, 0,0,0,8,0,0,0,0, 600.03, -2.925, 42.08, 0,    'Stormpike Ram Rider Commander - On Gossip Select - Summon NPC_AV_DUMMY_A'),
 (113577, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Ram Rider Commander - On Gossip Select - Remove gossip select'),
 (113577, 0, 6, 0, 108, 0, 100, 1, 6, @WPID+3160, 0, 0, 0, 0, 80, 11357701, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Ram Rider Commander - On WP Reached - Run Script 11357701'),
 --
@@ -3576,6 +3577,13 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (112050, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Defender - On Respawn - Set Faction Friendly'),
 (112050, 0, 4, 5, 103, 0, 100, 0, 0, 12050, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance - Set Visible'), -- check for AC defender
 (112050, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance - Reset Faction'),
+-- after 25/50/75 scrap turn-ins the core spawns its upgraded defender as the marker
+(112050, 0, 6, 7, 103, 0, 100, 0, 0, 13326, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Seasoned) - Set Visible'),
+(112050, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Seasoned) - Reset Faction'),
+(112050, 0, 8, 9, 103, 0, 100, 0, 0, 13331, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Veteran) - Set Visible'),
+(112050, 0, 9, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Veteran) - Reset Faction'),
+(112050, 0, 10, 11, 103, 0, 100, 0, 0, 13422, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Defender - GY controlled by Alliance (Champion) - Set Visible'),
+(112050, 0, 11, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Stormpike Defender - GY controlled by Alliance (Champion) - Reset Faction'),
 --
 (112053, 0, 0, 0, 0, 0, 100, 0, 4000, 6000, 8000, 12000, 0, 0, 11, 19130, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Frostwolf Guardian - In Combat - Cast Revenge'),
 (112053, 0, 1, 0, 0, 0, 100, 0, 8000, 11000, 12000, 15000, 0, 0, 11, 12169, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Frostwolf Guardian - In Combat - Cast Shield Block'),
@@ -3583,6 +3591,13 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (112053, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 35, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Frostwolf Guardian - On Respawn - Set Faction Friendly'),
 (112053, 0, 4, 5, 103, 0, 100, 0, 0, 12053, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde - Set Visible'), -- check for AC defender
 (112053, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde - Reset Faction'),
+-- after 25/50/75 scrap turn-ins the core spawns its upgraded defender as the marker
+(112053, 0, 6, 7, 103, 0, 100, 0, 0, 13328, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Seasoned) - Set Visible'),
+(112053, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Seasoned) - Reset Faction'),
+(112053, 0, 8, 9, 103, 0, 100, 0, 0, 13332, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Veteran) - Set Visible'),
+(112053, 0, 9, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Veteran) - Reset Faction'),
+(112053, 0, 10, 11, 103, 0, 100, 0, 0, 13421, 1, 20, 5000, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Frostwolf Guardian - GY controlled by Horde (Champion) - Set Visible'),
+(112053, 0, 11, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Frostwolf Guardian - GY controlled by Horde (Champion) - Reset Faction'),
 --
 (10981, 0, 0, 0, 0, 0, 100, 0, 8700, 12700, 18400, 34200, 0, 0, 11, 13443, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf - In Combat - Cast Rend'),
 (10990, 0, 0, 0, 4, 0, 100, 1, 0, 0, 0, 0, 0, 0, 11, 22120, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,                  'Alterac Ram - On Aggro - Cast Charge'),
@@ -3616,6 +3631,108 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (14284, 0, 1, 0, 0, 0, 100, 0, 4000, 6000, 10000, 14000, 0, 0, 11, 3248, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,     'Stormpike Battleguard - In Combat - Cast Improved Blocking'),
 (14284, 0, 2, 0, 0, 0, 100, 0, 7000, 10000, 20000, 25000, 0, 0, 11, 16509, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,  'Stormpike Battleguard - In Combat - Cast Rend'),
 (14284, 0, 3, 0, 0, 0, 100, 0, 3000, 5000, 5000, 7000, 0, 0, 11, 22591, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,      'Stormpike Battleguard - In Combat - Cast Strike');
+
+
+/* UPGRADED GRAVEYARD DEFENDERS
+   Armor scrap upgrades turn the graveyard defenders 112050/112053 into these copies of the core's Seasoned, Veteran
+   and Champion defenders (entry + 100000, brackets likewise). They must not share an entry with the core's invisible
+   markers 13326/13331/13422 and 13328/13332/13421: the defenders' NEAR_UNIT rows look for those markers, and a
+   defender with a marker's entry finds itself and turns visible and hostile at every graveyard.
+   Level and health step up with the core's tiers. Damage, armor, the PvP flag and the random movement stay those of
+   the base defender of the same bracket (the core's values would cut damage from 2.8/4/6 to 1, and its Horde
+   guardians stand still). Their kill reputation is set in KILL REPUTATION below. */
+DELETE FROM `creature_template` WHERE `entry` IN
+(113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
+DROP TEMPORARY TABLE IF EXISTS `ipp_copy`;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template` WHERE `entry` IN
+(13326, 13331, 13422, 13328, 13332, 13421, 22714, 32062, 22588, 32125, 22608, 31932, 22715, 32063, 22589, 32126, 22609, 31933);
+UPDATE `ipp_copy` SET `KillCredit1` = `entry`;
+UPDATE `ipp_copy` SET `entry` = `entry` + 100000,
+    `difficulty_entry_1` = IF(`difficulty_entry_1` = 0, 0, `difficulty_entry_1` + 100000),
+    `difficulty_entry_2` = IF(`difficulty_entry_2` = 0, 0, `difficulty_entry_2` + 100000),
+    `difficulty_entry_3` = 0, `ScriptName` = '';
+UPDATE `ipp_copy` SET `AIName` = 'SmartAI' WHERE `entry` IN (113326, 113331, 113422, 113328, 113332, 113421);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112050 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (113326, 113331, 113422);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122690 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (122714, 122588, 122608);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 132091 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (132062, 132125, 131932);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 112053 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (113328, 113332, 113421);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 122674 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (122715, 122589, 122609);
+UPDATE `ipp_copy` `c` JOIN `creature_template` `b` ON `b`.`entry` = 131981 SET `c`.`DamageModifier` = `b`.`DamageModifier`, `c`.`ArmorModifier` = `b`.`ArmorModifier`, `c`.`unit_flags` = `b`.`unit_flags`, `c`.`MovementType` = `b`.`MovementType` WHERE `c`.`entry` IN (132063, 132126, 131933);
+INSERT INTO `creature_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_model` WHERE `CreatureID` IN
+(113326, 113331, 113422, 113328, 113332, 113421, 122714, 132062, 122588, 132125, 122608, 131932, 122715, 132063, 122589, 132126, 122609, 131933);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_model` WHERE `CreatureID` IN
+(13326, 13331, 13422, 13328, 13332, 13421, 22714, 32062, 22588, 32125, 22608, 31932, 22715, 32063, 22589, 32126, 22609, 31933);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 100000;
+INSERT INTO `creature_template_model` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_equip_template` WHERE `CreatureID` IN (13326, 13331, 13422, 13328, 13332, 13421);
+UPDATE `ipp_copy` SET `CreatureID` = `CreatureID` + 100000;
+INSERT INTO `creature_equip_template` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+DELETE FROM `creature_template_locale` WHERE `entry` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `creature_template_locale` WHERE `entry` IN (13326, 13331, 13422, 13328, 13332, 13421);
+UPDATE `ipp_copy` SET `entry` = `entry` + 100000;
+INSERT INTO `creature_template_locale` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+-- same SmartAI as the base defender, so a respawned or reset copy behaves like it
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (113326, 113331, 113422, 113328, 113332, 113421);
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 112050;
+UPDATE `ipp_copy` SET `entryorguid` = 113326; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113331; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113422; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+CREATE TEMPORARY TABLE `ipp_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 112053;
+UPDATE `ipp_copy` SET `entryorguid` = 113328; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113332; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+UPDATE `ipp_copy` SET `entryorguid` = 113421; INSERT INTO `smart_scripts` SELECT * FROM `ipp_copy`;
+DROP TEMPORARY TABLE `ipp_copy`;
+
+
+/* KILL REPUTATION
+   The core pays kill reputation by the template the creature uses in its bracket, and its Frostwolf Clan (729) and
+   Stormpike Guard (730) rows only exist on the 51-60 templates, so in the higher brackets no AV kill paid anything.
+   Among the graveyard defenders, Guardsmen and Legionnaires only some 51-60 tiers had a row, two of them with the
+   wrong faction (13324 and the marker 13326, Alliance, with Stormpike Guard), and the module's own graveyard
+   defenders and their copies had none.
+   1. Every tier of those four chains gives the killer's side 5 up to Revered, the core's row for 12050/12127/12051/
+      12053: Frostwolf Clan for Alliance guards, Stormpike Guard for Horde ones. Wowhead (Classic) lists such a
+      reward for the base tiers and for upgraded tiers too, with caps that vary (Friendly, Honored, none shown).
+   2. The generals and captains (11946-11949) get no kill reward: the battleground already pays their whole team for
+      that kill in every bracket (BattlegroundAV::HandleKillUnit; 350/125 by default, the generals' from
+      Battleground.Alterac.ReputationOnBossDeath, 525/185 on a holiday weekend), and the core's rows of the same
+      amount paid the killer's group a second time.
+   3. Every template with a 729 or 730 reward hands the same row to its bracket templates: these guards, the tower
+      bowmen, lieutenants, commanders and the rest.
+   Sentinels and Warriors keep no reward, as in the core and on Wowhead (Classic). */
+DELETE FROM `creature_onkill_reputation` WHERE `creature_id` IN
+(112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326,
+112053, 113328, 113332, 113421, 12051, 13329, 13334, 13425);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 729, 6, 5 FROM `creature_template` WHERE `entry` IN (112050, 113326, 113331, 113422, 12127, 13324, 13333, 13424, 13326);
+INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `MaxStanding1`, `RewOnKillRepValue1`)
+SELECT `entry`, 730, 6, 5 FROM `creature_template` WHERE `entry` IN (112053, 113328, 113332, 113421, 12051, 13329, 13334, 13425);
+DELETE r FROM `creature_onkill_reputation` r JOIN `creature_template` ct
+    ON r.`creature_id` IN (ct.`entry`, ct.`difficulty_entry_1`, ct.`difficulty_entry_2`, ct.`difficulty_entry_3`)
+WHERE ct.`entry` IN (11946, 11947, 11948, 11949);
+DROP TEMPORARY TABLE IF EXISTS `ipp_av_rep`;
+CREATE TEMPORARY TABLE `ipp_av_rep` SELECT d.`entry` AS `creature_id`, r.`RewOnKillRepFaction1`, r.`RewOnKillRepFaction2`,
+    r.`MaxStanding1`, r.`IsTeamAward1`, r.`RewOnKillRepValue1`, r.`MaxStanding2`, r.`IsTeamAward2`, r.`RewOnKillRepValue2`,
+    r.`TeamDependent`
+FROM `creature_onkill_reputation` r
+JOIN `creature_template` ct ON ct.`entry` = r.`creature_id`
+JOIN `creature_template` d ON d.`entry` IN (ct.`difficulty_entry_1`, ct.`difficulty_entry_2`, ct.`difficulty_entry_3`)
+WHERE r.`RewOnKillRepFaction1` IN (729, 730) OR r.`RewOnKillRepFaction2` IN (729, 730);
+REPLACE INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`,
+    `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`)
+SELECT * FROM `ipp_av_rep`;
+DROP TEMPORARY TABLE `ipp_av_rep`;
 
 
 /* MISC */
@@ -3680,6 +3797,17 @@ INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionTex
 (65724, 0, 0, 'I\'m your man, Ich. Give me a beacon!', 8793, 1, 1, 0, 0, 0, 0, '', 0, 0),
 (65725, 0, 0, 'Give me the beacon, Slidore! Also, you still stink!', 8796, 1, 1, 0, 0, 0, 0, '', 0, 0),
 (65726, 0, 0, 'I am ready to rock, Vipore! Give me a beacon.', 8799, 1, 1, 0, 0, 0, 0, '', 0, 0);
+
+-- air strikes need Revered (patch 1.6.0); rank mask 192 = Revered | Exalted
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` BETWEEN 65721 AND 65726;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
+`ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15, 65721, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Guse''s beacon requires Revered with Frostwolf Clan'),
+(15, 65722, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Jeztor''s beacon requires Revered with Frostwolf Clan'),
+(15, 65723, 0, 0, 0, 5, 0, 729, 192, 0, 0, 0, 0, '', 'Mulverick''s beacon requires Revered with Frostwolf Clan'),
+(15, 65724, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Ichman''s beacon requires Revered with Stormpike Guard'),
+(15, 65725, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Slidore''s beacon requires Revered with Stormpike Guard'),
+(15, 65726, 0, 0, 0, 5, 0, 730, 192, 0, 0, 0, 0, '', 'Vipore''s beacon requires Revered with Stormpike Guard');
 
 -- gossip text on rescue
 DELETE FROM `gossip_menu_option` WHERE `MenuID` BETWEEN 65711 AND 65716;
@@ -3837,6 +3965,13 @@ DELETE FROM `gossip_menu_option` WHERE `MenuID` IN (65701, 65702);
 INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES
 (65701, 0, 0, 'Unleash the cavalry!', 8870, 1, 1, 0, 0, 0, 0, '', 0, 0),
 (65702, 0, 0, 'YAW! Er, to the front lines with you!', 8903, 1, 1, 0, 0, 0, 0, '', 0, 0);
+
+-- cavalry needs Honored (patch 1.6.0); rank mask 224 = Honored | Revered | Exalted
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` IN (65701, 65702);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, 
+`ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15, 65701, 0, 0, 0, 5, 0, 729, 224, 0, 0, 0, 0, '', 'Frostwolf cavalry requires Honored with Frostwolf Clan'),
+(15, 65702, 0, 0, 0, 5, 0, 730, 224, 0, 0, 0, 0, '', 'Stormpike cavalry requires Honored with Stormpike Guard');
 
 DELETE FROM `npc_text` WHERE `ID` IN (65701, 65702);
 INSERT INTO `npc_text` (`ID`, `text0_0`, `BroadcastTextID0`, `Probability0`) VALUES 

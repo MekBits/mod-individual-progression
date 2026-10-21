@@ -2,15 +2,15 @@
 UPDATE `creature_template` SET `AIName` = '' WHERE `entry` IN (5984, 6011);
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 
 (5974, 5975, 5976, 5979, 5982, 5983, 5988, 5992, 5993, 5996, 5997, 5998, 5999, 6004, 6005, 6006, 6007, 6008, 6009, 6010, 
-7665, 7667, 8297, 8298, 8299, 8300, 8301, 8302, 8303, 8304, 8675, 8716, 8717, 8718, 12396);
+7665, 7667, 8297, 8298, 8299, 8300, 8301, 8302, 8303, 8304, 8675, 8716, 8717, 8718);
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN 
 (5974, 5975, 5976, 5979, 5982, 5983, 5984, 5988, 5992, 5993, 5996, 5997, 5998, 5999, 6004, 6005, 6006, 6007, 6008, 6009, 6010, 6011, 
-7665, 7667, 8297, 8298, 8299, 8300, 8301, 8302, 8303, 8304, 8675, 8716, 8717, 8718, 12396);
+7665, 7667, 8297, 8298, 8299, 8300, 8301, 8302, 8303, 8304, 8675, 8716, 8717, 8718);
 
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
-`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
-`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
-`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
 (5974, 0, 0, 0, 4, 0, 15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,                          'Dreadmaul Ogre - On Aggro - Say Line 0'),
 (5974, 0, 1, 0, 0, 0, 100, 0, 13000, 26000, 13000, 56000, 0, 0, 11, 11960, 32, 0, 0, 0, 0, 21, 5, 0, 0, 0, 0, 0, 0, 0,  'Dreadmaul Ogre - Within 0-5 Range - Cast Curse of the Dreadmaul'),
@@ -34,7 +34,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (5997, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Nethergarde Engineer - Outside 30 Range - Start Combat Movement'),
 (5997, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Nethergarde Engineer - Within 5-30 Range - Stop Combat Movement'),
 (5997, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                  'Nethergarde Engineer - Within 0-5 Range - Start Combat Movement'),
-(5997, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Nethergarde Engineer - Within 5-30 Range - Cast Shoot'),
+(5997, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Nethergarde Engineer - Within 5-30 Range - Cast Shoot'),
 (5997, 0, 4, 0, 0, 0, 100, 0, 8000, 11000, 12000, 16000, 5, 30, 11, 8858, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,     'Nethergarde Engineer - In Combat - Cast Bomb'),
 (5997, 0, 5, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                       'Nethergarde Engineer - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (5998, 0, 0, 0, 0, 0, 100, 0, 1000, 3000, 12000, 16000, 0, 0, 11, 5115, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,       'Nethergarde Foreman - In Combat - Cast Battle Command'),
@@ -107,13 +107,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (8717, 0, 2, 0, 0, 0, 100, 0, 8000, 15000, 10000, 29000, 0, 0, 11, 16046, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,     'Felguard Elite - In Combat - Cast Blast Wave'),
 (8718, 0, 0, 0, 0, 0, 100, 0, 2000, 13000, 6000, 18000, 0, 0, 11, 20817, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Manahound - In Combat - Cast Mana Burn'),
 (8718, 0, 1, 0, 0, 0, 100, 0, 8000, 13000, 21000, 33000, 0, 0, 11, 3604, 0, 0, 0, 0, 0, 21, 5, 0, 0, 0, 0, 0, 0, 0,     'Manahound - Within 0-5 Range - Cast Tendon Rip'),
-(8718, 0, 2, 0, 0, 0, 100, 0, 3000, 8000, 6000, 20000, 0, 0, 11, 14331, 32, 0, 0, 0, 0, 21, 5, 0, 0, 0, 0, 0, 0, 0,     'Manahound - Within 0-5 Range - Cast Vicious Rend'),
-(12396, 0, 0, 0, 0, 0, 100, 0, 5000, 8000, 18000, 24000, 0, 0, 11, 16005, 0, 0, 0, 0, 0, 5, 30, 0, 0, 0, 0, 0, 0, 0,    'Doomguard Commander - In Combat - Cast Rain of Fire'),
-(12396, 0, 1, 0, 0, 0, 100, 0, 12000, 15000, 20000, 25000, 0, 0, 11, 16727, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Doomguard Commander - In Combat - Cast War Stomp'),
-(12396, 0, 2, 0, 0, 0, 100, 0, 2000, 4000, 25000, 32000, 0, 0, 11, 20812, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,     'Doomguard Commander - In Combat - Cast Cripple'),
-(12396, 0, 3, 0, 0, 0, 100, 0, 7000, 14000, 17000, 22000, 0, 0, 11, 15090, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Doomguard Commander - In Combat - Cast Dispel Magic'),
-(12396, 0, 4, 5, 8, 0, 100, 0, 23019, 0, 0, 0, 0, 0, 50, 179644, 180, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Doomguard Commander - On Spellhit \'Crystal Prison Dummy DND\' - Summon Gameobject \'Imprisoned Doomguard\''),
-(12396, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                      'Doomguard Commander - On Spellhit \'Crystal Prison Dummy DND\' - Despawn Instant');
+(8718, 0, 2, 0, 0, 0, 100, 0, 3000, 8000, 6000, 20000, 0, 0, 11, 14331, 32, 0, 0, 0, 0, 21, 5, 0, 0, 0, 0, 0, 0, 0,     'Manahound - Within 0-5 Range - Cast Vicious Rend');
 
 -- Portal Seeker missing waypoints
 DELETE FROM `creature` WHERE `guid` = 605981;
@@ -151,8 +145,8 @@ SET @WPID        := 6560000;
 SET @IPPPHASE_II := 131072;
 
 DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID AND @CGUID+212;
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, 
-`spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`,
+`spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 
 (@CGUID,   19287, 0, 0, 0, 1, @IPPPHASE_II, 0, -11871, -3218.74, -14.8771, 0.159796, 120, 0, 0, 3297, 2434, 0, 0, 0, 0, '', NULL, 0, NULL),        -- Invading Voidwalker
 (@CGUID+1, 19287, 0, 0, 0, 1, @IPPPHASE_II, 0, -11874.4, -3190.96, -14.9067, 6.21522, 120, 0, 0, 3297, 2434, 0, 0, 0, 0, '', NULL, 0, NULL),
@@ -266,9 +260,9 @@ UPDATE `creature_template` SET `detection_range` = 30 WHERE `entry` IN (19285, 1
 
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (-656006, -656007, -656008);
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (18966, 18969, 19288, 19287, 19365, 19385, 19391, 19566, 19567);
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, 
-`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
-`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
 `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
 (-656006, 0, 0, 1,  6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, @CGUID+206, 0, 0, 0, 0, 0, 0, 0,         'Dreadknight - On Death - Despawn Melgromm Highmountain'),
@@ -320,10 +314,10 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (19567, 0, 0, 0, 106, 0, 100, 0, 0, 0, 2800, 5200, 0, 8, 11, 15453, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,          'Watcher Theronus - Within 0-8 Range - Cast Arcane Explosion'),
 (19567, 0, 1, 0, 0, 0, 100, 0, 0, 0, 2000, 2000, 0, 0, 11, 16799, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Watcher Theronus - In Combat - Cast Frostbolt');
 
-DELETE FROM `creature_addon` WHERE `guid` IN 
-(@CGUID+4, @CGUID+5, @CGUID+6, @CGUID+7, @CGUID+8, @CGUID+9, @CGUID+10, @CGUID+11, @CGUID+12, @CGUID+13, @CGUID+14, @CGUID+15, 
+DELETE FROM `creature_addon` WHERE `guid` IN
+(@CGUID+4, @CGUID+5, @CGUID+6, @CGUID+7, @CGUID+8, @CGUID+9, @CGUID+10, @CGUID+11, @CGUID+12, @CGUID+13, @CGUID+14, @CGUID+15,
 @CGUID+16, @CGUID+17, @CGUID+18, @CGUID+19, @CGUID+20, @CGUID+21, @CGUID+22, @CGUID+102, @CGUID+200, @CGUID+203, @CGUID+206);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES 
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES
 --
 (@CGUID+4,   @WPID+40,   0, 0, 0, 0, 0, NULL),
 (@CGUID+5,   @WPID+50,   0, 0, 0, 0, 0, NULL),
@@ -349,10 +343,10 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+203, @WPID+2030, 0, 0, 0, 0, 0, NULL),
 (@CGUID+206, @WPID+2060, 0, 0, 0, 0, 0, NULL);
 
-DELETE FROM `waypoint_data` WHERE `id` IN 
-(@WPID+40, @WPID+50, @WPID+60, @WPID+70, @WPID+80, @WPID+90, @WPID+100, @WPID+110, @WPID+120, @WPID+130, @WPID+140, @WPID+150, 
+DELETE FROM `waypoint_data` WHERE `id` IN
+(@WPID+40, @WPID+50, @WPID+60, @WPID+70, @WPID+80, @WPID+90, @WPID+100, @WPID+110, @WPID+120, @WPID+130, @WPID+140, @WPID+150,
 @WPID+160, @WPID+170, @WPID+180, @WPID+190, @WPID+200, @WPID+0210, @WPID+0220, @WPID+1020, @WPID+2000, @WPID+2030, @WPID+2060);
-INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES 
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES
 --
 (@WPID+2000, 1, -11824.2, -3225.97, -30.3699, NULL, 0, 0, 0, 100, 0),     -- Lord Marshal Raynor
 (@WPID+2000, 2, -11839, -3211.73, -30.043, NULL, 0, 0, 0, 100, 0),

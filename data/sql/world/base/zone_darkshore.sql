@@ -57,7 +57,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2184, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Lady Moongazer - Outside 30 Range - Start Combat Movement'),
 (2184, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Lady Moongazer - Within 5-30 Range - Stop Combat Movement'),
 (2184, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Lady Moongazer - Within 0-5 Range - Start Combat Movement'),
-(2184, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Lady Moongazer - Within 5-30 Range - Cast Shoot'),
+(2184, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Lady Moongazer - Within 5-30 Range - Cast Shoot'),
 (2184, 0, 4, 0, 9, 0, 100, 0, 0, 0, 20000, 40000, 0, 20, 11, 6533, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Lady Moongazer - Within 0-20 Range - Cast Net'),
 --
 (2185, 0, 0, 0, 9, 0, 100, 0, 0, 0, 45000, 50000, 0, 5, 11, 6016, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Darkshore Thresher - Within 0-5 Range - Cast Pierce Armor'),
@@ -88,7 +88,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2206, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Greymist Hunter - Outside 30 Range - Start Combat Movement'),
 (2206, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Greymist Hunter - Within 5-30 Range - Stop Combat Movement'),
 (2206, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Greymist Hunter - Within 0-5 Range - Start Combat Movement'),
-(2206, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 10277, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Greymist Hunter - Within 5-30 Range - Cast Throw'),
+(2206, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 10277, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Greymist Hunter - Within 5-30 Range - Cast Throw'),
 (2206, 0, 4, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Greymist Hunter - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (2207, 0, 0, 0, 0, 0, 100, 0, 0, 0, 2000, 2000, 0, 0, 11, 9532, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Greymist Oracle - In Combat - Cast Lightning Bolt'),
 (2207, 0, 1, 0, 14, 0, 100, 0, 190, 40, 30000, 45000, 0, 0, 11, 913, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Greymist Oracle - Friendly At 190 Health - Cast Healing Wave'),
@@ -98,7 +98,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2212, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Deth ryll Satyr - Outside 30 Range - Start Combat Movement'),
 (2212, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Deth ryll Satyr - Within 5-30 Range - Stop Combat Movement'),
 (2212, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Deth ryll Satyr - Within 0-5 Range - Start Combat Movement'),
-(2212, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Deth ryll Satyr - Within 5-30 Range - Cast Shoot'),
+(2212, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Deth ryll Satyr - Within 5-30 Range - Cast Shoot'),
 (2212, 0, 4, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Deth ryll Satyr - Between 0-15% Health - Flee For Assist (No Repeat)'),
 --
 (2236, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 11, 8876, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Raging Reef Crawler - In Combat - Cast Thrash'),
@@ -136,7 +136,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (7016, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Lady Vespira - Outside 30 Range - Start Combat Movement'),
 (7016, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Lady Vespira - Within 5-30 Range - Stop Combat Movement'),
 (7016, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Lady Vespira - Within 0-5 Range - Start Combat Movement'),
-(7016, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Lady Vespira - Within 5-30 Range - Cast Shoot'),
+(7016, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Lady Vespira - Within 5-30 Range - Cast Shoot'),
 (7016, 0, 4, 0, 9, 0, 100, 0, 0, 0, 9000, 14000, 0, 5, 11, 11428, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Lady Vespira - Within 0-5 Range - Cast Knockdown'),
 (7016, 0, 5, 0, 0, 0, 100, 0, 11000, 15000, 14000, 17000, 0, 0, 11, 12549, 65, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,  'Lady Vespira - In Combat - Cast Forked Lightning'),
 --

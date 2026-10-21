@@ -41,7 +41,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (5251, 0, 0, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Woodpaw Trapper - Outside 30 Range - Start Combat Movement'),
 (5251, 0, 1, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                  'Woodpaw Trapper - Within 5-30 Range - Stop Combat Movement'),
 (5251, 0, 2, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Woodpaw Trapper - Within 0-5 Range - Start Combat Movement'),
-(5251, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,              'Woodpaw Trapper - Within 5-30 Range - Cast Shoot'),
+(5251, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Woodpaw Trapper - Within 5-30 Range - Cast Shoot'),
 (5251, 0, 4, 0, 9, 0, 100, 0, 0, 0, 18000, 29000, 10, 20, 11, 6533, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Woodpaw Trapper - Within 10-20 Range - Cast Net'),
 (5251, 0, 5, 0, 4, 0, 15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 21, 40, 0, 0, 0, 0, 0, 0, 0,                         'Woodpaw Trapper - On Aggro - Say Line 0'),
 (5251, 0, 6, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                        'Woodpaw Trapper - Between 0-15% Health - Flee For Assist (No Repeat)'),

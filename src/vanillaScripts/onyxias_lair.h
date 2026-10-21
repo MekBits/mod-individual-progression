@@ -37,16 +37,22 @@ enum eCreatures
     NPC_ONYXIA                  = 10184,
     NPC_ONYXIAN_WHELP           = 11262,
     NPC_ONYXIAN_LAIR_GUARD      = 36561,
+    // NPC_WORLD_TRIGGER        = 22515,
 
     NPC_ONYXIA_40               = 301000,
     NPC_ONYXIAN_WHELP_40        = 301001,
     NPC_ONYXIAN_LAIR_GUARD_40   = 301002,
 };
 
+enum Actions
+{
+    ACTION_WHELP_SUMMONED = 1
+};
+
 enum eGameObjects
 {
     GO_WHELP_SPAWNER            = 176510,
-    GO_WHELP_EGG                = 176511
+    GO_ONYXIA_EGG               = 176511
 };
 
 enum eAchievementData

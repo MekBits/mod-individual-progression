@@ -4,7 +4,7 @@ INSERT INTO `creature_template` (`entry`, `name`, `subname`, `minlevel`, `maxlev
 `AIName`, `MovementType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, `movementId`, `RegenHealth`, `CreatureImmunitiesId`, `flags_extra`, `ScriptName`) VALUES
 --
 (301000, "Onyxia", "", 63, 63, 103, 1.0, 1.28571, 20.0, 3, 0, 15.05, 2000, 2000, 1.0, 1.0, 1, 64, 2048, 0, 2, 108, 301000, 10184, 0, 914892, 1066294, '', 0, 1.0, 330.0, 1.0, 1.0, 1.0, 0, 1, -327, 513, 'boss_onyxia_40'),
-(301001, "Onyxian Whelp", "", 56, 57, 16, 1.11111, 1.14286, 18.0, 0, 0, 3.7, 2000, 2000, 1.0, 1.0, 1, 0, 2048, 0, 2, 8, 0, 0, 0, 0, 0, '', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1, 0, 0, ''),
+(301001, "Onyxian Whelp", "", 56, 57, 16, 1.11111, 1.14286, 18.0, 0, 0, 3.7, 2000, 2000, 1.0, 1.0, 1, 0, 2048, 0, 2, 8, 0, 0, 0, 0, 0, '', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1, 0, 0, 'npc_onyxian_whelp'),
 (301002, "Onyxian Warder", "", 60, 63, 103, 0.888888, 1.14286, 20.0, 1, 0, 9.8, 2000, 2000, 1.0, 1.0, 1, 64, 2048, 0, 2, 8, 301002, 12129, 0, 1185, 4741, 'SmartAI', 1, 1.0, 25.0, 1.0, 1.0, 1.0, 0, 1, -273, 0, '');
 
 DELETE FROM `creature_template_locale` WHERE `entry` BETWEEN 301000 AND 301002;
@@ -631,14 +631,15 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (3110040, 12, -125.618, -133.461, -51.4287, 3.8802, 0);
 
 DELETE FROM `smart_scripts` WHERE `entryorguid` = 301002;
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
-`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
 `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
-(301002, 0, 0, 0, 0, 0, 100, 6, 1000, 1000, 12000, 12000, 0, 11, 20203, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 'Onyxian Warder - In Combat - Cast Fire Nova (Onyxia 40)'),
-(301002, 0, 1, 0, 0, 0, 90, 6, 5000, 5000, 20000, 20000, 0, 11, 18958, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,  'Onyxian Warder - In Combat - Cast Flame Lash (Onyxia 40)'),
-(301002, 0, 2, 0, 0, 0, 80, 6, 7000, 7000, 9000, 11000, 0, 11, 15284, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,   'Onyxian Warder - In Combat - Cast Cleave (Onyxia 40)'),
-(301002, 0, 3, 0, 0, 0, 95, 6, 3000, 3000, 35000, 35000, 0, 11, 12097, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,  'Onyxian Warder - In Combat - Cast Pierce Armor (Onyxia 40)');
+(301002, 0, 0, 0, 0, 0, 100, 0, 1000, 1000, 12000, 12000, 0, 0, 11, 20203, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Onyxian Warder - In Combat - Cast Fire Nova (Onyxia 40)'),
+(301002, 0, 1, 0, 0, 0, 90, 0, 5000, 5000, 20000, 20000, 0, 0, 11, 18958, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Onyxian Warder - In Combat - Cast Flame Lash (Onyxia 40)'),
+(301002, 0, 2, 0, 0, 0, 80, 0, 7000, 7000, 9000, 11000, 0, 0, 11, 15284, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,     'Onyxian Warder - In Combat - Cast Cleave (Onyxia 40)'),
+(301002, 0, 3, 0, 0, 0, 95, 0, 3000, 3000, 35000, 35000, 0, 0, 11, 12097, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,    'Onyxian Warder - In Combat - Cast Pierce Armor (Onyxia 40)');
 
 DELETE FROM `creature_text` WHERE `CreatureID` = 301000;
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES

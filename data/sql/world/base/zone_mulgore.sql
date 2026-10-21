@@ -17,7 +17,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2951, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Palemane Poacher - Outside 30 Range - Start Combat Movement'),
 (2951, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Palemane Poacher - Within 5-30 Range - Stop Combat Movement'),
 (2951, 0, 3, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Palemane Poacher - Within 0-5 Range - Start Combat Movement'),
-(2951, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Palemane Poacher - Within 5-30 Range - Cast Shoot'),
+(2951, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Palemane Poacher - Within 5-30 Range - Cast Shoot'),
 (2951, 0, 5, 0, 9, 0, 100, 0, 0, 3000, 9000, 14000, 5, 30, 11, 1516, 0, 7, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,         'Palemane Poacher - Within 5-30 Range - Cast Quick Shot'),
 (2951, 0, 6, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Palemane Poacher - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (2953, 0, 0, 0, 0, 0, 100, 0, 0, 0, 2000, 2000, 0, 0, 11, 9532, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Bristleback Shaman - In Combat - Cast Lightning Bolt'),
@@ -42,7 +42,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2968, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Galak Outrunner - Outside 30 Range - Start Combat Movement'),
 (2968, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Galak Outrunner - Within 5-30 Range - Stop Combat Movement'),
 (2968, 0, 3, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Galak Outrunner - Within 0-5 Range - Start Combat Movement'),
-(2968, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Galak Outrunner - Within 5-30 Range - Cast Shoot'),
+(2968, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Galak Outrunner - Within 5-30 Range - Cast Shoot'),
 (2968, 0, 5, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Galak Outrunner - Between 0-15% Health - Flee For Assist (No Repeat)'),
 --
 (2969, 0, 0, 0, 9, 0, 100, 0, 0, 0, 15000, 21000, 0, 5, 11, 5708, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Wiry Swoop - Within 0-5 Range - Cast Swoop'),

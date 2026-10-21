@@ -43,7 +43,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (7442, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Winterfall Pathfinder - Outside 30 Range - Start Combat Movement'),
 (7442, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Winterfall Pathfinder - Within 5-30 Range - Stop Combat Movement'),
 (7442, 0, 3, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                  'Winterfall Pathfinder - Within 0-5 Range - Start Combat Movement'),
-(7442, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Winterfall Pathfinder - Within 5-30 Range - Cast Shoot'),
+(7442, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Winterfall Pathfinder - Within 5-30 Range - Cast Shoot'),
 (7442, 0, 5, 0, 0, 0, 100, 0, 0, 0, 30000, 35000, 0, 0, 11, 16498, 33, 0, 0, 0, 0, 5, 30, 0, 0, 0, 0, 0, 0, 0,          'Winterfall Pathfinder - In Combat - Cast Faerie Fire'),
 --
 (7443, 0, 0, 0, 9, 0, 60, 0, 0, 0, 12000, 12000, 0, 5, 11, 15793, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Shardtooth Mauler - Within 0-5 Range - Cast Maul'),

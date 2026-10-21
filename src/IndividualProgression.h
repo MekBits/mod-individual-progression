@@ -18,6 +18,8 @@
 #include "AreaDefines.h"
 #include "IWorld.h"
 #include <regex>
+#include <shared_mutex>
+#include <unordered_map>
 
 typedef std::unordered_map<uint32, uint32> questXpMapType;
 
@@ -446,9 +448,12 @@ public:
     void CheckAdjustments(Player* player) const;
     bool hasCustomProgressionValue(uint32 creatureEntry);
     bool isExcludedAccount(Player* player);
-    bool isBotAccount(Player* player);
+    bool isExcludedAccount(uint32 accountId);
+    bool isBotAccount(const Player* player);
+    bool isBotAccount(uint32 accountId);
     bool isNormalAccount(Player* player);
     uint8 GetBotXpCap(Player* bot);
+    void LoadAccountRegexes();
     void SyncBotsProgressionToLeader(Group* group);
     void checkHunterPetSpells(Player* player);
     void checkWarlockPetSpells(Player* player);
@@ -473,6 +478,21 @@ public:
     static void RemovePlayerAchievement(ObjectGuid::LowType playerGUID, uint32 achievementId);
     static float ComputeVanillaAdjustment(uint8 playerLevel, float configAdjustmentValue);
     static uint8 GetAccountProgression(uint32 accountId);
+
+private:
+    struct AccountMatch
+    {
+        bool excluded = false;
+        bool bot = false;
+    };
+
+    AccountMatch GetAccountMatch(uint32 accountId);
+
+    // excludedAccountsRegex and botAccountsRegex compiled once per config load, and what each
+    // account name matched. The damage and healing hooks ask on map update threads.
+    std::regex _excludedAccountsRegex, _botAccountsRegex;
+    std::unordered_map<uint32, AccountMatch> _accountMatchCache;
+    std::shared_mutex _accountMatchLock;
 };
 
 #define sIndividualProgression IndividualProgression::instance()

@@ -151,7 +151,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (10558, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Hearthsinger Forresten - Outside 30 Range - Start Combat Movement'),
 (10558, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Hearthsinger Forresten - Within 5-30 Range - Stop Combat Movement'),
 (10558, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Hearthsinger Forresten - Within 0-5 Range - Start Combat Movement'),
-(10558, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 16100, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Hearthsinger Forresten - Within 5-30 Range - Cast Shoot'),
+(10558, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 3000, 5, 30, 11, 16100, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Hearthsinger Forresten - Within 5-30 Range - Cast Shoot'),
 (10558, 0, 4, 0, 0, 0, 100, 0, 9000, 14000, 9000, 14000, 0, 0, 11, 14443, 0, 0, 0, 0, 0, 28, 30, 1, 1, 5, 0, 0, 0, 0,   'Hearthsinger Forresten - Within 5-30 Range - Cast Multi-Shot'),
 (10558, 0, 5, 0, 0, 0, 100, 0, 3000, 5000, 12000, 19000, 0, 0, 11, 16244, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,     'Hearthsinger Forresten - In Combat - Cast Demoralizing Shout'),
 (10558, 0, 6, 0, 0, 0, 100, 0, 7000, 9000, 20000, 25000, 0, 0, 11, 16798, 0, 0, 0, 0, 0, 6, 20, 0, 0, 0, 0, 0, 0, 0,    'Hearthsinger Forresten - In Combat - Cast Enchanting Lullaby'),

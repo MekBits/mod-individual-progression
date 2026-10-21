@@ -52,7 +52,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (8283, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Slave Master Blackheart - Outside 30 Range - Start Combat Movement'),
 (8283, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Slave Master Blackheart - Within 5-30 Range - Stop Combat Movement'),
 (8283, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Slave Master Blackheart - Within 0-5 Range - Start Combat Movement'),
-(8283, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Slave Master Blackheart - Within 5-30 Range - Cast Shoot'),
+(8283, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Slave Master Blackheart - Within 5-30 Range - Cast Shoot'),
 (8283, 0, 4, 0, 0, 0, 100, 0, 0, 5000, 15000, 25000, 0, 0, 11, 6533, 32, 0, 0, 0, 0, 21, 20, 0, 0, 0, 0, 0, 0, 0,      'Slave Master Blackheart - Within 0-20 Range - Cast Net'),
 (8283, 0, 5, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 39, 20, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Slave Master Blackheart - Between 0-15% Health - Call For Help'),
 --

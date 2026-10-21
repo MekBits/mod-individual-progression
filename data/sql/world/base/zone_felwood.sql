@@ -75,7 +75,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (7155, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Deadwood Pathfinder - Outside 30 Range - Start Combat Movement'),
 (7155, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Deadwood Pathfinder - Within 5-30 Range - Stop Combat Movement'),
 (7155, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Deadwood Pathfinder - Within 0-5 Range - Start Combat Movement'),
-(7155, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Deadwood Pathfinder - In Combat - Cast Shoot'),
+(7155, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Deadwood Pathfinder - In Combat - Cast Shoot'),
 (7155, 0, 4, 0, 9, 0, 100, 0, 0, 0, 6000, 12000, 5, 30, 11, 6685, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Deadwood Pathfinder - Within 5-30 Range - Cast Piercing Shot'),
 (7155, 0, 5, 0, 0, 0, 100, 0, 4000, 11000, 12000, 15000, 0, 0, 11, 13583, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Deadwood Pathfinder - In Combat - Cast Curse of the Deadwood'),
 (7156, 0, 0, 0, 0, 0, 100, 0, 4000, 11000, 12000, 15000, 0, 0, 11, 13583, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   'Deadwood Den Watcher - In Combat - Cast Curse of the Deadwood'),

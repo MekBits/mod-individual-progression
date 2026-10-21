@@ -19,7 +19,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (2245, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Syndicate Saboteur - Outside 30 Range - Start Combat Movement'),
 (2245, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Syndicate Saboteur - Within 5-30 Range - Stop Combat Movement'),
 (2245, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                  'Syndicate Saboteur - Within 0-5 Range - Start Combat Movement'),
-(2245, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2500, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Syndicate Saboteur - Within 5-30 Range - Cast Shoot'),
+(2245, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2500, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Syndicate Saboteur - Within 5-30 Range - Cast Shoot'),
 (2245, 0, 4, 0, 0, 0, 100, 0, 7000, 10000, 14000, 27000, 0, 0, 11, 6980, 1, 0, 0, 0, 0, 28, 30, 1, 1, 5, 0, 0, 0, 0,    'Syndicate Saboteur - Within 5-30 Range - Cast Fire Shot'),
 (2245, 0, 5, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                       'Syndicate Saboteur - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (2246, 0, 0, 0, 1, 0, 100, 1, 1000, 1000, 0, 0, 0, 0, 11, 22766, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Syndicate Assassin - Out of Combat - Cast Sneak (No Repeat)'),

@@ -1453,3 +1453,147 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (1308801, 9, 16, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 9, 13536, 0, 200, 1, 0, 0, 0, 0,              'Script9 - Masha Swiftcut - Reset Faction Coldmine Guard'),
 (1308801, 9, 17, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 9, 13539, 0, 200, 1, 0, 0, 0, 0,              'Script9 - Masha Swiftcut - Reset Faction Coldmine Surveyor'),
 (1308801, 9, 18, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 1214, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Script9 - Masha Swiftcut - Reset Faction');
+
+
+-- vanilla_creature updates, these need to be merged still
+
+/*  Whitewhisker Vermin  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `mingold` = 152, `maxgold` = 761 WHERE `entry` = 10982;
+
+/*  Irondeep Trogg  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `mingold` = 152, `maxgold` = 761 WHERE `entry` = 10987;
+
+/*  Irondeep Geomancer UNUSED  */
+UPDATE `creature_template` SET `detection_range` = 18.0, `DamageModifier` = 1.0, `unit_class` = 2 WHERE `entry` = 11599;
+
+/*  Irondeep Shaman  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `ArmorModifier` = 0.95 WHERE `entry` = 11600;
+
+/*  Irondeep Cave Lurker UNUSED  */
+UPDATE `creature_template` SET `detection_range` = 18.0, `DamageModifier` = 1.0 WHERE `entry` = 11601;
+
+/*  Irondeep Skullthumper  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5 WHERE `entry` = 11602;
+
+/*  Whitewhisker Digger  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `mingold` = 152, `maxgold` = 761 WHERE `entry` = 11603;
+
+/*  Whitewhisker Geomancer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `ArmorModifier` = 0.95 WHERE `entry` = 11604;
+
+/*  Whitewhisker Overseer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.583333, `BaseAttackTime` = 2400 WHERE `entry` = 11605;
+
+/*  Whitewhisker Tunnel Rat  */
+UPDATE `creature_template` SET `minlevel` = 63, `maxlevel` = 63, `speed_walk` = 1.0, `detection_range` = 18.0, `unit_class` = 2 WHERE `entry` = 11606;
+
+/*  Irondeep Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4, `ArmorModifier` = 1.25 WHERE `entry` = 13080;
+
+/*  Irondeep Raider  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4 WHERE `entry` = 13081;
+
+/*  Aggi Rumblestomp  */
+UPDATE `creature_template` SET `speed_walk` = 1.0, `ArmorModifier` = 1.3, `BaseAttackTime` = 2000, `RangeAttackTime` = 1310 WHERE `entry` = 13086;
+
+/*  Coldmine Invader  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1301 WHERE `entry` = 13087;
+
+/*  Coldmine Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.392857 WHERE `entry` = 13089;
+
+/*  Coldmine Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4, `ArmorModifier` = 1.25, `mingold` = 147, `maxgold` = 737 WHERE `entry` = 13096;
+
+/*  Coldmine Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4 WHERE `entry` = 13097;
+
+/*  Irondeep Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4, `ArmorModifier` = 1.25 WHERE `entry` = 13098;
+
+/*  Irondeep Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.4, `ArmorModifier` = 0.95 WHERE `entry` = 13099;
+
+/*  Coldmine Peon  */
+UPDATE `creature_template` SET `DamageModifier` = 0.3 WHERE `entry` = 13316;
+
+/*  Coldmine Miner  */
+UPDATE `creature_template` SET `DamageModifier` = 0.3, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1292 WHERE `entry` = 13317;
+
+/*  Irondeep Miner  */
+UPDATE `creature_template` SET `speed_walk` = 0.666668, `DamageModifier` = 0.3, `ArmorModifier` = 1.25 WHERE `entry` = 13396;
+
+/*  Irondeep Peon  */
+UPDATE `creature_template` SET `DamageModifier` = 0.3 WHERE `entry` = 13397;
+
+/*  Seasoned Coldmine Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `BaseAttackTime` = 2800, `RangeAttackTime` = 1301 WHERE `entry` = 13534;
+
+/*  Veteran Coldmine Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.571429, `ArmorModifier` = 0.95 WHERE `entry` = 13535;
+
+/*  Champion Coldmine Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 3.5, `ArmorModifier` = 1.1, `BaseAttackTime` = 2800, `RangeAttackTime` = 1301 WHERE `entry` = 13536;
+
+/*  Seasoned Coldmine Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `BaseAttackTime` = 2000, `RangeAttackTime` = 1338 WHERE `entry` = 13537;
+
+/*  Veteran Coldmine Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6 WHERE `entry` = 13538;
+
+/*  Champion Coldmine Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 5.3, `ArmorModifier` = 1.35, `BaseAttackTime` = 2000, `RangeAttackTime` = 1301, `unit_class` = 2 WHERE `entry` = 13539;
+
+/*  Seasoned Irondeep Explorer  */
+UPDATE `creature_template` SET `minlevel` = 56, `DamageModifier` = 0.5 WHERE `entry` = 13540;
+
+/*  Veteran Irondeep Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6, `ArmorModifier` = 0.9, `unit_class` = 2 WHERE `entry` = 13541;
+
+/*  Champion Irondeep Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.7, `unit_class` = 2 WHERE `entry` = 13542;
+
+/*  Seasoned Irondeep Raider  */
+UPDATE `creature_template` SET `minlevel` = 56, `DamageModifier` = 0.5, `ArmorModifier` = 1.05 WHERE `entry` = 13543;
+
+/*  Veteran Irondeep Raider  */
+UPDATE `creature_template` SET `minlevel` = 58, `DamageModifier` = 0.6, `ArmorModifier` = 0.95 WHERE `entry` = 13544;
+
+/*  Champion Irondeep Raider  */
+UPDATE `creature_template` SET `DamageModifier` = 0.7 WHERE `entry` = 13545;
+
+/*  Seasoned Coldmine Explorer  */
+UPDATE `creature_template` SET `minlevel` = 56, `DamageModifier` = 0.5, `ArmorModifier` = 1.25, `mingold` = 152, `maxgold` = 761 WHERE `entry` = 13546;
+
+/*  Veteran Coldmine Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6, `ArmorModifier` = 0.95, `BaseAttackTime` = 2000, `RangeAttackTime` = 1329 WHERE `entry` = 13547;
+
+/*  Champion Coldmine Explorer  */
+UPDATE `creature_template` SET `DamageModifier` = 5.3, `ArmorModifier` = 1.35, `BaseAttackTime` = 2000, `RangeAttackTime` = 1301, `unit_class` = 2 WHERE `entry` = 13548;
+
+/*  Seasoned Coldmine Invader  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1301 WHERE `entry` = 13549;
+
+/*  Veteran Coldmine Invader  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1320 WHERE `entry` = 13550;
+
+/*  Champion Coldmine Invader  */
+UPDATE `creature_template` SET `DamageModifier` = 0.7, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1292 WHERE `entry` = 13551;
+
+/*  Seasoned Irondeep Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `ArmorModifier` = 1.25 WHERE `entry` = 13552;
+
+/*  Veteran Irondeep Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6, `ArmorModifier` = 1.25 WHERE `entry` = 13553;
+
+/*  Champion Irondeep Guard  */
+UPDATE `creature_template` SET `DamageModifier` = 0.7, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1310 WHERE `entry` = 13554;
+
+/*  Seasoned Irondeep Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.5, `ArmorModifier` = 1.25 WHERE `entry` = 13555;
+
+/*  Veteran Irondeep Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.6, `ArmorModifier` = 1.25 WHERE `entry` = 13556;
+
+/*  Champion Irondeep Surveyor  */
+UPDATE `creature_template` SET `DamageModifier` = 0.7, `ArmorModifier` = 1.25, `BaseAttackTime` = 2000, `RangeAttackTime` = 1347, `unit_class` = 2 WHERE `entry` = 13557;

@@ -48,7 +48,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (1173, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Tunnel Rat Scout - Outside 30 Range - Start Combat Movement'),
 (1173, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Tunnel Rat Scout - Within 5-30 Range - Stop Combat Movement'),
 (1173, 0, 3, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Tunnel Rat Scout - Within 0-5 Range - Start Combat Movement'),
-(1173, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 0, 0, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,             'Tunnel Rat Scout - Within 5-30 Range - Cast Shoot'),
+(1173, 0, 4, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 0, 0, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Tunnel Rat Scout - Within 5-30 Range - Cast Shoot'),
 (1173, 0, 5, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Tunnel Rat Scout - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (1174, 0, 0, 0, 4, 0, 10, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                         'Tunnel Rat Geomancer - On Aggro - Say Line 0'),
 (1174, 0, 1, 0, 0, 0, 100, 1, 500, 1500, 8800, 8800, 0, 0, 11, 4979, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,         'Tunnel Rat Geomancer - In Combat - Cast Quick Flame Ward'),

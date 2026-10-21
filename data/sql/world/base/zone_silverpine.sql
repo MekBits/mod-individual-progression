@@ -54,7 +54,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (1891, 0, 3, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Pyrewood Watcher - Outside 30 Range - Start Combat Movement'),
 (1891, 0, 4, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Pyrewood Watcher - Within 5-30 Range - Stop Combat Movement'),
 (1891, 0, 5, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Pyrewood Watcher - Within 0-5 Range - Start Combat Movement'),
-(1891, 0, 6, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Pyrewood Watcher - Within 5-30 Range - Cast Shoot'),
+(1891, 0, 6, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Pyrewood Watcher - Within 5-30 Range - Cast Shoot'),
 (1891, 0, 7, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Pyrewood Watcher - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (1894, 0, 0, 2, 1, 0, 100, 512, 5000, 5000, 5000, 5000, 0, 0, 36, 1893, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Pyrewood Sentry - Out of Combat - Update Entry'),
 (1894, 0, 1, 2, 1, 0, 100, 512, 5000, 5000, 5000, 5000, 0, 0, 36, 1894, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Pyrewood Sentry - Out of Combat - Update Entry'),

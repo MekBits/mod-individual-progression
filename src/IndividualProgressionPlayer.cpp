@@ -68,6 +68,19 @@ public:
         }
     }
 
+    void OnPlayerGetTrainerSpellState(Player const* player, uint32 /*trainerId*/, uint32 spellId, Trainer::SpellState& state) override
+    {
+        // Allow [Tranquilizing Shot] for 60lvl bots
+        if (player->getClass() == CLASS_HUNTER && spellId == 19801)
+        {
+            // Perform isBotAccount check very last
+            if (player->GetLevel() == 60 && state == Trainer::SpellState::Unavailable && sIndividualProgression->isBotAccount(player))
+            {
+                state = Trainer::SpellState::Available;
+            }
+        }
+    }
+
     void OnPlayerEquip(Player* player, Item* /*it*/, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) override
     {
         if (!player || !player->IsInWorld())
@@ -166,7 +179,7 @@ public:
         // Not in world means between maps. The core only teleports such a player as a fallback (homebind after a failed worldport ack), and refusing it strands the player on no map for the session.
         if (!player->IsInWorld())
             return true;
-        
+
         if (!sIndividualProgression->enabled || player->IsGameMaster() || !sIndividualProgression->isNormalAccount(player))
             return true;
 
@@ -409,11 +422,22 @@ public:
         {
             int32 moneyRew = 0;
             int32 XPValue = 0;
+            uint8 playerLvl = player->GetLevel();
 
-            if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_PRE_TBC) && player->GetLevel() == 60)
-                XPValue = quest->XPValue(quest->GetQuestLevel() == -1 ? 60 : quest->GetQuestLevel());
-            else if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5) && player->GetLevel() == 70)
-                XPValue = quest->XPValue(quest->GetQuestLevel() == -1 ? 70 : quest->GetQuestLevel());
+            if ((!sIndividualProgression->hasPassedProgression(player, PROGRESSION_PRE_TBC) && playerLvl == 60) ||
+                (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5) && playerLvl == 70))
+            {
+                uint32 questLvl = quest->GetQuestLevel() == -1 ? playerLvl : quest->GetQuestLevel();
+                uint32 originalFullXp = quest->XPValue(questLvl);
+
+                if (sIndividualProgression->questXpFix && sIndividualProgression->questXpMap.count(quest->GetQuestId()))
+                    XPValue = sIndividualProgression->questXpMap[quest->GetQuestId()];
+                else
+                    XPValue = originalFullXp;
+
+                if (originalFullXp && playerLvl != questLvl)
+                    XPValue *= quest->XPValue(playerLvl) * 1.0 / originalFullXp;
+            }
 
             moneyRew = (XPValue * (6 * COPPER)) * sWorld->getRate(RATE_REWARD_BONUS_MONEY);
 
@@ -932,12 +956,7 @@ public:
         }
 
         // Check if the account is a bot or excluded from progression
-        std::string accountName;
-        bool accountNameFound = AccountMgr::GetName(accountId, accountName);
-        std::regex botAccountsRegex(sIndividualProgression->botAccountsRegex);
-        std::regex excludedAccountsRegex(sIndividualProgression->excludedAccountsRegex);
-  
-        if (accountNameFound && (std::regex_match(accountName, botAccountsRegex) || std::regex_match(accountName, excludedAccountsRegex)))
+        if (sIndividualProgression->isBotAccount(accountId) || sIndividualProgression->isExcludedAccount(accountId))
             return true;
 
         uint8 highestProgression = sIndividualProgression->GetAccountProgression(accountId);

@@ -1,15 +1,15 @@
 /* smart scripts */
-UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 
+UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN
 (4632, 4634, 4635, 4636, 4637, 4654, 4655, 4656, 4657, 4663, 4664, 4665, 4670, 4671, 4672, 4673, 4674, 4675, 4676, 4677, 
 4681, 4682, 4692, 4695, 4696, 4705, 4726, 4728, 5402, 5600, 5602, 5760, 5771, 10182, 10204, 13019, 14225);
-DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN 
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN
 (4632, 4634, 4635, 4636, 4637, 4654, 4655, 4656, 4657, 4663, 4664, 4665, 4670, 4671, 4672, 4673, 4674, 4675, 4676, 4677, 
 4681, 4682, 4692, 4695, 4696, 4705, 4726, 4728, 5402, 5600, 5602, 5760, 5771, 10182, 10204, 13019, 14225, -610204);
 
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
-`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
-`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
-`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
 (4632, 0, 0, 0, 9, 0, 100, 0, 0, 0, 10100, 10400, 0, 5, 11, 25710, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Kolkar Centaur - Within 0-5 Range - Cast Heroic Strike'),
 (4632, 0, 1, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                     'Kolkar Centaur - Between 0-15% Health - Flee For Assist (No Repeat)'),
@@ -28,7 +28,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (4654, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Maraudine Scout - Outside 30 Range - Start Combat Movement'),
 (4654, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Maraudine Scout - Within 5-30 Range - Stop Combat Movement'),
 (4654, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Maraudine Scout - Within 0-5 Range - Start Combat Movement'),
-(4654, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Maraudine Scout - Within 5-30 Range - Cast Shoot'),
+(4654, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Maraudine Scout - Within 5-30 Range - Cast Shoot'),
 (4654, 0, 4, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                     'Maraudine Scout - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (4655, 0, 0, 0, 9, 0, 100, 0, 0, 0, 12000, 16000, 0, 5, 11, 8379, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Maraudine Wrangler - Within 0-5 Range - Cast Disarm'),
 (4655, 0, 1, 0, 0, 0, 100, 0, 4000, 9000, 18000, 34000, 0, 0, 11, 6533, 0, 0, 0, 0, 0, 21, 20, 0, 0, 0, 0, 0, 0, 0,   'Maraudine Wrangler - In Combat - Cast Net'),
@@ -115,18 +115,18 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 
 -- fix worldserver error at serpent shrine to summon Lord Kragaru
 DELETE FROM `smart_scripts` WHERE `source_type` = 1 AND `entryorguid` IN (177673, 177705);
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
-`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
-`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
-`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
 (177673, 1, 0, 0, 70, 0, 100, 0, 2, 0, 0, 0, 0, 0, 50, 177705, 4, 0, 0, 0, 0, 8, 0, 0, 0, 0, 252.547, 2963.69, 1.64267, 5.58505,    'Serpent Statue - On Gameobject State Changed - Summon Gameobject \'Naga Beam\''),
 (177705, 1, 0, 0, 63, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 12369, 7, 60000, 1, 1, 0, 8, 0, 0, 0, 0, 255.13, 2967.05, 1.39319, 0.785541, 'Naga Beam - On Gameobject Just spawned - Summon Creature \'Lord Kragaru\'');
 
 -- Khan Dez'Hepah, 3 spawn locations
 DELETE FROM `creature` WHERE `guid` IN (29141, 27042, 27052);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, 
-`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`,
+`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 (29141, 5600, 1, 0, 0, 1, 1, 1, -795.566, 934.17, 90.5846, 2.77507,  300, 0, 0, 1342, 0, 0, 0, 0, 0, '', 0, 0, NULL),
 (27042, 5600, 1, 0, 0, 1, 1, 1, -947.212, 954.353, 96.303, 4.27606,  300, 0, 0, 1342, 0, 0, 0, 0, 0, '', 0, 0, NULL), -- https://www.youtube.com/watch?v=tkMfTwnqFNY
 (27052, 5600, 1, 0, 0, 1, 1, 1, -1010.09, 874.882, 92.6127, 2.05949, 300, 0, 0, 1342, 0, 0, 0, 0, 0, '', 0, 0, NULL); -- https://www.youtube.com/watch?v=_dOku9rqHTo
@@ -216,26 +216,26 @@ UPDATE `creature_template_model` SET `CreatureDisplayID` = 11660 WHERE `Creature
 UPDATE `creature_model_info` SET `DisplayID_Other_Gender` = 11660 WHERE `DisplayID` = 11660;
 
 DELETE FROM `creature` WHERE `guid` IN (29113, 610204);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `wander_distance`, 
-`currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`,
+`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 (29113, 10182, 1, 0, 0, 1, 1, 1, 248.28, 1834.76, 86.2291, 3.32486, 550, 0, 1, 647400, 0, 2, 0, 0, 0, '', 0, 0, NULL),
 (610204, 10204, 1, 0, 0, 1, 1, 0, 247.329, 1830.72, 86.2303, 3.36506, 550, 0, 0, 161850, 0, 0, 0, 0, 0, '', 0, 0, NULL);
 
 DELETE FROM `creature_formations` WHERE `leaderGUID` = 29113;
-INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES 
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 (29113, 29113, 0, 0, 519, 0, 0),
 (29113, 610204, 4, 90, 519, 0, 0);
 
 DELETE FROM `creature_text` WHERE `CreatureID` IN (10182);
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES 
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES
 (10182, 0, 0, '$s becomes enraged!', 16, 0, 100, 0, 0, 0, 24144, 0, 'Rexxar enrage at 30%');
 
 DELETE FROM `creature_addon` WHERE `guid` = 29113;
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES 
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES
 (29113, 291130, 0, 0, 1, 0, 0, NULL);
 
 DELETE FROM `waypoint_data` WHERE `id` = 291130;
-INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES 
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES
 (291130, 1, 241.215, 1833.28, 86.2291, 3.35878, 0, 0, 0, 100, 0),
 (291130, 2, 224.89, 1826.93, 86.2299, 3.56298, 0, 0, 0, 100, 0),
 (291130, 3, 210.148, 1817.78, 86.2299, 3.56298, 0, 0, 0, 100, 0),
@@ -585,11 +585,10 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (291130, 347, 233.534, 1824.13, 86.3413, 0.178692, 0, 0, 0, 100, 0),
 (291130, 348, 255.089, 1833.57, 86.2291, 0.178692, 0, 0, 0, 100, 0);
 
-
 -- fix kodo patrols
 DELETE FROM `creature` WHERE `guid` IN (28272, 28273, 28274, 28295, 28278, 28279, 28280, 28298, 28282, 28283, 28284, 28299);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, 
-`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`,
+`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 --
 (28272, 4700, 1, 0, 0, 1, 1, 0, -1313.12, 957.979, 91.9389, 1.58056,  180, 0, 1, 1570, 0, 2, 0, 0, 0, '', 0, 0, NULL),
 (28273, 4700, 1, 0, 0, 1, 1, 0, -1313.12, 957.979, 91.9389, 2.03816,  180, 0, 0, 1570, 0, 0, 0, 0, 0, '', 0, 0, NULL),
@@ -607,7 +606,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 (28299, 4701, 1, 0, 0, 1, 1, 0, -2170.64, 1625.81, 60.3131, 0.218082, 180, 0, 0, 1647, 0, 0, 0, 0, 0, '', 0, 0, NULL);
 
 DELETE FROM `creature_formations` WHERE `leaderGUID` IN (28272, 28278, 28282);
-INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES 
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (28272, 28272, 0,  0,   515, 0, 0), -- Aged Kodo
 (28272, 28273, 20, 180, 515, 0, 0), -- Aged Kodo
@@ -625,7 +624,7 @@ INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, 
 (28282, 28299, 30, 170, 515, 0, 0); -- Dying Kodo
 
 DELETE FROM `creature_addon` WHERE `guid` IN (28272, 28278, 28282);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES 
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES
 (28272, 282720, 0, 0, 0, 0, 0, NULL),
 (28278, 282780, 0, 0, 0, 0, 0, NULL),
 (28282, 282820, 0, 0, 0, 0, 0, NULL);
@@ -753,10 +752,10 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN (4700, 4701);
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (-28272, -28273, -28274, -28278, -28279, -28280, -28282, -28283, -28284, -28295, -28298, -28299);
 
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, 
-`event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`, 
-`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, 
-`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 --
 (-28272, 0, 0, 1, 108, 0, 100, 512, 33, 282720, 0, 0, 0, 0, 41, 3000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Aged Kodo - On Waypoint Path Ended - Despawn After 3 Seconds'),
 (-28272, 0, 1, 2, 61, 0, 100, 512, 0, 0, 0, 0, 0, 0, 41, 3000, 0, 0, 0, 0, 0, 10, 28273, 0, 0, 0, 0, 0, 0, 0,    'Aged Kodo - On Waypoint Path Ended - Despawn After 3 Seconds'),
@@ -790,14 +789,13 @@ UPDATE `creature_template` SET `ScriptName` = '' WHERE `entry` IN (4700, 4701);
 UPDATE `creature` SET `ScriptName` = 'npc_aged_dying_ancient_kodo' WHERE `id` IN (4700, 4701);
 UPDATE `creature` SET `ScriptName` = '' WHERE `guid` IN (28272, 28273, 28274, 28278, 28279, 28280, 28282, 28283, 28284, 28295, 28298, 28299);
 
-
 -- fix hyena patrols
-DELETE FROM `creature` WHERE `guid` IN (
-27939, 27940, 27941, 27942, 27943, 27949, 27950, 27951, 27952, 27953, 27954, 27955, 27956, 27957, 27958,
-27959, 27960, 27961, 27962, 27963, 27964, 27965, 27966, 27967, 27968, 27969, 27970, 27971, 27972, 27973);
+DELETE FROM `creature` WHERE `guid` IN
+(27939, 27940, 27941, 27942, 27943, 27949, 27950, 27951, 27952, 27953, 27954, 27955, 27956, 27957, 27958,
+ 27959, 27960, 27961, 27962, 27963, 27964, 27965, 27966, 27967, 27968, 27969, 27970, 27971, 27972, 27973);
 
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, 
-`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`,
+`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
 --
 (27939, 4688, 1, 0, 0, 1, 1, 0, -1726.32, 2567.95, 107.69, 0.39374,  300, 0, 1, 444, 0, 2, 0, 0, 0, '', 0, 0, NULL), -- Bonepaw Hyena
 (27940, 4688, 1, 0, 0, 1, 1, 0, -1726.32, 2567.95, 107.69, 0.564369, 300, 0, 0, 444, 0, 0, 0, 0, 0, '', 0, 0, NULL),
@@ -835,9 +833,8 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 (27972, 4690, 1, 0, 0, 1, 1, 0, -1056.83, 2296.27, 92.2567, 3.41576, 300, 0, 0, 511, 0, 0, 0, 0, 0, '', 0, 0, NULL),
 (27973, 4690, 1, 0, 0, 1, 1, 0, -1056.83, 2296.27, 92.2567, 3.52407, 300, 0, 0, 511, 0, 0, 0, 0, 0, '', 0, 0, NULL);
 
-
 DELETE FROM `creature_formations` WHERE `leaderGUID` IN (27939, 27949, 27954, 27959, 27964, 27969);
-INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES 
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
 --
 (27939, 27939, 0, 0,   515, 0, 0), -- Bonepaw Hyena
 (27939, 27940, 8, 180, 515, 0, 0),
@@ -1249,17 +1246,11 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (-27973, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 48, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Rapid Bonemaw - On Respawn - Set Active');
 
 -- fix caravan escorts and quests
-UPDATE `creature` SET `ScriptName` = 'npc_cork_gizelton_ipp' WHERE `id` = 11625;
-UPDATE `creature_template` SET `unit_flags` = 0 WHERE `entry` IN (11564, 11625, 11626);
+SET @NPC_VENDOR_TRON        = 12245;
+SET @NPC_SUPER_SELLER       = 12246;
 
-DELETE FROM `script_waypoint` WHERE `entry` = 11625 AND `pointid` BETWEEN 191 AND 195; 
-INSERT INTO `script_waypoint` (`entry`, `pointid`, `location_x`, `location_y`, `location_z`, `waittime`, `point_comment`) VALUES
---
-(11625, 191, -1932.62, 2425.58, 60.9125, 0, 'Desolace Caravan'),
-(11625, 192, -1937.94, 2414.56, 60.4535, 0, 'Desolace Caravan'),
-(11625, 193, -1932.83, 2414.21, 60.5086, 0, 'Desolace Caravan'), -- stop
-(11625, 194, -1916.88, 2405.2, 60.7632, 0, 'Desolace Caravan'),
-(11625, 195, -1904, 2405.04, 59.8224, 0, 'Desolace Caravan');
+UPDATE `creature_template` SET `unit_flags` = 0 WHERE `entry` IN (11564, 11625, 11626);
+UPDATE `creature_template` SET `AIName` = 'SmartAI', `ScriptName` = '' WHERE `entry` IN (11564, 11625, 11626);
 
 DELETE FROM `creature_text` WHERE `CreatureID` IN (11625, 11626);
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES
@@ -1277,3 +1268,508 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (11626, 3, 0, 'What am I paying you for? The kodos are nearly dead!', 12, 0, 100, 0, 0, 0, 7331, 0, 'Rigger Gizelton'),
 (11626, 4, 0, 'Only if I were about five feet taller, then I would show these blasphemous demons a thing or two! Help!', 12, 0, 100, 0, 0, 0, 7332, 0, 'Rigger Gizelton'),
 (11626, 5, 0, 'Wow! We did it... not sure why we thought we needed the likes of you. Nevertheless, speak with Smeed Scrabblescrew; he will give you your earnings!', 12, 0, 100, 0, 0, 0, 7333, 0, 'Rigger Gizelton');
+
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (11625, 11626, -611627, -611628);
+DELETE FROM `smart_scripts` WHERE `source_type` = 9 AND `entryorguid` IN (1162500, 1162501, 1162502, 1162503, 1162504, 1162505, 1162600, 1162601);
+
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
+`event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param6`,
+`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`,
+`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+--
+(11625, 0, 0, 0, 19, 0, 100, 0, 5821, 0, 0, 0, 0, 0, 80, 1162500, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Cork Gizelton - On Quest Accept - Run Script 1162500'), -- start escort
+--
+(11625, 0, 1, 2, 108, 0, 100, 0, 78, 61162501, 0, 0, 0, 0, 235, 240000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Cork Gizelton - On Waypoint Reached - Movement Pause'),
+(11625, 0, 2, 3, 61, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                      'Cork Gizelton - On Waypoint Reached - Say Text 1'),
+(11625, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Cork Gizelton - On Waypoint Reached - Add Quest Giver flag'),
+(11625, 0, 4, 0, 108, 0, 100, 0, 79, 61162501, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Cork Gizelton - On Waypoint Reached - Remove Quest Giver flag'),
+--
+(11625, 0, 5, 6, 108, 0, 100, 0, 106, 61162503, 0, 0, 0, 0, 235, 240000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,     'Cork Gizelton - On Waypoint Reached - Movement Pause'),
+(11625, 0, 6, 7, 61, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,            'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 1'),
+(11625, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 3, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Add Quest Giver flag for Rigger Gizelton'),
+(11625, 0, 8, 0, 108, 0, 100, 0, 107, 61162503, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 10, 611626, 11626, 0,0,0,0,0,0,      'Cork Gizelton - On Waypoint Reached - Remove Quest Giver flag for Rigger Gizelton'),
+--
+(11625, 0, 9, 10, 108, 0, 100, 1, 6, 61162502, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,             'Cork Gizelton - On Waypoint Reached - Say Text 2'),
+(11625, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162501, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162501'), -- centaur ambush 1
+(11625, 0, 11, 12, 108, 0, 100, 1, 16, 61162502, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 3'),
+(11625, 0, 12, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162501, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162501'), -- centaur ambush 2
+(11625, 0, 13, 14, 108, 0, 100, 1, 23, 61162502, 0, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 4'),
+(11625, 0, 14, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162501, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162501'), -- centaur ambush 3
+(11625, 0, 15, 16, 108, 0, 100, 1, 26, 61162502, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 5'),
+(11625, 0, 16, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162502, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162502'), -- complete escort
+(11625, 0, 17, 0, 108, 0, 100, 0, 105, 61162501, 0, 0, 0, 0, 232, 61162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Cork Gizelton - On Waypoint Reached - Start Waypoints 61162503'), -- peaceful route done, continue to south camp
+(11625, 0, 18, 19, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Cork Gizelton - On Respawn - Remove Quest Giver flag'),
+(11625, 0, 19, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, 61162501, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Cork Gizelton - On Respawn - Start Waypoints 61162501'),
+(11625, 0, 20, 39, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Fail Quest'),
+--
+(11625, 0, 21, 22, 108, 0, 100, 1, 13, 61162504, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 2'),
+(11625, 0, 22, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 1
+(11625, 0, 23, 24, 108, 0, 100, 1, 20, 61162504, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 3'),
+(11625, 0, 24, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 2
+(11625, 0, 25, 26, 108, 0, 100, 1, 25, 61162504, 0, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 4'),
+(11625, 0, 26, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 3
+(11625, 0, 27, 28, 108, 0, 100, 1, 27, 61162504, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Say Text 5'),
+(11625, 0, 28, 29, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162504, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,             'Cork Gizelton - On Waypoint Reached - Run Script 1162504'), -- complete escort
+(11625, 0, 29, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162601, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,    'Cork Gizelton - On Waypoint Reached - Run Script 1162601'), -- give quest credit
+
+(11625, 0, 30, 0, 108, 0, 100, 0, 134, 61162503, 0, 0, 0, 0, 232, 61162505, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Cork Gizelton - On Waypoint Reached - Start Waypoints 61162505'), -- peaceful route done, continue to final waypoint
+--
+(11625, 0, 31, 32, 108, 0, 100, 1, 52, 61162501, 0, 0, 0, 0, 12, @NPC_VENDOR_TRON, 1, 600000, 0,0,0,8,0,0,0,0, -694.61, 1460.7, 90.794, 2.4, 'Cork Gizelton - On Waypoint Reached - Spawn NPC_VENDOR_TRON'), -- north stop
+(11625, 0, 32, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
+(11625, 0, 33, 34, 108, 0, 100, 1, 53, 61162501, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 0'),
+(11625, 0, 34, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
+--
+(11625, 0, 35, 36, 108, 0, 100, 1, 90, 61162503, 0, 0, 0, 0, 12, @NPC_SUPER_SELLER, 1, 600000, 0, 0, 0, 8, 0, 0, 0, 0, -1927.48, 2418.02, 60.77, 5.67, 'Script9 - Cork Gizelton - Spawn NPC_VENDOR_TRON'), -- south stop
+(11625, 0, 36, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
+(11625, 0, 37, 38, 108, 0, 100, 1, 91, 61162503, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 0'),
+(11625, 0, 38, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
+(11625, 0, 39, 40, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
+(11625, 0, 40, 41, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn Rigger Gizelton'), -- when leader dies despawn entire caravan so they respawn at the same time
+(11625, 0, 41, 42, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn kodo 1'),
+(11625, 0, 42, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn kodo 2'),
+(11625, 0, 43, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Data Set 1 1 - Fail Quest'),
+--
+(1162500, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0,                   'Script9 - Cork Gizelton - Store Targetlist'),
+(1162500, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Script9 - Cork Gizelton - Remove Quest Giver flag'),
+(1162500, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,                    'Script9 - Cork Gizelton - Close Gossip'),
+(1162500, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Script9 - Cork Gizelton - Set neutral faction for self'),
+(1162500, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Set neutral faction for Rigger'),
+(1162500, 9, 5, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Set neutral faction for kodo 1'),
+(1162500, 9, 6, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Set neutral faction for kodo 2'),
+(1162500, 9, 7, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, 61162502, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Script9 - Cork Gizelton - Start Waypoints 61162502'),
+--
+(1162501, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 12976, 7, 60000, 1, 1, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Ambush spawn: kolkar waylayer'),
+(1162501, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 12977, 7, 60000, 1, 1, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Ambush spawn: kolkar ambusher'),
+(1162501, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 12976, 7, 60000, 1, 1, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Ambush spawn: kolkar waylayer'),
+(1162501, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 12977, 7, 60000, 1, 1, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,         'Script9 - Cork Gizelton - Ambush spawn: kolkar ambusher'),
+--
+(1162502, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Script9 - Cork Gizelton - Reset faction for self'),
+(1162502, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for Rigger'),
+(1162502, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for kodo 1'),
+(1162502, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for kodo 2'),
+(1162502, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 15, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                'Script9 - Cork Gizelton - Quest Credit'),
+(1162502, 9, 5, 0, 0, 0, 100, 0, 7000, 7000, 0, 0, 0, 0, 232, 61162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Script9 - Cork Gizelton - Start Waypoints 61162503'), -- escort done, continue to south camp
+--
+(1162503, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 4676, 1, 60000, 1, 0, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,          'Script9 - Cork Gizelton - Ambush spawn: Lesser Infernal'),
+(1162503, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 4677, 1, 60000, 1, 0, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,          'Script9 - Cork Gizelton - Ambush spawn: Doomwarder'),
+(1162503, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 12, 4684, 1, 60000, 1, 0, 0, 202, 20, 1, 1, 0, 0, 0, 0, 0,          'Script9 - Cork Gizelton - Ambush spawn: Nether Sorceress'),
+--
+(1162504, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Script9 - Cork Gizelton - Reset faction for self'),
+(1162504, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for Rigger'),
+(1162504, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for kodo 1'),
+(1162504, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0,           'Script9 - Cork Gizelton - Reset faction for kodo 2'),
+(1162504, 9, 5, 0, 0, 0, 100, 0, 7000, 7000, 0, 0, 0, 0, 232, 61162505, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,      'Script9 - Cork Gizelton - Start Waypoints 61162505'), -- escort done, continue to final waypoint
+--
+(1162600, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0,                   'Script9 - Rigger Gizelton - Store Targetlist'),
+(1162600, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Script9 - Rigger Gizelton - Remove Quest Giver flag'),
+(1162600, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,                    'Script9 - Rigger Gizelton - Close Gossip'),
+(1162600, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Script9 - Rigger Gizelton - Set neutral faction for self'),
+(1162600, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0,         'Script9 - Rigger Gizelton - Set neutral faction for Cork'),
+(1162600, 9, 5, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0,         'Script9 - Rigger Gizelton - Set neutral faction for kodo 1'),
+(1162600, 9, 6, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 2, 113, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0,         'Script9 - Rigger Gizelton - Set neutral faction for kodo 2'),
+(1162600, 9, 7, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, 61162504, 0, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0,  'Script9 - Rigger Gizelton - Start Waypoints 61162504 for Cork Gizelton'),
+--
+(1162601, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 15, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                'Script9 - Cork Gizelton - Quest Credit'),
+--
+(11626, 0, 0, 0, 19, 0, 100, 0, 5943, 0, 0, 0, 0, 0, 80, 1162600, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Rigger Gizelton - On Quest Accept - Run Script 1162600'),
+(11626, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Rigger Gizelton - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(11626, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 6, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                  'Rigger Gizelton - On Death - Fail Quest'),
+(11626, 0, 3, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Rigger Gizelton - On Respawn - Remove Quest Giver flag'),
+(11626, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Rigger Gizelton - On Data Set 1 1 - Fail Quest'),
+--
+(-611627, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(-611627, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
+(-611628, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(-611628, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)');
+
+DELETE FROM `creature_template` WHERE `entry` = 611625; -- copy gets AC script to avoid worldserver console error for script not being used.
+INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `subname`, `IconName`, `gossip_menu_id`, 
+`minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `speed_swim`, `speed_flight`, `detection_range`, `rank`, `dmgschool`, `DamageModifier`, 
+`BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, 
+`PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, 
+`RegenHealth`, `CreatureImmunitiesId`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES
+--
+(611625,0,0,0,0,0,'Cork Gizelton',NULL,NULL,3961,38,38,0,35,3,1,0.857143,1,1,18,0,0,1.05,2000,2000,1,1,1,0,2048,0,0,7,4096,0,0,0,0,0,0,0,'',0,1,1.15,1,1,1,0,100,1,0,0,'npc_cork_gizelton',12340);
+
+DELETE FROM `creature_template_locale` WHERE `entry` = 611625;
+INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `Title`, `VerifiedBuild`) VALUES
+(611625, 'koKR', '코르크 기젤톤', '', 18019),
+(611625, 'ruRU', 'Корк Гизлтон', '', 18019),
+(611625, 'zhCN', '考克·基泽尔顿', '', 18019),
+(611625, 'zhTW', '考克·基澤爾頓', '', 18019);
+
+DELETE FROM `creature_template_model` WHERE `CreatureID` = 611625;
+INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES
+(611625, 0, 11629, 1, 1, 12340);
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` = 611625;
+INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES
+(611625, 1, 2714, 0, 0, 18019);
+
+DELETE FROM `creature` WHERE `guid` IN (611627, 611628);
+DELETE FROM `creature` WHERE `id`   IN (11625, 11626);
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`,
+`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES
+--
+(611625, 11625, 1, 0, 0, 1, 1, 1, -1290.56, 1230.96, 109.39, 6.27641, 300, 0, 0, 1604, 0, 0, 0, 0, 0, '', 0, 0, NULL),
+(611626, 11626, 1, 0, 0, 1, 1, 0, -1290.56, 1230.96, 109.39, 6.27641, 300, 0, 0, 1604, 0, 0, 0, 0, 0, '', 0, 0, NULL),
+(611627, 11564, 1, 0, 0, 1, 1, 0, -1290.56, 1230.96, 109.39, 6.27641, 300, 0, 0, 1604, 0, 0, 0, 0, 0, '', 0, 0, NULL),
+(611628, 11564, 1, 0, 0, 1, 1, 0, -1290.56, 1230.96, 109.39, 6.27641, 300, 0, 0, 1604, 0, 0, 0, 0, 0, '', 0, 0, NULL);
+
+DELETE FROM `creature_formations` WHERE `leaderGUID` IN (611625);
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`) VALUES 
+--
+(611625, 611625, 0, 0, 515),
+(611625, 611626, 3.0, 180, 515),
+(611625, 611627, 10, 180, 515),
+(611625, 611628, 20.0, 180, 515);
+
+DELETE FROM `script_waypoint` WHERE `entry` = 11625;
+DELETE FROM `waypoint_data` WHERE `id` IN (61162501, 61162502, 61162503, 61162504, 61162505);
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES
+--
+(61162501, 1, -1290.31, 1231.38, 109.237, NULL, 0, 1, 0, 100, 0),
+(61162501, 2, -1277.59, 1225.54, 108.85, NULL, 0, 1, 0, 100, 0),
+(61162501, 3, -1264.86, 1219.71, 108.452, NULL, 0, 1, 0, 100, 0),
+(61162501, 4, -1230.04, 1204.31, 104.374, NULL, 0, 1, 0, 100, 0),
+(61162501, 5, -1216.17, 1206.24, 101.889, NULL, 0, 1, 0, 100, 0),
+(61162501, 6, -1202.32, 1208.28, 99.7026, NULL, 0, 1, 0, 100, 0),
+(61162501, 7, -1188.03, 1207.66, 97.2208, NULL, 0, 1, 0, 100, 0),
+(61162501, 8, -1170.99, 1195.93, 94.5615, NULL, 0, 1, 0, 100, 0),
+(61162501, 9, -1155.46, 1192.16, 92.4374, NULL, 0, 1, 0, 100, 0),
+(61162501, 10, -1127.52, 1190.39, 89.8358, NULL, 0, 1, 0, 100, 0),
+(61162501, 11, -1113.58, 1189.12, 89.7403, NULL, 0, 1, 0, 100, 0),
+(61162501, 12, -1070.8, 1186.15, 89.7403, NULL, 0, 1, 0, 100, 0),
+(61162501, 13, -1037.27, 1183.2, 89.8006, NULL, 0, 1, 0, 100, 0),
+(61162501, 14, -995.58, 1177.92, 89.7409, NULL, 0, 1, 0, 100, 0),
+(61162501, 15, -981.817, 1180.48, 89.8152, NULL, 0, 1, 0, 100, 0),
+(61162501, 16, -952.606, 1181.99, 89.7313, NULL, 0, 1, 0, 100, 0),
+(61162501, 17, -935.445, 1182.25, 91.2113, NULL, 0, 1, 0, 100, 0),
+(61162501, 18, -921.448, 1182.53, 93.1746, NULL, 0, 1, 0, 100, 0),
+(61162501, 19, -879.467, 1183.72, 97.6043, NULL, 0, 1, 0, 100, 0),
+(61162501, 20, -858.976, 1184.22, 99.0322, NULL, 0, 1, 0, 100, 0),
+(61162501, 21, -828.316, 1180.2, 99.6657, NULL, 0, 1, 0, 100, 0),
+(61162501, 22, -799.811, 1176, 99.3364, NULL, 0, 1, 0, 100, 0),
+(61162501, 23, -757.106, 1191.47, 96.9164, NULL, 0, 1, 0, 100, 0),
+(61162501, 24, -731.879, 1208.14, 92.6956, NULL, 0, 1, 0, 100, 0),
+(61162501, 25, -719.12, 1213.91, 91.3297, NULL, 0, 1, 0, 100, 0),
+(61162501, 26, -706.36, 1219.67, 90.2856, NULL, 0, 1, 0, 100, 0),
+(61162501, 27, -689.935, 1228.43, 89.4426, NULL, 0, 1, 0, 100, 0),
+(61162501, 28, -679.121, 1237.31, 89.17, NULL, 0, 1, 0, 100, 0),
+(61162501, 29, -661.434, 1247.28, 89.17, NULL, 0, 1, 0, 100, 0),
+(61162501, 30, -635.655, 1258.2, 89.2063, NULL, 0, 1, 0, 100, 0),
+(61162501, 31, -614.489, 1269.64, 89.1686, NULL, 0, 1, 0, 100, 0),
+(61162501, 32, -600.078, 1274.85, 89.1238, NULL, 0, 1, 0, 100, 0),
+(61162501, 33, -586.268, 1277.15, 89.145, NULL, 0, 1, 0, 100, 0),
+(61162501, 34, -546.297, 1287.15, 89.1597, NULL, 0, 1, 0, 100, 0),
+(61162501, 35, -541.257, 1300.21, 89.1602, NULL, 0, 1, 0, 100, 0),
+(61162501, 36, -536.026, 1313.2, 89.1314, NULL, 0, 1, 0, 100, 0),
+(61162501, 37, -525.098, 1338.97, 89.1005, NULL, 0, 1, 0, 100, 0),
+(61162501, 38, -518.852, 1356.12, 89.0827, NULL, 0, 1, 0, 100, 0),
+(61162501, 39, -516.879, 1395.56, 89.0827, NULL, 0, 1, 0, 100, 0),
+(61162501, 40, -518.905, 1436.25, 89.0696, NULL, 0, 1, 0, 100, 0),
+(61162501, 41, -525.605, 1446.54, 88.4907, NULL, 0, 1, 0, 100, 0),
+(61162501, 42, -543.459, 1462.9, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 43, -557.591, 1471.17, 88.9477, NULL, 0, 1, 0, 100, 0),
+(61162501, 44, -584.698, 1478.14, 88.3754, NULL, 0, 1, 0, 100, 0),
+(61162501, 45, -598.459, 1480.72, 88.3754, NULL, 0, 1, 0, 100, 0),
+(61162501, 46, -632.084, 1491.03, 88.3754, NULL, 0, 1, 0, 100, 0),
+(61162501, 47, -644.249, 1497.95, 88.3754, NULL, 0, 1, 0, 100, 0),
+(61162501, 48, -660.456, 1507.56, 88.3874, NULL, 0, 1, 0, 100, 0),
+(61162501, 49, -666.507, 1504.7, 89.0746, NULL, 0, 1, 0, 100, 0),
+(61162501, 50, -673.795, 1499.48, 90.3922, NULL, 0, 1, 0, 100, 0),
+(61162501, 51, -692.154, 1480.43, 90.5302, NULL, 0, 0, 0, 100, 0),
+(61162501, 52, -710.764, 1470.11, 91.3034, NULL, 600000, 0, 0, 100, 0), -- north stop
+(61162501, 53, -710.764, 1470.11, 91.3034, NULL, 0, 0, 0, 100, 0), -- Say Test 0
+(61162501, 54, -697.048, 1484.75, 91.0929, NULL, 0, 0, 0, 100, 0),
+(61162501, 55, -676.552, 1497.37, 90.6505, NULL, 0, 1, 0, 100, 0),
+(61162501, 56, -665.209, 1505.76, 88.8321, NULL, 0, 1, 0, 100, 0),
+(61162501, 57, -657.898, 1510.94, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 58, -647.387, 1501.69, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 59, -630.597, 1491.17, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 60, -603.756, 1483.26, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 61, -576.573, 1476.54, 88.3752, NULL, 0, 1, 0, 100, 0),
+(61162501, 62, -556.868, 1470.92, 88.8685, NULL, 0, 1, 0, 100, 0),
+(61162501, 63, -547.471, 1464.89, 88.3747, NULL, 0, 1, 0, 100, 0),
+(61162501, 64, -529.316, 1449.97, 88.402, NULL, 0, 1, 0, 100, 0),
+(61162501, 65, -517.699, 1433.75, 89.0816, NULL, 0, 1, 0, 100, 0),
+(61162501, 66, -518.09, 1405.76, 89.0816, NULL, 0, 1, 0, 100, 0),
+(61162501, 67, -518.149, 1377.76, 89.0816, NULL, 0, 1, 0, 100, 0),
+(61162501, 68, -521.289, 1350.76, 89.0816, NULL, 0, 1, 0, 100, 0),
+(61162501, 69, -531.625, 1324.74, 89.1339, NULL, 0, 1, 0, 100, 0),
+(61162501, 70, -537.391, 1311.99, 89.1594, NULL, 0, 1, 0, 100, 0),
+(61162501, 71, -551.845, 1284.12, 89.1594, NULL, 0, 1, 0, 100, 0),
+(61162501, 72, -578.054, 1278.57, 89.1685, NULL, 0, 1, 0, 100, 0),
+(61162501, 73, -591.957, 1276.92, 89.1634, NULL, 0, 1, 0, 100, 0),
+(61162501, 74, -611.806, 1271.05, 89.1694, NULL, 0, 1, 0, 100, 0),
+(61162501, 75, -623.928, 1264.06, 89.1694, NULL, 0, 1, 0, 100, 0),
+(61162501, 76, -653.384, 1249.74, 89.1694, NULL, 0, 1, 0, 100, 0),
+(61162501, 77, -666.372, 1244.51, 89.1694, NULL, 0, 1, 0, 100, 0),
+(61162501, 78, -684.6, 1232.06, 89.2134, NULL, 240000, 0, 0, 100, 0), -- north -> south - accept quest: Bodyguard for Hire
+(61162501, 79, -684.6, 1232.06, 89.2134, NULL, 0, 0, 0, 100, 0),
+--
+(61162501, 80, -694.027, 1225.67, 89.6627, NULL, 0, 1, 0, 100, 0), -- no escort quest, peaceful route
+(61162501, 81, -706.605, 1219.58, 90.2981, NULL, 0, 1, 0, 100, 0),
+(61162501, 82, -732.184, 1208.23, 92.7376, NULL, 0, 1, 0, 100, 0),
+(61162501, 83, -738.514, 1204.75, 93.8662, NULL, 0, 1, 0, 100, 0),
+(61162501, 84, -754.159, 1193.91, 96.6195, NULL, 0, 1, 0, 100, 0),
+(61162501, 85, -766.62, 1187.59, 97.8394, NULL, 0, 1, 0, 100, 0),
+(61162501, 86, -792.515, 1177.07, 98.8327, NULL, 0, 1, 0, 100, 0),
+(61162501, 87, -802.533, 1175.57, 99.4435, NULL, 0, 1, 0, 100, 0),
+(61162501, 88, -821.772, 1178.84, 99.6542, NULL, 0, 1, 0, 100, 0),
+(61162501, 89, -835.435, 1181.9, 99.6662, NULL, 0, 1, 0, 100, 0),
+(61162501, 90, -848.98, 1184.67, 99.5782, NULL, 0, 1, 0, 100, 0),
+(61162501, 91, -861.251, 1185.3, 98.8033, NULL, 0, 1, 0, 100, 0),
+(61162501, 92, -889.179, 1183.34, 96.6117, NULL, 0, 1, 0, 100, 0),
+(61162501, 93, -903.158, 1182.57, 95.2033, NULL, 0, 1, 0, 100, 0),
+(61162501, 94, -931.15, 1182.17, 91.8346, NULL, 0, 1, 0, 100, 0),
+(61162501, 95, -945.149, 1182.01, 89.8612, NULL, 0, 1, 0, 100, 0),
+(61162501, 96, -959.149, 1181.92, 89.7397, NULL, 0, 1, 0, 100, 0),
+(61162501, 97, -973.149, 1181.97, 89.7397, NULL, 0, 1, 0, 100, 0),
+(61162501, 98, -1001.65, 1178.06, 89.7398, NULL, 0, 1, 0, 100, 0),
+(61162501, 99, -1011.8, 1177.4, 89.7398, NULL, 0, 1, 0, 100, 0),
+(61162501, 100, -1033.08, 1182.29, 89.7629, NULL, 0, 1, 0, 100, 0),
+(61162501, 101, -1073.62, 1186.33, 89.7398, NULL, 0, 1, 0, 100, 0),
+(61162501, 102, -1101.59, 1187.56, 89.7398, NULL, 0, 1, 0, 100, 0),
+(61162501, 103, -1129.48, 1190.01, 89.8855, NULL, 0, 1, 0, 100, 0),
+(61162501, 104, -1143.44, 1191.11, 91.0344, NULL, 0, 1, 0, 100, 0),
+(61162501, 105, -1166.85, 1194.28, 93.9649, NULL, 0, 1, 0, 100, 0),
+--
+(61162502, 1, -694.027, 1225.67, 89.6627, NULL, 0, 0, 0, 100, 0), -- escort quest: Bodyguard for Hire
+(61162502, 2, -706.605, 1219.58, 90.2981, NULL, 0, 0, 0, 100, 0),
+(61162502, 3, -732.184, 1208.23, 92.7376, NULL, 0, 0, 0, 100, 0),
+(61162502, 4, -738.514, 1204.75, 93.8662, NULL, 0, 0, 0, 100, 0),
+(61162502, 5, -754.159, 1193.91, 96.6195, NULL, 0, 0, 0, 100, 0),
+(61162502, 6, -766.62, 1187.59, 97.8394, NULL, 0, 0, 0, 100, 0),   -- ambush 1
+(61162502, 7, -792.515, 1177.07, 98.8327, NULL, 0, 0, 0, 100, 0),
+(61162502, 8, -802.533, 1175.57, 99.4435, NULL, 0, 0, 0, 100, 0),
+(61162502, 9, -821.772, 1178.84, 99.6542, NULL, 0, 0, 0, 100, 0),
+(61162502, 10, -835.435, 1181.9, 99.6662, NULL, 0, 0, 0, 100, 0),
+(61162502, 11, -848.98, 1184.67, 99.5782, NULL, 0, 0, 0, 100, 0),
+(61162502, 12, -861.251, 1185.3, 98.8033, NULL, 0, 0, 0, 100, 0),
+(61162502, 13, -889.179, 1183.34, 96.6117, NULL, 0, 0, 0, 100, 0),
+(61162502, 14, -903.158, 1182.57, 95.2033, NULL, 0, 0, 0, 100, 0),
+(61162502, 15, -931.15, 1182.17, 91.8346, NULL, 0, 0, 0, 100, 0),
+(61162502, 16, -945.149, 1182.01, 89.8612, NULL, 0, 0, 0, 100, 0),  -- ambush 2
+(61162502, 17, -959.149, 1181.92, 89.7397, NULL, 0, 0, 0, 100, 0),
+(61162502, 18, -973.149, 1181.97, 89.7397, NULL, 0, 0, 0, 100, 0),
+(61162502, 19, -1001.65, 1178.06, 89.7398, NULL, 0, 0, 0, 100, 0),
+(61162502, 20, -1011.8, 1177.4, 89.7398, NULL, 0, 0, 0, 100, 0),
+(61162502, 21, -1033.08, 1182.29, 89.7629, NULL, 0, 0, 0, 100, 0),
+(61162502, 22, -1073.62, 1186.33, 89.7398, NULL, 0, 0, 0, 100, 0),
+(61162502, 23, -1101.59, 1187.56, 89.7398, NULL, 0, 0, 0, 100, 0), -- ambush 3
+(61162502, 24, -1129.48, 1190.01, 89.8855, NULL, 0, 0, 0, 100, 0),
+(61162502, 25, -1143.44, 1191.11, 91.0344, NULL, 0, 0, 0, 100, 0),
+(61162502, 26, -1166.85, 1194.28, 93.9649, NULL, 7000, 0, 0, 100, 0), -- Escort ends
+--
+(61162503, 1, -1184.71, 1203.56, 96.6406, NULL, 0, 1, 0, 100, 0), -- route towards south camp
+(61162503, 2, -1201.45, 1208.2, 99.5698, NULL, 0, 1, 0, 100, 0),
+(61162503, 3, -1225.42, 1204.68, 103.502, NULL, 0, 1, 0, 100, 0),
+(61162503, 4, -1235.55, 1206.75, 105.129, NULL, 0, 1, 0, 100, 0),
+(61162503, 5, -1261.05, 1218.25, 108.207, NULL, 0, 1, 0, 100, 0),
+(61162503, 6, -1286.64, 1229.58, 109.112, NULL, 0, 1, 0, 100, 0),
+(61162503, 7, -1306.84, 1233.21, 109.771, NULL, 0, 1, 0, 100, 0),
+(61162503, 8, -1331.25, 1233.54, 110.674, NULL, 0, 1, 0, 100, 0),
+(61162503, 9, -1350.02, 1227.22, 111.201, NULL, 0, 1, 0, 100, 0),
+(61162503, 10, -1389.37, 1212.53, 111.587, NULL, 0, 1, 0, 100, 0),
+(61162503, 11, -1415.8, 1202.23, 111.948, NULL, 0, 1, 0, 100, 0),
+(61162503, 12, -1424.26, 1196.81, 112.038, NULL, 0, 1, 0, 100, 0),
+(61162503, 13, -1449.27, 1188.13, 111.53, NULL, 0, 1, 0, 100, 0),
+(61162503, 14, -1474.53, 1186.42, 109.366, NULL, 0, 1, 0, 100, 0),
+(61162503, 15, -1491.78, 1189.4, 106.114, NULL, 0, 1, 0, 100, 0),
+(61162503, 16, -1502.95, 1198.12, 101.757, NULL, 0, 1, 0, 100, 0),
+(61162503, 17, -1512.09, 1209.44, 96.2469, NULL, 0, 1, 0, 100, 0),
+(61162503, 18, -1520.19, 1226.67, 89.7861, NULL, 0, 1, 0, 100, 0),
+(61162503, 19, -1522.75, 1243.63, 83.3864, NULL, 0, 1, 0, 100, 0),
+(61162503, 20, -1520.9, 1257.51, 77.7027, NULL, 0, 1, 0, 100, 0),
+(61162503, 21, -1518.48, 1273.17, 71.8991, NULL, 0, 1, 0, 100, 0),
+(61162503, 22, -1516.17, 1290.94, 66.8473, NULL, 0, 1, 0, 100, 0),
+(61162503, 23, -1514.74, 1306.19, 63.4211, NULL, 0, 1, 0, 100, 0),
+(61162503, 24, -1511.54, 1328.73, 60.2051, NULL, 0, 1, 0, 100, 0),
+(61162503, 25, -1505.75, 1341.47, 59.2142, NULL, 0, 1, 0, 100, 0),
+(61162503, 26, -1494.42, 1367.08, 58.9254, NULL, 0, 1, 0, 100, 0),
+(61162503, 27, -1485.84, 1393.02, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 28, -1485.47, 1407, 58.9469, NULL, 0, 1, 0, 100, 0),
+(61162503, 29, -1487.57, 1434.84, 58.9347, NULL, 0, 1, 0, 100, 0),
+(61162503, 30, -1489.45, 1448.71, 58.9302, NULL, 0, 1, 0, 100, 0),
+(61162503, 31, -1489.77, 1469.49, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 32, -1483.8, 1482.15, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 33, -1471.32, 1507.22, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 34, -1464.94, 1519.68, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 35, -1452.27, 1544.64, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162503, 36, -1442.94, 1584.75, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 37, -1452.7, 1610.98, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 38, -1464.1, 1641.7, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 39, -1474.86, 1647.49, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 40, -1500.84, 1657.91, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 41, -1521.76, 1671.96, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 42, -1541.37, 1691.94, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 43, -1551.2, 1701.92, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 44, -1571.41, 1721.29, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 45, -1592.97, 1739.14, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 46, -1613.28, 1758.07, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 47, -1630.32, 1780.27, 58.9255, NULL, 0, 1, 0, 100, 0),
+(61162503, 48, -1645.92, 1803.52, 58.9296, NULL, 0, 1, 0, 100, 0),
+(61162503, 49, -1661.7, 1826.65, 58.9271, NULL, 0, 1, 0, 100, 0),
+(61162503, 50, -1681.42, 1858.29, 58.9271, NULL, 0, 1, 0, 100, 0),
+(61162503, 51, -1686.38, 1877.21, 59.2059, NULL, 0, 1, 0, 100, 0),
+(61162503, 52, -1692.06, 1899.02, 60.7504, NULL, 0, 1, 0, 100, 0),
+(61162503, 53, -1699.45, 1908.31, 61.1412, NULL, 0, 1, 0, 100, 0),
+(61162503, 54, -1717, 1915.93, 60.0908, NULL, 0, 1, 0, 100, 0),
+(61162503, 55, -1738.04, 1917.48, 59.0673, NULL, 0, 1, 0, 100, 0),
+(61162503, 56, -1757.16, 1918.92, 58.9757, NULL, 0, 1, 0, 100, 0),
+(61162503, 57, -1772.71, 1926.58, 59.1537, NULL, 0, 1, 0, 100, 0),
+(61162503, 58, -1791.81, 1939.62, 60.7298, NULL, 0, 1, 0, 100, 0),
+(61162503, 59, -1802.7, 1951.89, 60.7237, NULL, 0, 1, 0, 100, 0),
+(61162503, 60, -1809.79, 1963.96, 59.7477, NULL, 0, 1, 0, 100, 0),
+(61162503, 61, -1815.2, 1976.74, 59.0006, NULL, 0, 1, 0, 100, 0),
+(61162503, 62, -1817.51, 2008.7, 59.5336, NULL, 0, 1, 0, 100, 0),
+(61162503, 63, -1823, 2032.7, 60.6767, NULL, 0, 1, 0, 100, 0),
+(61162503, 64, -1821.87, 2042.21, 60.944, NULL, 0, 1, 0, 100, 0),
+(61162503, 65, -1813.14, 2068.68, 63.0096, NULL, 0, 1, 0, 100, 0),
+(61162503, 66, -1810.52, 2082.43, 63.114, NULL, 0, 1, 0, 100, 0),
+(61162503, 67, -1806.9, 2095.9, 63.1144, NULL, 0, 1, 0, 100, 0),
+(61162503, 68, -1802.03, 2111.56, 63.6862, NULL, 0, 1, 0, 100, 0),
+(61162503, 69, -1802.03, 2111.56, 63.6862, NULL, 0, 1, 0, 100, 0),
+(61162503, 70, -1801.53, 2141.07, 63.006, NULL, 0, 1, 0, 100, 0),
+(61162503, 71, -1801.53, 2141.07, 63.006, NULL, 0, 1, 0, 100, 0),
+(61162503, 72, -1802.25, 2155.05, 61.5195, NULL, 0, 1, 0, 100, 0),
+(61162503, 73, -1803.02, 2183.03, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 74, -1808.36, 2207.2, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 75, -1822.66, 2219.86, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 76, -1836.76, 2232.87, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 77, -1843.44, 2245.11, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 78, -1844.75, 2266.9, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 79, -1846.34, 2280.81, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 80, -1849.89, 2294.13, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 81, -1864.58, 2316.31, 59.8215, NULL, 0, 1, 0, 100, 0),
+(61162503, 82, -1872.72, 2327.7, 59.8224, NULL, 0, 1, 0, 100, 0),
+(61162503, 83, -1884.98, 2346.82, 59.8224, NULL, 0, 1, 0, 100, 0),
+(61162503, 84, -1887.2, 2354.3, 59.8696, NULL, 0, 1, 0, 100, 0),
+(61162503, 85, -1893.87, 2379.11, 59.9196, NULL, 0, 1, 0, 100, 0),
+(61162503, 86, -1900.07, 2391.67, 59.8224, NULL, 0, 1, 0, 100, 0),
+(61162503, 87, -1904, 2405.04, 59.8224, NULL, 0, 1, 0, 100, 0),
+(61162503, 88, -1932.62, 2425.58, 60.9125, NULL, 0, 0, 0, 100, 0),
+(61162503, 89, -1937.94, 2414.56, 60.4535, NULL, 0, 0, 0, 100, 0),
+(61162503, 90, -1932.83, 2414.21, 60.5086, NULL, 600000, 0, 0, 100, 0), -- south stop
+(61162503, 91, -1932.83, 2414.21, 60.5086, NULL, 0, 0, 0, 100, 0),
+(61162503, 92, -1916.88, 2405.2, 60.7632, NULL, 0, 0, 0, 100, 0),
+(61162503, 93, -1904, 2405.04, 59.8224, NULL, 0, 0, 0, 100, 0),
+(61162503, 94, -1899.68, 2393.35, 59.8224, NULL, 0, 1, 0, 100, 0),
+(61162503, 95, -1892.03, 2375.61, 59.9178, NULL, 0, 1, 0, 100, 0),
+(61162503, 96, -1885.29, 2346.94, 59.8216, NULL, 0, 1, 0, 100, 0),
+(61162503, 97, -1881.12, 2339.05, 59.8216, NULL, 0, 1, 0, 100, 0),
+(61162503, 98, -1864.4, 2316.59, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 99, -1852.79, 2300.12, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 100, -1847.08, 2287.99, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 101, -1844.34, 2264.2, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 102, -1842.38, 2243.22, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 103, -1840.11, 2237.75, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 104, -1830.64, 2226.2, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 105, -1810.22, 2209.43, 59.8226, NULL, 0, 1, 0, 100, 0),
+(61162503, 106, -1802.8, 2194.02, 59.8226, NULL, 240000, 0, 0, 100, 0), -- south -> north - accept quest: Gizelton Caravan
+(61162503, 107, -1802.8, 2194.02, 59.8226, NULL, 0, 0, 0, 100, 0),
+--
+(61162503, 108, -1800.41, 2180.08, 59.8226, NULL, 0, 1, 0, 100, 0), -- no escort quest, peaceful route
+(61162503, 109, -1800.26, 2166.08, 60.1822, NULL, 0, 1, 0, 100, 0),
+(61162503, 110, -1801.62, 2148.85, 62.344, NULL, 0, 1, 0, 100, 0),
+(61162503, 111, -1801.15, 2134.86, 63.1766, NULL, 0, 1, 0, 100, 0),
+(61162503, 112, -1802.26, 2110.11, 63.6737, NULL, 0, 1, 0, 100, 0),
+(61162503, 113, -1805.87, 2096.6, 63.1784, NULL, 0, 1, 0, 100, 0),
+(61162503, 114, -1809.25, 2083.01, 63.0772, NULL, 0, 1, 0, 100, 0),
+(61162503, 115, -1812.63, 2069.43, 63.043, NULL, 0, 1, 0, 100, 0),
+(61162503, 116, -1816.72, 2056.04, 61.8496, NULL, 0, 1, 0, 100, 0),
+(61162503, 117, -1822.89, 2032.23, 60.6524, NULL, 0, 1, 0, 100, 0),
+(61162503, 118, -1822.76, 2027.39, 60.3783, NULL, 0, 1, 0, 100, 0),
+(61162503, 119, -1815.56, 2003.46, 59.4022, NULL, 0, 1, 0, 100, 0),
+(61162503, 120, -1814.41, 1983.18, 58.9549, NULL, 0, 1, 0, 100, 0),
+(61162503, 121, -1811.8, 1967.01, 59.4735, NULL, 0, 1, 0, 100, 0),
+(61162503, 122, -1803.12, 1951.78, 60.7154, NULL, 0, 1, 0, 100, 0),
+(61162503, 123, -1793.24, 1941.87, 60.8439, NULL, 0, 1, 0, 100, 0),
+(61162503, 124, -1775.92, 1926.82, 59.3033, NULL, 0, 1, 0, 100, 0),
+(61162503, 125, -1759.93, 1918.92, 58.9613, NULL, 0, 1, 0, 100, 0),
+(61162503, 126, -1751.9, 1917.2, 59.0003, NULL, 0, 1, 0, 100, 0),
+(61162503, 127, -1737.91, 1917.04, 59.0673, NULL, 0, 1, 0, 100, 0),
+(61162503, 128, -1712.18, 1914.85, 60.4394, NULL, 0, 1, 0, 100, 0),
+(61162503, 129, -1701.72, 1911.02, 61.0949, NULL, 0, 1, 0, 100, 0),
+(61162503, 130, -1694.06, 1904.03, 61.03, NULL, 0, 1, 0, 100, 0),
+(61162503, 131, -1687.1, 1886.34, 59.7501, NULL, 0, 1, 0, 100, 0),
+(61162503, 132, -1684.12, 1872.66, 59.0354, NULL, 0, 1, 0, 100, 0),
+(61162503, 133, -1673.14, 1845.28, 58.9273, NULL, 0, 1, 0, 100, 0),
+(61162503, 134, -1657.63, 1821.97, 58.9273, NULL, 0, 1, 0, 100, 0),
+--
+(61162504, 1, -1800.41, 2180.08, 59.8226, NULL, 0, 0, 0, 100, 0), -- escort quest: Gizelton Caravan
+(61162504, 2, -1800.26, 2166.08, 60.1822, NULL, 0, 0, 0, 100, 0),
+(61162504, 3, -1801.62, 2148.85, 62.344, NULL, 0, 0, 0, 100, 0),
+(61162504, 4, -1801.15, 2134.86, 63.1766, NULL, 0, 0, 0, 100, 0),
+(61162504, 5, -1802.26, 2110.11, 63.6737, NULL, 0, 0, 0, 100, 0),
+(61162504, 6, -1805.87, 2096.6, 63.1784, NULL, 0, 0, 0, 100, 0),
+(61162504, 7, -1809.25, 2083.01, 63.0772, NULL, 0, 0, 0, 100, 0),
+(61162504, 8, -1812.63, 2069.43, 63.043, NULL, 0, 0, 0, 100, 0),
+(61162504, 9, -1816.72, 2056.04, 61.8496, NULL, 0, 0, 0, 100, 0),
+(61162504, 10, -1822.89, 2032.23, 60.6524, NULL, 0, 0, 0, 100, 0),
+(61162504, 11, -1822.76, 2027.39, 60.3783, NULL, 0, 0, 0, 100, 0),
+(61162504, 12, -1815.56, 2003.46, 59.4022, NULL, 0, 0, 0, 100, 0),
+(61162504, 13, -1814.41, 1983.18, 58.9549, NULL, 0, 0, 0, 100, 0), -- ambush 1
+(61162504, 14, -1811.8, 1967.01, 59.4735, NULL, 0, 0, 0, 100, 0),
+(61162504, 15, -1803.12, 1951.78, 60.7154, NULL, 0, 0, 0, 100, 0),
+(61162504, 16, -1793.24, 1941.87, 60.8439, NULL, 0, 0, 0, 100, 0),
+(61162504, 17, -1775.92, 1926.82, 59.3033, NULL, 0, 0, 0, 100, 0),
+(61162504, 18, -1759.93, 1918.92, 58.9613, NULL, 0, 0, 0, 100, 0),
+(61162504, 19, -1751.9, 1917.2, 59.0003, NULL, 0, 0, 0, 100, 0),
+(61162504, 20, -1737.91, 1917.04, 59.0673, NULL, 0, 0, 0, 100, 0), -- ambush 2
+(61162504, 21, -1712.18, 1914.85, 60.4394, NULL, 0, 0, 0, 100, 0),
+(61162504, 22, -1701.72, 1911.02, 61.0949, NULL, 0, 0, 0, 100, 0),
+(61162504, 23, -1694.06, 1904.03, 61.03, NULL, 0, 0, 0, 100, 0),
+(61162504, 24, -1687.1, 1886.34, 59.7501, NULL, 0, 0, 0, 100, 0),
+(61162504, 25, -1684.12, 1872.66, 59.0354, NULL, 0, 0, 0, 100, 0), -- ambush 3
+(61162504, 26, -1673.14, 1845.28, 58.9273, NULL, 0, 0, 0, 100, 0),
+(61162504, 27, -1657.63, 1821.97, 58.9273, NULL, 0, 0, 0, 100, 0), -- Escort ends
+--
+(61162505, 1, -1649.83, 1810.34, 58.9273, NULL, 0, 1, 0, 100, 0), -- route towards north camp
+(61162505, 2, -1634.24, 1787.08, 58.9252, NULL, 0, 1, 0, 100, 0),
+(61162505, 3, -1626.45, 1775.45, 58.9252, NULL, 0, 1, 0, 100, 0),
+(61162505, 4, -1605.77, 1750.66, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 5, -1594.91, 1741.83, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 6, -1573.31, 1724.02, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 7, -1553.4, 1704.35, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 8, -1543.67, 1694.29, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 9, -1523.39, 1674.99, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 10, -1505.1, 1659.98, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 11, -1489.89, 1652.47, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 12, -1460.15, 1634.27, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 13, -1453.16, 1621.35, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 14, -1446.87, 1598.31, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 15, -1440.81, 1573.28, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 16, -1445.9, 1553.99, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 17, -1451.91, 1541.35, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 18, -1458.46, 1528.97, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 19, -1471.62, 1504.26, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 20, -1478.08, 1491.84, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 21, -1490.08, 1466.54, 58.9256, NULL, 0, 1, 0, 100, 0),
+(61162505, 22, -1491.71, 1455.14, 58.9291, NULL, 0, 1, 0, 100, 0),
+(61162505, 23, -1488.22, 1427.36, 58.9348, NULL, 0, 1, 0, 100, 0),
+(61162505, 24, -1486.41, 1413.48, 58.9418, NULL, 0, 1, 0, 100, 0),
+(61162505, 25, -1487.62, 1388.44, 58.9251, NULL, 0, 1, 0, 100, 0),
+(61162505, 26, -1491.84, 1375.08, 58.9301, NULL, 0, 1, 0, 100, 0),
+(61162505, 27, -1502.72, 1349.31, 58.9416, NULL, 0, 1, 0, 100, 0),
+(61162505, 28, -1508.49, 1336.58, 59.525, NULL, 0, 1, 0, 100, 0),
+(61162505, 29, -1511.68, 1327.41, 60.3754, NULL, 0, 1, 0, 100, 0),
+(61162505, 30, -1514.03, 1314.22, 62.0185, NULL, 0, 1, 0, 100, 0),
+(61162505, 31, -1514.79, 1300.27, 64.5471, NULL, 0, 1, 0, 100, 0),
+(61162505, 32, -1516.1, 1286.34, 68.0841, NULL, 0, 1, 0, 100, 0),
+(61162505, 33, -1518.52, 1272.55, 72.0932, NULL, 0, 1, 0, 100, 0),
+(61162505, 34, -1523.17, 1245.16, 82.7876, NULL, 0, 1, 0, 100, 0),
+(61162505, 35, -1522.5, 1234.75, 87.008, NULL, 0, 1, 0, 100, 0),
+(61162505, 36, -1517.95, 1221.51, 91.5343, NULL, 0, 1, 0, 100, 0),
+(61162505, 37, -1511.76, 1208.2, 96.7403, NULL, 0, 1, 0, 100, 0),
+(61162505, 38, -1501.33, 1196.53, 102.475, NULL, 0, 1, 0, 100, 0),
+(61162505, 39, -1490.76, 1188.95, 106.376, NULL, 0, 1, 0, 100, 0),
+(61162505, 40, -1475.92, 1185.48, 109.181, NULL, 0, 1, 0, 100, 0),
+(61162505, 41, -1452.6, 1187.95, 111.422, NULL, 0, 1, 0, 100, 0),
+(61162505, 42, -1433.28, 1193.58, 111.857, NULL, 0, 1, 0, 100, 0),
+(61162505, 43, -1414.55, 1203.63, 111.886, NULL, 0, 1, 0, 100, 0),
+(61162505, 44, -1388.31, 1213.37, 111.599, NULL, 0, 1, 0, 100, 0),
+(61162505, 45, -1375.11, 1218.03, 111.465, NULL, 0, 1, 0, 100, 0),
+(61162505, 46, -1348.49, 1226.69, 111.175, NULL, 0, 1, 0, 100, 0),
+(61162505, 47, -1319.41, 1232.27, 110.201, NULL, 0, 0, 0, 100, 0);

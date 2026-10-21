@@ -200,12 +200,10 @@ IndividualProgression.WarlockDemonTrainers = 1
 
 # IndividualProgression.SimpleConfigOverride
 #
-#        Description: If enabled, it will allow this module to set a few AzerothCore config values.
-#                     The first two are required for this module.
-#                     If you don't want the reduced water breath timer, you need to disable this option and set the first 2 options in worldserver.conf yourself.
+#        Description: If enabled, it will allow this module to set a few AzerothCore config values. The first one is required for this module.
+#                     If you don't want the reduced water breath timer, you need to disable this option and set the first option in worldserver.conf yourself.
 #
 #                     Changed options include:
-#                     - Enable PlayerSettings (required by Individual Progression module)
 #                     - Do not enforce DBC Item Attributes, so that Vanilla item changes can override client values
 #                     - Water Breath Timer to 1 Minute (Vanilla value, changed to 3 Minutes in WotLK)
 #

@@ -20,7 +20,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (7332, 0, 0, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Withered Spearhide - Outside 30 Range - Start Combat Movement'),
 (7332, 0, 1, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Withered Spearhide - Within 5-30 Range - Stop Combat Movement'),
 (7332, 0, 2, 0, 9, 0, 100, 0, 0, 0, 3000, 3000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Withered Spearhide - Within 0-5 Range - Start Combat Movement'),   
-(7332, 0, 3, 0, 9, 0, 100, 0, 0, 1000, 2000, 2000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,         'Withered Spearhide - Within 5-30 Range - Cast Shoot'),
+(7332, 0, 3, 0, 9, 0, 100, 0, 0, 1000, 2000, 2000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,        'Withered Spearhide - Within 5-30 Range - Cast Shoot'),
 (7332, 0, 4, 0, 0, 0, 100, 0, 4000, 9000, 12000, 20000, 0, 0, 11, 11397, 0, 0, 0, 0, 0, 5, 30, 0, 0, 0, 0, 0, 0, 0,    'Withered Spearhide - Within 0-30 Range - Cast Diseased Shot'),
 (7332, 0, 5, 6, 2, 0, 100, 1, 0, 30, 0, 0, 0, 0, 11, 8599, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Withered Spearhide - In Combat - Between Health 0-30% - Cast Enrage (No Repeat)'),
 (7332, 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                       'Withered Spearhide - On Enrage - Say Line 0'),

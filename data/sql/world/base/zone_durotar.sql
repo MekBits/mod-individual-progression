@@ -29,7 +29,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (3112, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Razormane Scout - Outside 30 Range - Start Combat Movement'),
 (3112, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Razormane Scout - Within 5-30 Range - Stop Combat Movement'),
 (3112, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Razormane Scout - Within 0-5 Range - Start Combat Movement'),
-(3112, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Razormane Scout - Within 5-30 Range - Cast Shoot'),
+(3112, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Razormane Scout - Within 5-30 Range - Cast Shoot'),
 (3112, 0, 4, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Razormane Scout - Between 0-15% Health - Flee For Assist (No Repeat)'),
 (3113, 0, 0, 0, 9, 0, 100, 0, 0, 0, 30000, 35000, 0, 30, 11, 6950, 32, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,          'Razormane Dustrunner - In Combat - Cast Faerie Fire'),
 (3113, 0, 1, 0, 14, 0, 100, 0, 100, 40, 14000, 21000, 0, 0, 11, 774, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Razormane Dustrunner - Friendly Missing 100 Health - Cast Rejuvenation'),
@@ -49,7 +49,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (3120, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Kolkar Outrunner - Outside 30 Range - Start Combat Movement'),
 (3120, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Kolkar Outrunner - Within 5-30 Range - Stop Combat Movement'),
 (3120, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                 'Kolkar Outrunner - Within 0-5 Range - Start Combat Movement'),
-(3120, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,            'Kolkar Outrunner - Within 5-30 Range - Cast Shoot'),
+(3120, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 4000, 5, 30, 11, 6660, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Kolkar Outrunner - Within 5-30 Range - Cast Shoot'),
 (3120, 0, 4, 0, 2, 0, 100, 1, 0, 15, 0, 0, 0, 0, 25, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      'Kolkar Outrunner - Between 0-15% Health - Flee For Assist (No Repeat)'),
 --
 (3122, 0, 0, 0, 9, 0, 100, 1, 0, 0, 0, 0, 0, 15, 11, 6268, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Bloodtalon Taillasher - Within 0-15 Range - Cast Rushing Charge (No Repeat)'),

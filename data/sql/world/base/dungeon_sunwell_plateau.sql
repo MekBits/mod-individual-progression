@@ -19,7 +19,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (25368, 0, 0, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 30, 60, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Sunblade Slayer - Outside 30 Range - Start Combat Movement'),
 (25368, 0, 1, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 5, 30, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,               'Sunblade Slayer - Within 5-30 Range - Stop Combat Movement'),
 (25368, 0, 2, 0, 9, 0, 100, 0, 0, 0, 4000, 4000, 0, 5, 21, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                'Sunblade Slayer - Within 0-5 Range - Start Combat Movement'),
-(25368, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 2000, 5, 30, 11, 47001, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Sunblade Slayer - In Combat - Cast Shoot'),
+(25368, 0, 3, 0, 9, 0, 100, 0, 0, 0, 2000, 2000, 5, 30, 11, 47001, 512, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,         'Sunblade Slayer - In Combat - Cast Shoot'),
 (25368, 0, 4, 0, 0, 0, 100, 0, 5000, 9000, 9000, 18000, 0, 0, 11, 46681, 0, 0, 0, 0, 0, 5, 15, 0, 0, 0, 0, 0, 0, 0,    'Sunblade Slayer - In Combat - Cast Scatter Shot'),
 (25368, 0, 5, 0, 0, 0, 100, 0, 4000, 12000, 6000, 18000, 0, 0, 11, 46557, 0, 0, 0, 0, 0, 5, 30, 0, 0, 0, 0, 0, 0, 0,   'Sunblade Slayer - In Combat - Cast Slaying Shot'),
 (25368, 0, 6, 0, 1, 0, 100, 0, 0, 0, 15000, 45000, 0, 0, 11, 46319, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,          'Sunblade Slayer - Out Of Combat - Cast Felblood Channel'),

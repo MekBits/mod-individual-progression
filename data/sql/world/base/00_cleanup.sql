@@ -77,3 +77,48 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 29 AND `ConditionType
 
 -- remove pvp progression requirements to show pvp gear. added rank requirements back
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 23 AND `ConditionTypeOrReference` = 8 AND `Comment` = "Vanilla PvP Ranked Gear (IPP)";
+
+-- BRD Detention Block: older versions of dungeon_blackrock_depths.sql replaced the patrols that AC 2026_09_24_09 sets up
+-- (positions, paths 459170..910840 instead of guid * 100, formations); put AC's version back
+UPDATE `creature` SET `position_x` = 505.312, `position_y` = -124.581, `position_z` = -62.091, `orientation` = 3.3517, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 47825 AND `id` = 8890;
+UPDATE `creature` SET `position_x` = 424.321, `position_y` = -79.389, `position_z` = -64.193, `orientation` = 2.8469, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 91084 AND `id` = 8890;
+UPDATE `creature` SET `position_x` = 524.359, `position_y` = -73.163, `position_z` = -62.163, `orientation` = 5.3016, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 47832 AND `id` = 8921;
+UPDATE `creature` SET `position_x` = 502.454, `position_y` = -73.061, `position_z` = -63.079, `orientation` = 1.3006, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 45917 AND `id` = 8921;
+UPDATE `creature` SET `position_x` = 485.841, `position_y` = -104.503, `position_z` = -62.635, `orientation` = 3.8515, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 45924 AND `id` = 8921;
+UPDATE `creature` SET `position_x` = 422.511, `position_y` = -79.066, `position_z` = -63.935, `orientation` = 2.8346, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 90688 AND `id` = 8921;
+UPDATE `creature` SET `position_x` = 410.003, `position_y` = -183.575, `position_z` = -63.584, `orientation` = 3.8935, `currentwaypoint` = 0, `VerifiedBuild` = 69110 WHERE `guid` = 90855 AND `id` = 8921;
+
+DELETE FROM `creature_addon` WHERE `guid` IN (45917, 45924, 47825, 47832, 90688, 90855, 91084);
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES
+(45917, 4591700, 0, 0, 1, 0, 0, '8279'),
+(45924, 4592400, 0, 0, 1, 0, 0, '8279'),
+(47825, 4782500, 0, 0, 1, 0, 0, NULL),
+(47832, 4783200, 0, 0, 1, 0, 0, '8279'),
+(90688, 9068800, 0, 0, 1, 0, 0, '8279'),
+(90855, 9085500, 0, 0, 1, 0, 0, '8279'),
+(91084, 9108400, 0, 0, 1, 0, 0, NULL);
+
+DELETE FROM `creature_formations` WHERE `leaderGUID` IN (45917, 45924, 47825, 47832, 90688, 90855, 91084);
+DELETE FROM `creature_formations` WHERE `memberGUID` IN (45915, 45916, 45917, 45924, 45925, 45926, 47825, 47826, 47827, 47830, 47831, 47832, 90686, 90687, 90688, 90855, 90856, 90857, 91084, 91085, 91086);
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES
+(45917, 45917, 0, 0, 515, 0, 0),
+(45917, 45915, 2, 90, 515, 0, 0),
+(45917, 45916, 2, 180, 515, 0, 0),
+(45924, 45924, 0, 0, 515, 0, 0),
+(45924, 45925, 6, 180, 515, 0, 0),
+(45924, 45926, 4, 180, 515, 0, 0),
+(47825, 47825, 0, 0, 515, 0, 0),
+(47825, 47826, 2, 90, 515, 0, 0),
+(47825, 47827, 2, 180, 515, 0, 0),
+(47832, 47832, 0, 0, 515, 0, 0),
+(47832, 47830, 2, 90, 515, 0, 0),
+(47832, 47831, 2, 180, 515, 0, 0),
+(90688, 90688, 0, 0, 515, 0, 0),
+(90688, 90686, 2, 90, 515, 0, 0),
+(90688, 90687, 2, 180, 515, 0, 0),
+(90855, 90855, 0, 0, 515, 0, 0),
+(90855, 90856, 2, 90, 515, 0, 0),
+(90855, 90857, 2, 180, 515, 0, 0),
+(91084, 91084, 0, 0, 515, 0, 0),
+(91084, 91085, 2, 90, 515, 0, 0),
+(91084, 91086, 2, 180, 515, 0, 0);

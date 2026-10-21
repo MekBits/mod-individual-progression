@@ -34,7 +34,7 @@ Please see [How to Install](https://github.com/ZhengPeiRu21/mod-individual-progr
 Going through the process of making pull requests for AzerothCore and test phases on the playerbots fork takes months. This no longer makes sense. I can't wait months for every small change I want to make.
 
 ## Please Note!
-This module uses Player Settings to save individual character progress. *Please ensure that EnablePlayerSettings is set to 1 in worldserver.conf or progress will not be saved!* Also, for item changes to take effect, please ensure *DBC.EnforceItemAttributes is set to 0*! This will allow the module to override item stats with their correct Vanilla stats.
+For item changes to take effect, please ensure *DBC.EnforceItemAttributes is set to 0*! This will allow the module to override item stats with their correct Vanilla/TBC values.
 
 ### Optional Data Files
 Some changes for Vanilla and TBC content require DBC modification. The .mpq file for the client and .dbc files for the server can be found in the "optional" directory. These changes include requiring Vanilla reagents such as Flint and Steel for campfires, changing Level 60 enchanting to use Vanilla and not TBC reagents, profession leveling adjustments, etc. These files are all optional and the module will work without the patch, but these recipes will remain their WotLK versions.

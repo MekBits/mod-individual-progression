@@ -1300,34 +1300,34 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
 (11625, 0, 17, 0, 108, 0, 100, 0, 105, 61162501, 0, 0, 0, 0, 232, 61162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Cork Gizelton - On Waypoint Reached - Start Waypoints 61162503'), -- peaceful route done, continue to south camp
 (11625, 0, 18, 19, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                   'Cork Gizelton - On Respawn - Remove Quest Giver flag'),
 (11625, 0, 19, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, 61162501, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Cork Gizelton - On Respawn - Start Waypoints 61162501'),
-(11625, 0, 20, 39, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Fail Quest'),
 --
-(11625, 0, 21, 22, 108, 0, 100, 1, 13, 61162504, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 2'),
-(11625, 0, 22, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 1
-(11625, 0, 23, 24, 108, 0, 100, 1, 20, 61162504, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 3'),
-(11625, 0, 24, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 2
-(11625, 0, 25, 26, 108, 0, 100, 1, 25, 61162504, 0, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 4'),
-(11625, 0, 26, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 3
-(11625, 0, 27, 28, 108, 0, 100, 1, 27, 61162504, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Say Text 5'),
-(11625, 0, 28, 29, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162504, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,             'Cork Gizelton - On Waypoint Reached - Run Script 1162504'), -- complete escort
-(11625, 0, 29, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162601, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,    'Cork Gizelton - On Waypoint Reached - Run Script 1162601'), -- give quest credit
-
-(11625, 0, 30, 0, 108, 0, 100, 0, 134, 61162503, 0, 0, 0, 0, 232, 61162505, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Cork Gizelton - On Waypoint Reached - Start Waypoints 61162505'), -- peaceful route done, continue to final waypoint
+(11625, 0, 20, 21, 108, 0, 100, 1, 13, 61162504, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 2'),
+(11625, 0, 21, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 1
+(11625, 0, 22, 23, 108, 0, 100, 1, 20, 61162504, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 3'),
+(11625, 0, 23, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 2
+(11625, 0, 24, 25, 108, 0, 100, 1, 25, 61162504, 0, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 4'),
+(11625, 0, 25, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162503, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,              'Cork Gizelton - On Waypoint Reached - Run Script 1162503'), -- demon ambush 3
+(11625, 0, 26, 27, 108, 0, 100, 1, 27, 61162504, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Say Text 5'),
+(11625, 0, 27, 28, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162504, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,             'Cork Gizelton - On Waypoint Reached - Run Script 1162504'), -- complete escort
+(11625, 0, 28, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 80, 1162601, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,    'Cork Gizelton - On Waypoint Reached - Run Script 1162601'), -- give quest credit
+(11625, 0, 29, 0, 108, 0, 100, 0, 134, 61162503, 0, 0, 0, 0, 232, 61162505, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  'Cork Gizelton - On Waypoint Reached - Start Waypoints 61162505'), -- peaceful route done, continue to final waypoint
 --
-(11625, 0, 31, 32, 108, 0, 100, 1, 52, 61162501, 0, 0, 0, 0, 12, @NPC_VENDOR_TRON, 1, 600000, 0,0,0,8,0,0,0,0, -694.61, 1460.7, 90.794, 2.4, 'Cork Gizelton - On Waypoint Reached - Spawn NPC_VENDOR_TRON'), -- north stop
-(11625, 0, 32, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
-(11625, 0, 33, 34, 108, 0, 100, 1, 53, 61162501, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 0'),
-(11625, 0, 34, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
+(11625, 0, 30, 31, 108, 0, 100, 1, 52, 61162501, 0, 0, 0, 0, 12, @NPC_VENDOR_TRON, 1, 600000, 0,0,0,8,0,0,0,0, -694.61, 1460.7, 90.794, 2.4, 'Cork Gizelton - On Waypoint Reached - Spawn NPC_VENDOR_TRON'), -- north stop
+(11625, 0, 31, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
+(11625, 0, 32, 33, 108, 0, 100, 1, 53, 61162501, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,           'Cork Gizelton - On Waypoint Reached - Say Text 0'),
+(11625, 0, 33, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
 --
-(11625, 0, 35, 36, 108, 0, 100, 1, 90, 61162503, 0, 0, 0, 0, 12, @NPC_SUPER_SELLER, 1, 600000, 0, 0, 0, 8, 0, 0, 0, 0, -1927.48, 2418.02, 60.77, 5.67, 'Script9 - Cork Gizelton - Spawn NPC_VENDOR_TRON'), -- south stop
-(11625, 0, 36, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
-(11625, 0, 37, 38, 108, 0, 100, 1, 91, 61162503, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 0'),
-(11625, 0, 38, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
-(11625, 0, 39, 40, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
-(11625, 0, 40, 41, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn Rigger Gizelton'), -- when leader dies despawn entire caravan so they respawn at the same time
-(11625, 0, 41, 42, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn kodo 1'),
-(11625, 0, 42, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Death - Despawn kodo 2'),
-(11625, 0, 43, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Data Set 1 1 - Fail Quest'),
+(11625, 0, 34, 35, 108, 0, 100, 1, 90, 61162503, 0, 0, 0, 0, 12, @NPC_SUPER_SELLER, 1, 600000, 0, 0, 0, 8, 0, 0, 0, 0, -1927.48, 2418.02, 60.77, 5.67, 'Script9 - Cork Gizelton - Spawn NPC_VENDOR_TRON'), -- south stop
+(11625, 0, 35, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 82, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Add Gossip flag'),
+(11625, 0, 36, 37, 108, 0, 100, 1, 91, 61162503, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Cork Gizelton - On Waypoint Reached - Rigger Gizelton Say Text 0'),
+(11625, 0, 37, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 1, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Waypoint Reached - Remove Gossip flag'),
+--
+(11625, 0, 38, 39, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                 'Cork Gizelton - On Death - Fail Quest'),
+(11625, 0, 39, 40, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,         'Cork Gizelton - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
+(11625, 0, 40, 41, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,         'Cork Gizelton - On Death - Despawn Rigger Gizelton'), -- when leader dies despawn entire caravan so they respawn at the same time
+(11625, 0, 41, 42, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611627, 11564, 0, 0, 0, 0, 0, 0,         'Cork Gizelton - On Death - Despawn kodo 1'),
+(11625, 0, 42, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10, 611628, 11564, 0, 0, 0, 0, 0, 0,          'Cork Gizelton - On Death - Despawn kodo 2'),
+(11625, 0, 43, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5821, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                 'Cork Gizelton - On Data Set 1 1 - Fail Quest'),
 --
 (1162500, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0,                   'Script9 - Cork Gizelton - Store Targetlist'),
 (1162500, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Script9 - Cork Gizelton - Remove Quest Giver flag'),
@@ -1372,15 +1372,15 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
 (1162601, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 15, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                'Script9 - Cork Gizelton - Quest Credit'),
 --
 (11626, 0, 0, 0, 19, 0, 100, 0, 5943, 0, 0, 0, 0, 0, 80, 1162600, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,            'Rigger Gizelton - On Quest Accept - Run Script 1162600'),
-(11626, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Rigger Gizelton - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(11626, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0,            'Rigger Gizelton - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
 (11626, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 6, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                  'Rigger Gizelton - On Death - Fail Quest'),
 (11626, 0, 3, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 83, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                     'Rigger Gizelton - On Respawn - Remove Quest Giver flag'),
-(11626, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Rigger Gizelton - On Data Set 1 1 - Fail Quest'),
+(11626, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 0, 0, 6, 5943, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0,                  'Rigger Gizelton - On Data Set 1 1 - Fail Quest'),
 --
-(-611627, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
-(-611627, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
-(-611628, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
-(-611628, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0, 'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)');
+(-611627, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0,          'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(-611627, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,         'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)'),
+(-611628, 0, 1, 2, 6, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611625, 11625, 0, 0, 0, 0, 0, 0,          'Gizelton Caravan Kodo - On Death - Cork Gizelton Set Data 1 1 (fails his quest)'),
+(-611628, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 10, 611626, 11626, 0, 0, 0, 0, 0, 0,         'Gizelton Caravan Kodo - On Death - Rigger Gizelton Set Data 1 1 (fails his quest)');
 
 DELETE FROM `creature_template` WHERE `entry` = 611625; -- copy gets AC script to avoid worldserver console error for script not being used.
 INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `subname`, `IconName`, `gossip_menu_id`, 

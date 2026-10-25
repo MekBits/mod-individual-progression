@@ -466,6 +466,7 @@ public:
     void UpdateProgressionAchievements(Player* player, uint16 achievementID);
     void UpdateGroupAttunement(Player* player, std::string location);
     void UpdateRNDbotSpells(Player* player);
+    void TrainerRNDbotSpellsUnlock(Player const* player, uint32 spellId, Trainer::SpellState& state);
     void checkKillProgression(Player* player, Creature* killed);
     bool checkCustomKillProgression(Player* killer, Creature* killed);
 	void UpdateAccountReputation(uint32 factionId, uint32 accountId, Player* player);

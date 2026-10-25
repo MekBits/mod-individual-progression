@@ -70,15 +70,10 @@ public:
 
     void OnPlayerGetTrainerSpellState(Player const* player, uint32 /*trainerId*/, uint32 spellId, Trainer::SpellState& state) override
     {
-        // Allow [Tranquilizing Shot] for 60lvl bots
-        if (player->getClass() == CLASS_HUNTER && spellId == 19801)
-        {
-            // Perform isBotAccount check very last
-            if (player->GetLevel() == 60 && state == Trainer::SpellState::Unavailable && sIndividualProgression->isBotAccount(player))
-            {
-                state = Trainer::SpellState::Available;
-            }
-        }
+        if (!player || !player->IsInWorld())
+            return;
+
+        sIndividualProgression->TrainerRNDbotSpellsUnlock(player, spellId, state);
     }
 
     void OnPlayerEquip(Player* player, Item* /*it*/, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) override

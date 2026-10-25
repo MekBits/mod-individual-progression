@@ -3389,14 +3389,20 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (-(@CGUID+339), 0, 4, 0, 0, 0, 100, 0, 13000, 13000, 9000, 9000, 0, 0, 11, 21188, 0, 0, 0, 0, 0, 2, 0,0,0,0,0,0,0,0,   'Wing Commander Vipore (strike) - In Combat - Cast Stun Bomb Attack');
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN
-(10981, 10990, 12051, 12127, 12159, 13256, 13419, 14282, 14283, 14284, 12050, 13326, 13331, 13422, 12053, 
- 13328, 13332, 13421, 13358, 13359, 13440, 13441, 13576, 13577, 13324, 13333, 13424, 13329, 13334, 13425,
+(10981, 10990, 12048, 12050, 12051, 12052, 12053, 12127, 12159, 13256, 13324, 13326, 13328, 13331, 13332, 13333,
+ 13358, 13359, 13419, 13421, 13422, 13424, 13425, 13329, 13334, 13440, 13441, 13576, 13577, 14282, 14283, 14284,
  113256, 113419, 112050, 112053, 113236, 113284, 113442, 113443, 113441, 113577);
 
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN
-(10981, 10990, 12051, 12127, 12159, 13256, 13419, 14282, 14283, 14284, 12050, 13326, 13331, 13422, 12053, 
- 13328, 13332, 13421, 13358, 13359, 13440, 13441, 13576, 13577, 13324, 13333, 13424, 13329, 13334, 13425,
+(10981, 10990, 12048, 12050, 12051, 12052, 12053, 12127, 12159, 13256, 13324, 13326, 13328, 13331, 13332, 13333,
+ 13358, 13359, 13419, 13421, 13422, 13424, 13425, 13329, 13334, 13440, 13441, 13576, 13577, 14282, 14283, 14284,
  113256, 113419, 112050, 112053, 113236, 113284, 113442, 113443, 113441, 113577);
+
+DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN
+(-(@CGUID+606), -(@CGUID+607), -(@CGUID+608), -(@CGUID+609), -(@CGUID+610), -(@CGUID+613), -(@CGUID+615),
+ -(@CGUID+617), -(@CGUID+619), -(@CGUID+621), -(@CGUID+623), -(@CGUID+625), -(@CGUID+627), -(@CGUID+629), -(@CGUID+630),
+ -(@CGUID+701), -(@CGUID+703), -(@CGUID+705), -(@CGUID+707), -(@CGUID+709), -(@CGUID+711), -(@CGUID+713), -(@CGUID+714), -(@CGUID+715),
+ -(@CGUID+716), -(@CGUID+717), -(@CGUID+720), -(@CGUID+722), -(@CGUID+724), -(@CGUID+726), -(@CGUID+728), -(@CGUID+730), -(@CGUID+732));
 
 UPDATE `gameobject_template` SET `AIName` = 'SmartGameObjectAI' WHERE `entry` IN (178465, 178670);
 DELETE FROM `smart_scripts` WHERE `source_type` = 1 AND `entryorguid` IN (-657971, -657972, 178465, 178670);
@@ -3617,6 +3623,43 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (13424, 0, 0, 0, 4, 0, 100, 0, 0, 0, 0, 0, 0, 0, 11, 22120, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,                  'Champion Guardsman - On Aggro - Cast Charge'),
 (13424, 0, 1, 0, 0, 0, 100, 0, 4000, 6000, 7000, 9000, 0, 0, 11, 11976, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,      'Champion Guardsman - In Combat - Cast Strike'),
 --
+(-(@CGUID+606), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6060, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Alliance Sentinel - On Respawn - Start Waypoints'),
+(-(@CGUID+607), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6070, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Alliance Sentinel - On Respawn - Start Waypoints'),
+(-(@CGUID+608), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6080, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Alliance Sentinel - On Respawn - Start Waypoints'),
+(-(@CGUID+609), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6090, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Alliance Sentinel - On Respawn - Start Waypoints'),
+(-(@CGUID+610), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6100, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Alliance Sentinel - On Respawn - Start Waypoints'),
+--
+(-(@CGUID+613), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6130, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+615), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6150, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+617), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6170, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+619), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6190, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+621), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6210, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+623), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6230, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+625), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6250, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+627), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6270, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+629), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6290, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+(-(@CGUID+630), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+6300, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Stormpike Guardsman - On Respawn - Start Waypoints'),
+--
+(-(@CGUID+701), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7010, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+703), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7030, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+705), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7050, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+707), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7070, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+709), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7090, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+711), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7110, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+713), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7130, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+714), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7140, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+715), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7150, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+716), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7160, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+(-(@CGUID+717), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7170, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Legionnaire - On Respawn - Start Waypoints'),
+--
+(-(@CGUID+720), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7200, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+722), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7220, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+724), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7240, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+726), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7260, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+728), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7280, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+730), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7300, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+(-(@CGUID+732), 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 0, 0, 232, @WPID+7320, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   'Frostwolf Warrior - On Respawn - Start Waypoints'),
+--
 (13358, 0, 0, 0, 1, 0, 100, 513, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,                    'Stormpike Bowman - Out of Combat - Disable Combat Movement (No Repeat)'),
 (13358, 0, 1, 0, 10, 0, 100, 0, 0, 80, 2300, 3900, 0, 0, 11, 22121, 64, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,         'Stormpike Bowman - Within 0-80 Range - Cast Shoot'), -- OOC
 (13358, 0, 2, 0, 0, 0, 100, 0, 0, 0, 2300, 3900, 0, 0, 11, 22121, 64, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,           'Stormpike Bowman - Within 0-80 Range - Cast Shoot'), -- IC
@@ -3736,6 +3779,7 @@ DROP TEMPORARY TABLE `ipp_av_rep`;
 
 
 /* MISC */
+UPDATE `creature_template` SET `flags_extra` = flags_extra|134217728 WHERE `entry` IN (12051, 12127);
 UPDATE `creature_template` SET `name` = 'Commander Dardosh' WHERE `entry` = 13140;
 UPDATE `creature_template` SET `name` = 'Lieutenant Murp' WHERE `entry` = 13146;
 UPDATE `creature_template` SET `speed_walk` = 2, `flags_extra` = 0 WHERE entry IN (13256, 13419); -- remove CREATURE_FLAG_EXTRA_INSTANCE_BIND for elemental bosses
@@ -3924,36 +3968,36 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 DELETE FROM `broadcast_text` WHERE `ID` IN (8604, 8605, 8606, 8607, 8609, 8610, 8611, 8672, 8673, 8674, 8769, 8770, 8771, 8772, 8773, 8791, 8794, 8797, 10339, 10342, 10343, 10347, 10356, 10357, 10358);
 INSERT INTO `broadcast_text` (`ID`, `LanguageID`, `MaleText`, `FemaleText`, `EmoteID1`, `EmoteID2`, `EmoteID3`, `EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES
 -- Guse
-(8604,  7, '', 'Cover me, soldier! I have to make it back to our base and get the fleet prepped for an aerial assault!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8605,  7, '', 'WOOT! Made it!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8673,  7, '', 'War Riders are now ready! Soldiers of the Horde, I need your assistance.', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10339, 7, '', 'Guse is joining the battle! Time to take out the Stormpike filth!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8604,  0, '', 'Cover me, soldier! I have to make it back to our base and get the fleet prepped for an aerial assault!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8605,  0, '', 'WOOT! Made it!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8673,  0, '', 'War Riders are now ready! Soldiers of the Horde, I need your assistance.', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10339, 0, '', 'Guse is joining the battle! Time to take out the Stormpike filth!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
 -- Jeztor
-(8606,  7, '', 'There\'s no time to waste, trooper. I must get back to base immediately! Cover me!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8607,  7, '', 'Let\'s get down to business!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8674,  7, '', 'Jeztor\'s Riders are ready! Soldiers of the Horde, report for duty!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10342, 7, '', 'Jeztor\'s coming for you, Stormpike!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10343, 7, '', 'Jeztor lives! Time to light up the Valley sky, Commander.', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8606,  0, '', 'There\'s no time to waste, trooper. I must get back to base immediately! Cover me!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8607,  0, '', 'Let\'s get down to business!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8674,  0, '', 'Jeztor\'s Riders are ready! Soldiers of the Horde, report for duty!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10342, 0, '', 'Jeztor\'s coming for you, Stormpike!', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10343, 0, '', 'Jeztor lives! Time to light up the Valley sky, Commander.', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
 -- Mulverick
-(8609,  7, 'I need to get back to my ride. Search and destroy imminent! Cover me! On my six! GO GO GO!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8610,  7, 'I come for you, puny Alliance!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8611,  7, 'Good work, soldier. Now we light the fires and spite their ire!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8672,  7, 'Yeee hawww! Mulverick\'s fleet is ready to rock. All able bodied Horde soldiers need request a beacon and try their damndest to plant it so that my War Riders can home in for the aerial assault.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10347, 7, 'Incoming aerial support to Dun Baldar! Stormpike bow down!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8609,  0, 'I need to get back to my ride. Search and destroy imminent! Cover me! On my six! GO GO GO!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8610,  0, 'I come for you, puny Alliance!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8611,  0, 'Good work, soldier. Now we light the fires and spite their ire!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8672,  0, 'Yeee hawww! Mulverick\'s fleet is ready to rock. All able bodied Horde soldiers need request a beacon and try their damndest to plant it so that my War Riders can home in for the aerial assault.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10347, 0, 'Incoming aerial support to Dun Baldar! Stormpike bow down!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
 -- Ichman
-(8771,  7, 'Just get me close enough to our base and I can channel a teleport!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8772,  7, 'This is far enough! Meet me back at base!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8773,  7, 'You\'re going down, Mulv!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8791,  7, 'Soldiers of Stormpike, come to my aid! The beacon must be planted.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10358, 7, 'Drek\'Thar, I\'m coming for you!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8771,  0, 'Just get me close enough to our base and I can channel a teleport!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8772,  0, 'This is far enough! Meet me back at base!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8773,  0, 'You\'re going down, Mulv!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8791,  0, 'Soldiers of Stormpike, come to my aid! The beacon must be planted.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10358, 0, 'Drek\'Thar, I\'m coming for you!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
 -- Slidore
-(8769,  7, 'Cover me, I\'m making a break for it!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8794,  7, 'My flight is ready! Soldiers come to my aid!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10356, 7, 'I\'m coming Frostwolf, and this time you\'re gonna feel the flames!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8769,  0, 'Cover me, I\'m making a break for it!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8794,  0, 'My flight is ready! Soldiers come to my aid!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10356, 0, 'I\'m coming Frostwolf, and this time you\'re gonna feel the flames!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
 -- Vipore
-(8770,  7, 'We\'ve got no time to waste. This is a really long run! Cover me!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(8797,  7, 'Their spirits are restored! The gryphons are ready to strike! Come, soldiers! Come to my side!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
-(10357, 7, 'Senior Wing Commander Vipore, launching. Pray for a swift death, Frostwolf.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019);
+(8770,  0, 'We\'ve got no time to waste. This is a really long run! Cover me!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(8797,  0, 'Their spirits are restored! The gryphons are ready to strike! Come, soldiers! Come to my side!', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019),
+(10357, 0, 'Senior Wing Commander Vipore, launching. Pray for a swift death, Frostwolf.', '', 0, 0, 0, 0, 0, 0, 0, 0, 1, 18019);
 
 -- Cavalry Commanders
 DELETE FROM `gossip_menu` WHERE `MenuID` IN (65701, 65702);

@@ -33,6 +33,26 @@ void IndividualProgression::UpdateRNDbotSpells(Player* player)
     }
 }
 
+void IndividualProgression::TrainerRNDbotSpellsUnlock(Player const* player, uint32 spellId, Trainer::SpellState& state)
+{
+    if (state != Trainer::SpellState::Unavailable)
+        return;
+
+    bool unlockedForBots = false;
+    switch (player->getClass())
+    {
+    case CLASS_HUNTER:
+        if (player->GetLevel() == 60 && spellId == 19801) // Tranquilizing Shot
+            unlockedForBots = true;
+        break;
+    default:
+        break;
+    }
+
+    if (unlockedForBots && sIndividualProgression->isBotAccount(player))
+        state = Trainer::SpellState::Available;
+}
+
 void IndividualProgression::checkHunterPetSpells(Player* player)
 {
     if (!player || !player->IsInWorld() || !HunterPetsActive())

@@ -64,14 +64,20 @@ static constexpr std::array<uint16, 14> professionSkills =
     SKILL_TAILORING, SKILL_ENGINEERING, SKILL_ENCHANTING, SKILL_FISHING, SKILL_SKINNING, SKILL_INSCRIPTION, SKILL_JEWELCRAFTING
 };
 
-// The profession max a rank spell gives (Grand Master Skinning 50305 gives 450), or 0 for any other spell.
-static uint16 GetProfessionRank(uint32 spellId)
+// The skill and max a profession rank spell gives (Grand Master Skinning 50305 gives 450), or nullptr for any other spell.
+static SpellLearnSkillNode const* GetProfessionRankNode(uint32 spellId)
 {
     SpellLearnSkillNode const* node = sSpellMgr->GetSpellLearnSkill(spellId);
     if (!node || std::find(professionSkills.begin(), professionSkills.end(), node->skill) == professionSkills.end())
-        return 0;
+        return nullptr;
 
-    return node->maxvalue;
+    return node;
+}
+
+static uint16 GetProfessionRank(uint32 spellId)
+{
+    SpellLearnSkillNode const* node = GetProfessionRankNode(spellId);
+    return node ? node->maxvalue : 0;
 }
 
 // The profession cap of the character's tier: Artisan (300) before PROGRESSION_PRE_TBC and Master (375)
@@ -127,10 +133,18 @@ void IndividualProgression::CapProfessionSkills(Player* player)
     if (cappedSkills.empty())
         return;
 
+    // Only the ranks of the skills written back below: removeSpell drops the value of any other to 1.
     std::vector<uint32> ranksAboveCap;
     for (auto const& [spellId, playerSpell] : player->GetSpellMap())
-        if (playerSpell->State != PLAYERSPELL_REMOVED && GetProfessionRank(spellId) > cap)
+    {
+        if (playerSpell->State == PLAYERSPELL_REMOVED)
+            continue;
+
+        SpellLearnSkillNode const* node = GetProfessionRankNode(spellId);
+        if (node && node->maxvalue > cap && std::any_of(cappedSkills.begin(), cappedSkills.end(),
+            [node](std::pair<uint16, uint16> const& capped) { return capped.first == node->skill; }))
             ranksAboveCap.push_back(spellId);
+    }
 
     for (uint32 spellId : ranksAboveCap)
         player->removeSpell(spellId, SPEC_MASK_ALL, false);

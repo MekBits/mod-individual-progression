@@ -154,6 +154,31 @@ void IndividualProgression::CapProfessionSkills(Player* player)
         player->SetSkill(skill, cap / 75, value, cap);
         LOG_INFO("module", "IndividualProgression: {} ({}) profession skill {} capped at {}/{} for their tier",
             player->GetName(), player->GetGUID().GetCounter(), skill, value, cap);
+
+        // Learning a rank left the ones below it inactive, and removeSpell does not wake them. The spellbook
+        // was sent before this hook, so the top rank left is activated and sent, or the profession is gone until relog.
+        uint32 topRankId = 0;
+        PlayerSpell* topRank = nullptr;
+        uint16 topRankMax = 0;
+        for (auto const& [spellId, playerSpell] : player->GetSpellMap())
+        {
+            if (playerSpell->State == PLAYERSPELL_REMOVED)
+                continue;
+
+            SpellLearnSkillNode const* node = GetProfessionRankNode(spellId);
+            if (node && node->skill == skill && node->maxvalue <= cap && node->maxvalue > topRankMax)
+            {
+                topRankId = spellId;
+                topRank = playerSpell;
+                topRankMax = node->maxvalue;
+            }
+        }
+
+        if (topRank && !topRank->Active)
+        {
+            topRank->Active = true;
+            player->SendLearnPacket(topRankId, true);
+        }
     }
 }
 

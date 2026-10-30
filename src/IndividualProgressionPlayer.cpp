@@ -59,6 +59,7 @@ public:
 
         sIndividualProgression->CheckAdjustments(player);
         sIndividualProgression->CapProfessionSkills(player);
+        sIndividualProgression->CapProfessionAchievements(player);
 
         if (sIndividualProgression->enabled)
         {
@@ -85,6 +86,21 @@ public:
     bool OnPlayerCanLearnSpell(Player* player, uint32 spellId) override
     {
         return !sIndividualProgression->IsProfessionRankAboveCap(player, spellId);
+    }
+
+    // A book casts the rank, and that steps the skill without learnSpell, so it is refused before the cast.
+    bool OnPlayerCanUseItem(Player* player, ItemTemplate const* proto, InventoryResult& result) override
+    {
+        for (auto const& spell : proto->Spells)
+        {
+            if (spell.SpellId > 0 && sIndividualProgression->IsProfessionRankAboveCap(player, spell.SpellId))
+            {
+                result = EQUIP_ERR_CANT_EQUIP_SKILL;
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void OnPlayerEquip(Player* player, Item* /*it*/, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) override

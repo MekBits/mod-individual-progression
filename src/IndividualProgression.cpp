@@ -1175,6 +1175,7 @@ private:
         sIndividualProgression->sharedFactionIdsRegex = sConfigMgr->GetOption<std::string>("IndividualProgression.sharedFactionIdsRegex", "59|270|349|509|510|529|576|589|609|729|730|749|889|890|909");
         sIndividualProgression->BotAccountsMaxLevel = sConfigMgr->GetOption<uint8>("IndividualProgression.BotAccountsMaxLevel", 80);
         sIndividualProgression->BotAccountsFollowGroupCap = sConfigMgr->GetOption<bool>("IndividualProgression.BotAccountsFollowGroupCap", false);
+        sIndividualProgression->ProfessionTierCap = sConfigMgr->GetOption<bool>("IndividualProgression.ProfessionTierCap", false);
         sIndividualProgression->mountLevelApprentice = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Apprentice", 0);
         sIndividualProgression->mountLevelJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Journeyman", 0);
         sIndividualProgression->mountLevelExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountLevel.Expert", 0);

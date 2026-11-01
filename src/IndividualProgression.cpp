@@ -493,9 +493,14 @@ bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate c
 
     if (cap <= 70)
     {
-        // TBC gear with WotLK ids: a Sunwell drop and the last arena and honor rewards.
+        // TBC gear with WotLK ids: Sunwell jewelcrafting, a Sunwell drop and the last arena and honor rewards.
         switch (proto->ItemId)
         {
+            case 35693:
+            case 35694:
+            case 35700:
+            case 35702:
+            case 35703:
             case 35733:
             case 36737:
             case 37739:

@@ -521,12 +521,14 @@ IndividualProgression.BotAccountsFollowGroupCap = 0
 
 # IndividualProgression.LockLaterExpansionGear
 #
-#        Description: Characters cannot equip gear from an expansion they have not reached.
-#                     Before progression 8: item id 23728 or higher that requires level 58 or has
-#                     item level above 92. Before progression 13: item id 35570 or higher that
-#                     requires level 68 or has item level above 164. Bot accounts use their XP cap
-#                     as the progression. Characters above that level, excluded accounts and gear
-#                     already equipped at login are left alone.
+#        Description: Characters cannot equip weapons and armor from an expansion they have not
+#                     reached. Before progression 8: item id 23728 or higher that requires level
+#                     58 or has item level above 92, except the vanilla rank gear 29594-29617.
+#                     Before progression 13: item id 35570 or higher that requires level 68 or has
+#                     item level above 164, except the TBC gear with those ids. Bot accounts use
+#                     their XP cap in place of progression, with 60 and 70 as the same two limits.
+#                     Not locked: characters above their limit and excluded accounts. Gear worn at
+#                     login stays on, but it cannot go back on once it is taken off.
 #
 #        Default:     0 - Disabled
 #                     1 - Enabled

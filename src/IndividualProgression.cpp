@@ -483,10 +483,31 @@ bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate c
         return false;
 
     if (cap <= 60)
+    {
+        // The Blood Elf and Draenei versions of the vanilla rank gear, sold by the vanilla vendors.
+        if (proto->ItemId >= 29594 && proto->ItemId <= 29617)
+            return false;
+
         return proto->ItemId >= 23728 && (proto->RequiredLevel >= 58 || proto->ItemLevel > 92);
+    }
 
     if (cap <= 70)
+    {
+        // TBC gear with WotLK ids: a Sunwell drop and the last arena and honor rewards.
+        switch (proto->ItemId)
+        {
+            case 35733:
+            case 36737:
+            case 37739:
+            case 37740:
+            case 37927:
+            case 37928:
+            case 37929:
+                return false;
+        }
+
         return proto->ItemId >= 35570 && (proto->RequiredLevel >= 68 || proto->ItemLevel > 164);
+    }
 
     return false;
 }

@@ -905,7 +905,12 @@ public:
 
         // At login the core mails everything that fails here, so only new gear is stopped.
         if (not_loading && sIndividualProgression->isLockedExpansionGear(player, pItem->GetTemplate()))
+        {
+            if (!sIndividualProgression->isBotAccount(player))
+                ChatHandler(player->GetSession()).SendSysMessage("You have not reached the expansion this item is from.");
+
             return false;
+        }
 
         if (pItem->GetTemplate()->RequiredHonorRank == 0)
             return true;

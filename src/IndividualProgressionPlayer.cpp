@@ -898,9 +898,13 @@ public:
         sIndividualProgression->checkIPPhasing(player, newArea);
     }
 
-    bool OnPlayerCanEquipItem(Player* player, uint8 /*slot*/, uint16& /*dest*/, Item* pItem, bool /*swap*/, bool /*not_loading*/) override
+    bool OnPlayerCanEquipItem(Player* player, uint8 /*slot*/, uint16& /*dest*/, Item* pItem, bool /*swap*/, bool not_loading) override
     {
         if (!player || !pItem)
+            return false;
+
+        // At login the core mails everything that fails here, so only new gear is stopped.
+        if (not_loading && sIndividualProgression->isLockedExpansionGear(player, pItem->GetTemplate()))
             return false;
 
         if (pItem->GetTemplate()->RequiredHonorRank == 0)

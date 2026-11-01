@@ -519,6 +519,20 @@ IndividualProgression.BotAccountsMaxLevel = 80
 #
 IndividualProgression.BotAccountsFollowGroupCap = 0
 
+# IndividualProgression.LockLaterExpansionGear
+#
+#        Description: Characters cannot equip gear from an expansion they have not reached.
+#                     Before progression 8: item id 23728 or higher that requires level 58 or has
+#                     item level above 92. Before progression 13: item id 35570 or higher that
+#                     requires level 68 or has item level above 164. Bot accounts use their XP cap
+#                     as the progression. Characters above that level, excluded accounts and gear
+#                     already equipped at login are left alone.
+#
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+IndividualProgression.LockLaterExpansionGear = 0
+
 # IndividualProgression.ProfessionTierCap
 #
 #        Description: Caps professions, First Aid, Cooking and Fishing at the rank of the character's tier:

@@ -461,8 +461,8 @@ uint8 IndividualProgression::GetBotXpCap(Player* bot)
 }
 
 // True for gear from an expansion the character has not reached. The id alone would also lock the
-// Death Knight starting gear, which has high ids but a low or no level requirement. A character
-// above its cap, such as a GM's, is not locked: it was never held back by progression.
+// Death Knight starting gear and heirlooms, which have high ids but a low or no level requirement.
+// A character above its cap, such as a GM's, is not locked: it was never held back by progression.
 bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate const* proto)
 {
     if (!enabled || !LockLaterExpansionGear || !player || !proto || isExcludedAccount(player))
@@ -471,13 +471,15 @@ bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate c
     if (proto->Class != ITEM_CLASS_WEAPON && proto->Class != ITEM_CLASS_ARMOR)
         return false;
 
-    uint8 cap = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+    uint8 cap;
     if (isBotAccount(player))
         cap = GetBotXpCap(player);
     else if (!hasPassedProgression(player, PROGRESSION_PRE_TBC))
         cap = 60;
     else if (!hasPassedProgression(player, PROGRESSION_TBC_TIER_5))
         cap = 70;
+    else
+        return false;
 
     if (player->GetLevel() > cap)
         return false;
@@ -488,7 +490,7 @@ bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate c
         if (proto->ItemId >= 29594 && proto->ItemId <= 29617)
             return false;
 
-        return proto->ItemId >= 23728 && (proto->RequiredLevel >= 58 || proto->ItemLevel > 92);
+        return proto->ItemId >= 23728 && (proto->RequiredLevel >= 57 || proto->ItemLevel > 92);
     }
 
     if (cap <= 70)
@@ -511,7 +513,7 @@ bool IndividualProgression::isLockedExpansionGear(Player* player, ItemTemplate c
                 return false;
         }
 
-        return proto->ItemId >= 35570 && (proto->RequiredLevel >= 68 || proto->ItemLevel > 164);
+        return proto->ItemId >= 35570 && (proto->RequiredLevel >= 67 || proto->ItemLevel > 164);
     }
 
     return false;

@@ -29,6 +29,20 @@ public:
     {
         Group* group = player->GetGroup();
 
+        // A group inside Naxx 40 keeps its difficulty, or the ones inside lose their instance
+        if (group && group->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC)
+        {
+            for (GroupReference* itr = group->GetFirstMember(); itr; itr = itr->next())
+            {
+                Player* member = itr->GetSource();
+                if (member && member != player && member->GetMapId() == MAP_NAXX)
+                {
+                    ChatHandler(player->GetSession()).SendSysMessage("Your group is in the 40-player Naxxramas. Its entrance is in the Eastern Plaguelands.");
+                    return true;
+                }
+            }
+        }
+
         // Do not allow entrance to Naxx 40 from Northrend
         if (group && group->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC)
             group->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_NORMAL);

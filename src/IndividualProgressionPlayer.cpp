@@ -239,6 +239,13 @@ public:
             {
                 if (player->GetLevel() != 80 && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
                     return false;
+
+                // the raid difficulty picks the version, also for a summon
+                if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
+                {
+                    ChatHandler(player->GetSession()).SendSysMessage("You need to have the Drakefire Amulet in your inventory to enter the 40-player version.");
+                    return false;
+                }
             }
         }
         if (mapid == MAP_ZUL_GURUB)
@@ -456,6 +463,12 @@ public:
                 {
                     if (player->GetLevel() < 80)
                         return false;
+
+                    if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !sIndividualProgression->isAttuned(player))
+                    {
+                        ChatHandler(player->GetSession()).SendSysMessage("You are not attuned to Naxxramas.");
+                        return false;
+                    }
                 }
             }
         }

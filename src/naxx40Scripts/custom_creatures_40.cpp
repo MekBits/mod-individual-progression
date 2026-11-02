@@ -4,6 +4,7 @@
 #include "SpellScript.h"
 #include "Player.h"
 #include "naxxramas.h"
+#include "IndividualProgression.h"
 
 class npc_naxx40_area_trigger : public CreatureScript
 {
@@ -35,7 +36,9 @@ public:
             {
                 if (Player* player = who->ToPlayer())
                 {
-                    if (isAttuned(player))
+                    bool const picked40 = sIndividualProgression->isPastOldRaidLimits(player) && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC;
+
+                    if (isAttuned(player) && (player->GetLevel() <= 70 || picked40))
                     {
                         player->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
                         player->TeleportTo(533, 3005.51f, -3434.64f, 304.195f, 6.2831f);

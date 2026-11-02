@@ -648,7 +648,7 @@ public:
 
         if (location == "naxx" || location == "naxx40")
         {
-            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->hasPassedProgression(target, PROGRESSION_WOTLK_TIER_5))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
                 if (sIndividualProgression->isAttuned(target))
                 {
@@ -676,7 +676,7 @@ public:
         }
         else if (location == "onyxia" || location == "onyxia40")
         {
-            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->hasPassedProgression(target, PROGRESSION_WOTLK_TIER_5))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
                 if (target->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 {

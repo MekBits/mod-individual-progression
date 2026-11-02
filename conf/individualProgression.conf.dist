@@ -278,6 +278,44 @@ IndividualProgression.MaxMonsterSight = 1
 #
 IndividualProgression.QuestMoneyAtLevelCap = 1
 
+# IndividualProgression.ProfessionTierCap
+#
+#        Description: Caps professions, First Aid, Cooking and Fishing at the rank of the character's tier:
+#                     Artisan (300) before progression 8, Master (375) before progression 13, otherwise
+#                     Grand Master (450), as on 1.12, 2.4.3 and 3.3.5a. Trainers show the higher ranks as
+#                     unavailable, which also stops bot maintenance, books that teach them cannot be used,
+#                     and .learn refuses them.
+#                     A character above its cap is taken down at login: the ranks above it are unlearned,
+#                     and its skill is kept up to the cap. Achievements that need a rank above the cap are
+#                     taken back at login as well, also from a character that never had the rank; with
+#                     mod-account-achievements, put them in Account.Achievements.Excluded or they come back.
+#                     Skill above the cap, those achievements and the titles Salty and Chef are lost for good.
+#                     Applies to players and bots alike. Accounts of GM level 2 or higher, with their altbots,
+#                     and excluded accounts have no cap; a changed GM level counts after .reload config.
+#
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+IndividualProgression.ProfessionTierCap = 1
+
+# IndividualProgression.LockLaterExpansionGear
+#
+#        Description: Characters cannot equip weapons and armor from an expansion they have not
+#                     reached. Before progression 8: item id 23728 or higher that requires level
+#                     57 or has item level above 92, except the vanilla rank gear 29594-29617.
+#                     Before progression 13: item id 35570 or higher that requires level 67 or has
+#                     item level above 164, except the TBC gear with those ids.
+#                     Bot accounts use their XP cap in place of progression, locked as above at 60
+#                     or lower and at 70 or lower.
+#                     Not locked: characters above their limit, excluded accounts, and heirlooms and
+#                     other gear below both the level and the item level above. Gear worn at login
+#                     stays on, but it cannot go back on once it is taken off.
+#
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+IndividualProgression.LockLaterExpansionGear = 0
+
 # IndividualProgression.RepeatableVanillaQuestsXP
 #
 #        Description: Some repeatable quests in Vanilla gave XP every time they were turned in.
@@ -518,44 +556,6 @@ IndividualProgression.BotAccountsMaxLevel = 80
 #                     1 - Enabled
 #
 IndividualProgression.BotAccountsFollowGroupCap = 0
-
-# IndividualProgression.LockLaterExpansionGear
-#
-#        Description: Characters cannot equip weapons and armor from an expansion they have not
-#                     reached. Before progression 8: item id 23728 or higher that requires level
-#                     57 or has item level above 92, except the vanilla rank gear 29594-29617.
-#                     Before progression 13: item id 35570 or higher that requires level 67 or has
-#                     item level above 164, except the TBC gear with those ids.
-#                     Bot accounts use their XP cap in place of progression, locked as above at 60
-#                     or lower and at 70 or lower.
-#                     Not locked: characters above their limit, excluded accounts, and heirlooms and
-#                     other gear below both the level and the item level above. Gear worn at login
-#                     stays on, but it cannot go back on once it is taken off.
-#
-#        Default:     0 - Disabled
-#                     1 - Enabled
-#
-IndividualProgression.LockLaterExpansionGear = 0
-
-# IndividualProgression.ProfessionTierCap
-#
-#        Description: Caps professions, First Aid, Cooking and Fishing at the rank of the character's tier:
-#                     Artisan (300) before progression 8, Master (375) before progression 13, otherwise
-#                     Grand Master (450), as on 1.12, 2.4.3 and 3.3.5a. Trainers show the higher ranks as
-#                     unavailable, which also stops bot maintenance, books that teach them cannot be used,
-#                     and .learn refuses them.
-#                     A character above its cap is taken down at login: the ranks above it are unlearned,
-#                     and its skill is kept up to the cap. Achievements that need a rank above the cap are
-#                     taken back at login as well, also from a character that never had the rank; with
-#                     mod-account-achievements, put them in Account.Achievements.Excluded or they come back.
-#                     Skill above the cap, those achievements and the titles Salty and Chef are lost for good.
-#                     Applies to players and bots alike. Accounts of GM level 2 or higher, with their altbots,
-#                     and excluded accounts have no cap; a changed GM level counts after .reload config.
-#
-#        Default:     1 - Enabled
-#                     0 - Disabled
-#
-IndividualProgression.ProfessionTierCap = 1
 
 # IndividualProgression.BotAccountsRegex
 #

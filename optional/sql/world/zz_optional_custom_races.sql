@@ -25,3 +25,6 @@ UPDATE `quest_template` SET `AllowableRaces` = 1101 WHERE `ID` = 2880 AND (`Allo
 
 -- Westfall: 'A Swift Message' should be for humans only. 1791 = the ten stock playable races; bits other modules added stay.
 UPDATE `quest_template` SET `AllowableRaces` = 1 | (`AllowableRaces` & ~1791) WHERE `ID` IN (6181, 6261, 6281, 6285);
+
+-- Blood Knight quests: the pre-2.4 copies take the races of the originals
+UPDATE `quest_template` q JOIN `quest_template` p ON p.`ID` = q.`ID` - 100000 SET q.`AllowableRaces` = p.`AllowableRaces` WHERE q.`ID` IN (109681, 109684);

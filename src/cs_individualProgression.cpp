@@ -611,7 +611,7 @@ public:
 
         if (location == "naxx" || location == "naxx40")
         {
- 			if (target->GetLevel() <= 70 && ((progressionLevel < PROGRESSION_TBC_TIER_5) || sIndividualProgression->isExcludedAccount(target)))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->hasPassedProgression(target, PROGRESSION_WOTLK_TIER_5))
             {
                 if (sIndividualProgression->isAttuned(target))
                 {
@@ -619,8 +619,8 @@ public:
 
                     if (group)
                         group->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
-                    else
-                        target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
+
+                    target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
 
                     target->TeleportTo(533, 3005.51f, -3434.64f, 304.195f, 6.2831f);
                     return true;
@@ -639,7 +639,7 @@ public:
         }
         else if (location == "onyxia" || location == "onyxia40")
         {
-            if (target->GetLevel() <= 70 && ((progressionLevel < PROGRESSION_TBC_TIER_5) || sIndividualProgression->isExcludedAccount(target)))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->hasPassedProgression(target, PROGRESSION_WOTLK_TIER_5))
             {
                 if (target->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 {
@@ -647,8 +647,8 @@ public:
 
                     if (group)
                         group->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
-                    else
-                        target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
+
+                    target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
                    
                     target->TeleportTo(249, 29.1607f, -71.3372f, -8.18032f, 4.58f);
                     return true;

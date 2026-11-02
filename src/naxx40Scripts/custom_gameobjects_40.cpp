@@ -54,15 +54,15 @@ public:
                 allowed = false;
             }
 
-            // Above level 70 the group may be in another raid, and nobody but its leader decides the difficulty.
+            if (player->IsGameMaster())
+                allowed = true;
+
+            // Above level 70 the group may be in another raid, so its difficulty stays
             if (player->GetLevel() > 70 && player->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC)
             {
                 handler.PSendSysMessage("Set the raid difficulty to 10 Heroic to enter the 40-player version.");
                 allowed = false;
             }
-
-            if (player->IsGameMaster())
-                allowed = true;
 
             if (!allowed)
                 return false;

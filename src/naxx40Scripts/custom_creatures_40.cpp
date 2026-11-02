@@ -20,6 +20,15 @@ private:
         return false;
     }
 
+    // Above level 70 the raid difficulty picks the version, and inside Stratholme the leader cannot change it.
+    static bool canEnter(Player* player)
+    {
+        if (!isAttuned(player))
+            return false;
+
+        return player->GetLevel() <= 70 || (sIndividualProgression->isPastOldRaidLimits(player) && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC);
+    }
+
 public:
     npc_naxx40_area_trigger() : CreatureScript("npc_naxx40_area_trigger") {}
 
@@ -36,9 +45,7 @@ public:
             {
                 if (Player* player = who->ToPlayer())
                 {
-                    bool const picked40 = sIndividualProgression->isPastOldRaidLimits(player) && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC;
-
-                    if (isAttuned(player) && (player->GetLevel() <= 70 || picked40))
+                    if (canEnter(player))
                     {
                         player->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
                         player->TeleportTo(533, 3005.51f, -3434.64f, 304.195f, 6.2831f);
@@ -50,7 +57,7 @@ public:
             {
                 if (Player* player = who->ToPlayer())
                 {
-                    if (isAttuned(player))
+                    if (canEnter(player))
                     {
                         GameObject* door = me->FindNearestGameObject(GO_STRATH_GATE_40, 100.0f);
                         if (door)

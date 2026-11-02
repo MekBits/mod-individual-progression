@@ -650,6 +650,12 @@ public:
         {
             if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
+                if (target->GetLevel() > 70 && target->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC)
+                {
+                    handler->PSendSysMessage("|cff00ffff{}|r needs raid difficulty 10 Heroic.", playername);
+                    return false;
+                }
+
                 if (sIndividualProgression->isAttuned(target))
                 {
                     Group* group = target->GetGroup();
@@ -678,6 +684,12 @@ public:
         {
             if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
+                if (target->GetLevel() > 70 && target->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC)
+                {
+                    handler->PSendSysMessage("|cff00ffff{}|r needs raid difficulty 10 Heroic.", playername);
+                    return false;
+                }
+
                 if (target->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 {
                     Group* group = target->GetGroup();

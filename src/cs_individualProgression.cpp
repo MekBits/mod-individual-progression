@@ -136,9 +136,26 @@ public:
             return false;
         }
 
-        player = PlayerIdentifier::FromTargetOrSelf(handler);
+        if (!player)
+            player = PlayerIdentifier::FromTargetOrSelf(handler);
+
+        if (!player)
+        {
+            handler->SendSysMessage("Player not found.");
+            return false;
+        }
+
+        std::string playername = player->GetName();
         Player* target = player->GetConnectedPlayer();
-        std::string playername = target->GetName();
+        if (!target)
+        {
+            handler->PSendSysMessage("Player |cff00ffff{}|r is not online.", playername);
+            return false;
+        }
+
+        if (handler->HasLowerSecurity(target))
+            return false;
+
         uint8 currentState = sIndividualProgression->GetPlayerProgressionFromQuests(target);
         uint32 currentArea = target->GetAreaId();
 
@@ -156,7 +173,7 @@ public:
 
     static bool HandleSetBotIndividualProgressionCommand(ChatHandler* handler)
     {
-        Player* player = handler->GetSession()->GetPlayer();
+        Player* player = handler->GetPlayer();
 
         if (!player)
         {
@@ -193,11 +210,14 @@ public:
 
     static bool HandleSetRepIndividualProgressionCommand(ChatHandler* handler)
     {
-        Player* player = handler->GetSession()->GetPlayer();
-        uint32 accountId = handler->GetSession()->GetAccountId();
+        Player* player = handler->GetPlayer();
+        uint32 accountId = player ? player->GetSession()->GetAccountId() : 0;
         
         if (!player || !accountId)
+        {
+            handler->SendSysMessage("Player not found.");
             return false;
+        }
 
         Group* group = player->GetGroup();
         
@@ -604,23 +624,46 @@ public:
             return false;
         }
 
-        player = PlayerIdentifier::FromTargetOrSelf(handler);
+        if (!player)
+            player = PlayerIdentifier::FromTargetOrSelf(handler);
+
+        if (!player)
+        {
+            handler->SendSysMessage("Player not found.");
+            return false;
+        }
+
+        std::string playername = player->GetName();
         Player* target = player->GetConnectedPlayer();
+        if (!target)
+        {
+            handler->PSendSysMessage("Player |cff00ffff{}|r is not online.", playername);
+            return false;
+        }
+
+        if (handler->HasLowerSecurity(target))
+            return false;
+
         uint32 progressionLevel = sIndividualProgression->GetPlayerProgressionFromQuests(target);
-        std::string playername = target->GetName();
 
         if (location == "naxx" || location == "naxx40")
         {
- 			if (target->GetLevel() <= 70 && ((progressionLevel < PROGRESSION_TBC_TIER_5) || sIndividualProgression->isExcludedAccount(target)))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
+                if (target->GetLevel() > 70 && target->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC)
+                {
+                    handler->PSendSysMessage("|cff00ffff{}|r needs raid difficulty 10 Heroic.", playername);
+                    return false;
+                }
+
                 if (sIndividualProgression->isAttuned(target))
                 {
                     Group* group = target->GetGroup();
 
                     if (group)
                         group->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
-                    else
-                        target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
+
+                    target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
 
                     target->TeleportTo(533, 3005.51f, -3434.64f, 304.195f, 6.2831f);
                     return true;
@@ -639,16 +682,22 @@ public:
         }
         else if (location == "onyxia" || location == "onyxia40")
         {
-            if (target->GetLevel() <= 70 && ((progressionLevel < PROGRESSION_TBC_TIER_5) || sIndividualProgression->isExcludedAccount(target)))
+            if ((target->GetLevel() <= 70 && (progressionLevel < PROGRESSION_TBC_TIER_5)) || sIndividualProgression->isPastOldRaidLimits(target))
             {
+                if (target->GetLevel() > 70 && target->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC)
+                {
+                    handler->PSendSysMessage("|cff00ffff{}|r needs raid difficulty 10 Heroic.", playername);
+                    return false;
+                }
+
                 if (target->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 {
                     Group* group = target->GetGroup();
 
                     if (group)
                         group->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
-                    else
-                        target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
+
+                    target->SetRaidDifficulty(RAID_DIFFICULTY_10MAN_HEROIC);
                    
                     target->TeleportTo(249, 29.1607f, -71.3372f, -8.18032f, 4.58f);
                     return true;
@@ -671,7 +720,7 @@ public:
 
     static bool HandleAttuneIndividualProgressionCommand(ChatHandler* handler, std::string location)
     {
-        Player* player = handler->GetSession()->GetPlayer();
+        Player* player = handler->GetPlayer();
 
         if (!player)
         {

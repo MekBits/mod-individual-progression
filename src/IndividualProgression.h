@@ -462,6 +462,7 @@ public:
     bool HunterPetsActive() const { return enabled && VanillaHunterPets; }
     bool DemonTrainersActive() const { return enabled && WarlockDemonTrainers; }
     bool isAttuned(Player* player);
+    bool isPastOldRaidLimits(Player* player) const;
     bool isPlayerInDungeonOrRaid(Player* player);
     void checkIPPhasing(Player* player, uint32 newArea);
     void checkIPProgression(Player* player);

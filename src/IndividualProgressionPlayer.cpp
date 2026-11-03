@@ -14,6 +14,45 @@ private:
                 zoneId == AREA_THE_EXODAR || zoneId == AREA_SILVERMOON_CITY || zoneId == AREA_AMMEN_VALE || zoneId == AREA_VEILED_SEA);
     }
 
+    // The 40-player Onyxia and Naxxramas need the key from every player, at any level and progression.
+    // Level 71-79 never enters the 40-player version, and at level 80 the raid difficulty picks the version.
+    static bool CanEnterFortyPlayer(Player* player, uint32 mapid)
+    {
+        uint8 const level = player->GetLevel();
+        bool const heroicArrival = player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC;
+
+        if (mapid == MAP_ONYXIAS_LAIR)
+        {
+            if (level < 50 || (level > 70 && level != 80))
+                return false;
+
+            if (level <= 70 && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
+                return false;
+
+            if (level == 80 && heroicArrival && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage("You need to have the Drakefire Amulet in your inventory to enter the 40-player version.");
+                return false;
+            }
+        }
+        else // Naxxramas
+        {
+            if (level > 70 && level < 80)
+                return player->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC;
+
+            if (level <= 70 && !sIndividualProgression->isAttuned(player))
+                return false;
+
+            if (level == 80 && heroicArrival && !sIndividualProgression->isAttuned(player))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage("You are not attuned to Naxxramas.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 public:
     IndividualPlayerProgression() : PlayerScript("IndividualProgression") { }
 
@@ -212,41 +251,25 @@ public:
         if (!player->IsInWorld())
             return true;
 
-        if (!sIndividualProgression->enabled || player->IsGameMaster() || !sIndividualProgression->isNormalAccount(player))
+        if (!sIndividualProgression->enabled || player->IsGameMaster() || sIndividualProgression->isBotAccount(player))
             return true;
 
-        // at progression 18 players completed everything and are allowed to go everywhere
-        if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
+        // excluded accounts are free of progression, but not of the key
+        if ((mapid == MAP_ONYXIAS_LAIR || mapid == MAP_NAXXRAMAS) && !CanEnterFortyPlayer(player, mapid))
+            return false;
+
+        if (!sIndividualProgression->isNormalAccount(player))
             return true;
-        
+
         if (mapid == MAP_BLACKWING_LAIR && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_ONYXIA))
         {
             ChatHandler(player->GetSession()).PSendSysMessage("Progression Level Required = |cff00ffff{}|r", PROGRESSION_ONYXIA);
             return false;
         }
-        if (mapid == MAP_ONYXIAS_LAIR)
+        if (mapid == MAP_ONYXIAS_LAIR && player->GetLevel() <= 70)
         {
-            if (player->GetLevel() <= 70) // vanilla version
-            {
-                if (player->GetLevel() < 50)
-                    return false;
-                if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5) && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
-                    return false;
-                if (!player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
-                    return false;
-            }
- 			else // WotLK
-            {
-                if (player->GetLevel() != 80 && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
-                    return false;
-
-                // the raid difficulty picks the version, also for a summon
-                if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
-                {
-                    ChatHandler(player->GetSession()).SendSysMessage("You need to have the Drakefire Amulet in your inventory to enter the 40-player version.");
-                    return false;
-                }
-            }
+            if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5) && sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
+                return false;
         }
         if (mapid == MAP_ZUL_GURUB)
         {
@@ -448,27 +471,13 @@ public:
 
             if (instanceTemplate->Parent == MAP_NORTHREND && mapid == MAP_NAXXRAMAS)
             {
-                if (player->GetLevel() <= 70)
+                if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5)) // progression 0-17
                 {
-                    if (!sIndividualProgression->isAttuned(player))
-                         return false;
-
-                    if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5)) // progression 18
-                    {
-                        if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
-                            return false;
-                    }
-                }
-                else // level 71+
-                {
-                    if (player->GetLevel() < 80)
+                    if (player->GetLevel() > 70 && player->GetLevel() < 80)
                         return false;
 
-                    if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !sIndividualProgression->isAttuned(player))
-                    {
-                        ChatHandler(player->GetSession()).SendSysMessage("You are not attuned to Naxxramas.");
+                    if (player->GetLevel() <= 70 && sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
                         return false;
-                    }
                 }
             }
         }

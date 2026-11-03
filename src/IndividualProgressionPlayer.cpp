@@ -215,10 +215,6 @@ public:
         if (!sIndividualProgression->enabled || player->IsGameMaster() || !sIndividualProgression->isNormalAccount(player))
             return true;
 
-        // at progression 18 players completed everything and are allowed to go everywhere
-        if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
-            return true;
-        
         if (mapid == MAP_BLACKWING_LAIR && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_ONYXIA))
         {
             ChatHandler(player->GetSession()).PSendSysMessage("Progression Level Required = |cff00ffff{}|r", PROGRESSION_ONYXIA);
@@ -228,20 +224,25 @@ public:
         {
             if (player->GetLevel() <= 70) // vanilla version
             {
-                if (player->GetLevel() < 50)
-                    return false;
-                if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5) && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
-                    return false;
-                if (!player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
-                    return false;
+                if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
+                    return true;
+                else // progression 0-17
+                {
+                    if (player->GetLevel() < 50)
+                        return false;
+                    if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
+                        return false;
+                    if (!player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
+                        return false;
+                }
             }
  			else // WotLK
             {
-                if (player->GetLevel() != 80 && !sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5))
+                if (player->GetLevel() != 80)
                     return false;
 
-                // the raid difficulty picks the version, also for a summon
-                if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
+                // the raid difficulty picks the version, also for a summon; progression 18 is exempt from the key
+                if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5) && player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 {
                     ChatHandler(player->GetSession()).SendSysMessage("You need to have the Drakefire Amulet in your inventory to enter the 40-player version.");
                     return false;
@@ -448,27 +449,26 @@ public:
 
             if (instanceTemplate->Parent == MAP_NORTHREND && mapid == MAP_NAXXRAMAS)
             {
+                bool const level71to79 = player->GetLevel() > 70 && player->GetLevel() < 80;
+
+                if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5)) // progression 18
+                    return !level71to79 || player->GetDifficulty(true) != RAID_DIFFICULTY_10MAN_HEROIC; // never the 40-player version
+
+                if (level71to79)
+                    return false;
+
                 if (player->GetLevel() <= 70)
                 {
                     if (!sIndividualProgression->isAttuned(player))
-                         return false;
+                        return false;
 
-                    if (!sIndividualProgression->hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5)) // progression 18
-                    {
-                        if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
-                            return false;
-                    }
+                    if (sIndividualProgression->hasPassedProgression(player, PROGRESSION_TBC_TIER_5)) // Death Knights
+                        return false;
                 }
-                else // level 71+
+                else if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !sIndividualProgression->isAttuned(player))
                 {
-                    if (player->GetLevel() < 80)
-                        return false;
-
-                    if (player->GetMapId() != mapid && player->GetDifficulty(true) == RAID_DIFFICULTY_10MAN_HEROIC && !sIndividualProgression->isAttuned(player))
-                    {
-                        ChatHandler(player->GetSession()).SendSysMessage("You are not attuned to Naxxramas.");
-                        return false;
-                    }
+                    ChatHandler(player->GetSession()).SendSysMessage("You are not attuned to Naxxramas.");
+                    return false;
                 }
             }
         }

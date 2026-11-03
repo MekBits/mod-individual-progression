@@ -338,10 +338,11 @@ bool IndividualProgression::isAttuned(Player* player)
 }
 
 // The 40-man Onyxia and Naxxramas keep out everyone above level 70 or progression 13, except level 80
-// and progression 18. Below progression 18, level 80 still needs the Drakefire Amulet or the Naxxramas attunement.
+// and progression 18 up to level 70. Level 71-79 never enters. Below progression 18, level 80 still
+// needs the Drakefire Amulet or the Naxxramas attunement.
 bool IndividualProgression::isPastOldRaidLimits(Player* player) const
 {
-    return player && (player->GetLevel() >= 80 || hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5));
+    return player && (player->GetLevel() >= 80 || (player->GetLevel() <= 70 && hasPassedProgression(player, PROGRESSION_WOTLK_TIER_5)));
 }
 
 void IndividualProgression::LoadAccountRegexes()

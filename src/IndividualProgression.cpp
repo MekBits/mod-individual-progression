@@ -1339,6 +1339,18 @@ private:
             if (tier.level || tier.cost || tier.price)
                 LOG_INFO("module", "IndividualProgression: riding spell {} set to level {}, cost {}, mount price {} (0 = unchanged)", tier.spellId, tier.level, tier.cost, tier.price);
         }
+
+        // class_trainers.sql leaves these to the level 40 quests; with Apprentice Riding moved, the trainers teach them at the same level as AzerothCore does.
+        if (uint32 level = sIndividualProgression->mountLevelApprentice)
+        {
+            WorldDatabase.DirectExecute("REPLACE INTO `trainer_spell` (`TrainerId`, `SpellId`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqAbility1`, `ReqAbility2`, `ReqAbility3`, `ReqLevel`, `VerifiedBuild`) VALUES "
+                "(3, 13820, 3500, 0, 0, 0, 0, 0, {}, 0), "  // Summon Warhorse
+                "(4, 34768, 3500, 0, 0, 0, 0, 0, {}, 0), "  // Summon Warhorse (Blood Elf)
+                "(31, 1710, 10000, 0, 0, 0, 0, 0, {}, 0)",  // Summon Felsteed
+                level, level, level);
+
+            LOG_INFO("module", "IndividualProgression: paladin and warlock trainers teach Summon Warhorse and Summon Felsteed at level {}", level);
+        }
     }
 
     // hunter_pet_trainers.sql and warlock_pet_trainers.sql keep their data in ipp_pet_* tables. It is written

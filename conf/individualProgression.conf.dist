@@ -641,6 +641,8 @@ IndividualProgression.sharedFactionIdsRegex = "59|270|349|509|510|529|576|589|60
 #                     including the Draenei and Blood Elf mounts, flying mounts and reputation, PvP and holiday mounts.
 #                     mounts_and_riding.sql sets 40 / 60 / 70 / 70 for the riding skills.
 #                     AzerothCore's own data (Wrath of the Lich King) uses 20 / 40 / 60 / 70.
+#                     With Apprentice set, the paladin and warlock trainers also teach Summon Warhorse and Summon Felsteed
+#                     at that level, as AzerothCore's own data does; their Vanilla quests stay in the game.
 #                     Like the options below, the value is written to the world database when the worldserver starts
 #                     and when the config is reloaded. Restart the worldserver to apply it.
 #                     Setting an option back to 0 does not restore the previous values.

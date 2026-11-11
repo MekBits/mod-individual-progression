@@ -1,16 +1,19 @@
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 957;   -- Dane Lindgren <Apprentice Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1300;  -- Lawrence Schneider <Apprentice Tailor>
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 1317;  -- Lucan Cordell <Enchanting Trainer>
-UPDATE `creature_template` SET `subname` = 'Artisan Tailor'           WHERE `entry` = 1346;  -- Georgio Bolero <Artisan Tailor>
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 11026; -- Sprite Jumpsprocket <Apprentice Engineer>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11068; -- Betty Quin <Apprentice Enchanter>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 11096; -- Randal Worth <Apprentice Leatherworker>
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (957), (1300), (1317), (1346), (11026), (11068), (11096), (5567);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 957;   -- Dane Lindgren <Apprentice Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1300;  -- Lawrence Schneider <Apprentice Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 1317;  -- Lucan Cordell <Enchanting Trainer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Tailor'           WHERE `entry` = 1346;  -- Georgio Bolero <Artisan Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 11026; -- Sprite Jumpsprocket <Apprentice Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11068; -- Betty Quin <Apprentice Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 11096; -- Randal Worth <Apprentice Leatherworker>
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (957, 1300, 11026, 11068, 11096); -- `trainer_type` = 2
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` = 5567; -- Sellandus <Expert Tailor>
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (957, 1300, 11026, 11068, 11096); -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` = 5567; -- Sellandus <Expert Tailor>
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (581, 4146, 4161, 4201, 4203, 4344, 4353); 
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES 
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (581, 4146, 4161, 4201, 4203, 4344, 4353); 
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (581), (4146), (4161), (4201), (4203), (4344), (4353);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES 
 (15, 581,  0, 7, 164, 50,  'Show menu if blacksmithing is 50 or higher'),  -- Therum Deepforge <Expert Blacksmith>
 (15, 4146, 0, 7, 202, 50,  'Show menu if engineering is 50 or higher'),    -- Lilliam Sparkspindle <Expert Engineer>
 (15, 4161, 0, 7, 333, 50,  'Show menu if enchanting is 50 or higher'),     -- Lucan Cordell <Expert Enchanter>
@@ -28,7 +31,8 @@ UPDATE `creature_template` SET `subname` = 'Trade Supplier'      WHERE `entry` =
 UPDATE `creature_template` SET `subname` = 'Reagent Vendor'      WHERE `entry` = 1308; -- Owen Vaughn <Reagents>
 UPDATE `creature_template` SET `subname` = 'Poison Supplier'     WHERE `entry` = 1326; -- Sloan McCoy <Poison Supplier>
 UPDATE `creature_template` SET `subname` = 'Reagent Vendor'      WHERE `entry` = 1351; -- Brother Cassius <Reagents>
-UPDATE `creature_template` SET `subname` = 'Weapon Crafter'      WHERE `entry` = 7232; -- Borgus Steelhand <Weapon Crafter>
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (7232);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Weapon Crafter'      WHERE `entry` = 7232; -- Borgus Steelhand <Weapon Crafter>
 
 SET @Rachel     := 112778; -- Lieutenant Rachel Vaccar
 SET @Biggins    := 112781; -- Master Sergeant Biggins <Officer Accessories Quartermaster>, Vanilla

@@ -1,3 +1,4 @@
+-- Profession NPC data goes to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 /* smart scripts */
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 
 (1504, 1505, 1506, 1507, 1522, 1523, 1525, 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538, 1539, 1540, 1544, 1545, 1553, 1554, 1555, 
@@ -125,15 +126,16 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 -- update npc names
 UPDATE `creature_template` SET `name` = 'Wretched Zombie' WHERE `entry` = 1502; -- Wretched Zombie
 
-UPDATE `creature_template` SET `subname` = 'Apprentice Herbalist'     WHERE `entry` = 2114; -- Faruza <Apprentice Herbalist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 2132; -- Carolai Anise <Journeyman Alchemist>
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (2114), (2132), (3549), (5690), (5695), (6289);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Apprentice Herbalist'     WHERE `entry` = 2114; -- Faruza <Apprentice Herbalist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 2132; -- Carolai Anise <Journeyman Alchemist>
 UPDATE `creature_template` SET `subname` = 'Zeppelin Master'          WHERE `entry` = 3150; -- Hin Denburg <Zeppelin Master>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3549; -- Shelene Rhobart <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Fisherman'                WHERE `entry` = 5690; -- Clyde Kellen <Fisherman>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 5695; -- Vance Undergloom <Journeyman Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3549; -- Shelene Rhobart <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman'                WHERE `entry` = 5690; -- Clyde Kellen <Fisherman>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 5695; -- Vance Undergloom <Journeyman Enchanter>
 UPDATE `creature_template` SET `subname` = 'Demon Trainer'            WHERE `entry` = 5749; -- Kayla Smithe <Demon Trainer>
 UPDATE `creature_template` SET `subname` = 'Demon Trainer'            WHERE `entry` = 5750; -- Gina Lang <Demon Trainer>
-UPDATE `creature_template` SET `subname` = 'Skinner'                  WHERE `entry` = 6289; -- Rand Rhobart <Skinner>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Skinner'                  WHERE `entry` = 6289; -- Rand Rhobart <Skinner>
 UPDATE `creature_template` SET `subname` = 'Zeppelin Master'          WHERE `entry` = 9566; -- Zapetta <Zeppelin Master>
 
 /* Quests */

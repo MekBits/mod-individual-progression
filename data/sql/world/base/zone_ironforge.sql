@@ -1,17 +1,21 @@
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 1246;  -- Vosur Brakthel <Journeyman Alchemist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 1466;  -- Gretta Finespindle <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1703;  -- Uthrar Threx <Journeyman Tailor>
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 10276; -- Rotgath Stonebeard <Expert Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10277; -- Groum Stonebeard <Journeyman Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 11028; -- Jemma Quikswitch <Journeyman Engineer>
-UPDATE `creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 11029; -- Trixie Quikswitch <Expert Engineer>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11065; -- Thonys Pillarstone <Journeyman Enchanter>
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (1246), (1466), (1703), (10276), (10277), (11028), (11029), (11065),
+(5157);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 1246;  -- Vosur Brakthel <Journeyman Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 1466;  -- Gretta Finespindle <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1703;  -- Uthrar Threx <Journeyman Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 10276; -- Rotgath Stonebeard <Expert Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10277; -- Groum Stonebeard <Journeyman Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 11028; -- Jemma Quikswitch <Journeyman Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 11029; -- Trixie Quikswitch <Expert Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11065; -- Thonys Pillarstone <Journeyman Enchanter>
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (1246, 1466, 1703, 10276, 10277, 11028, 11029, 11065); -- `trainer_type` = 2
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (5157, 10276, 11029);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (1246, 1466, 1703, 10276, 10277, 11028, 11029, 11065); -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (5157, 10276, 11029);
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (593, 2761, 4123, 4147, 4150, 4160, 4205, 4345);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (593, 2761, 4123, 4147, 4150, 4160, 4205, 4345);
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (593), (2761), (4123), (4147), (4150), (4160), (4205), (4345);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 593,  0, 7, 164, 125, 'Show menu if blacksmithing is 125 or higher'), -- Bengus Deepforge <Artisan Blacksmith>
 (15, 2761, 0, 7, 164, 50,  'Show menu if blacksmithing is 50 or higher'),  -- Rotgath Stonebeard <Expert Blacksmith>
 (15, 4123, 0, 7, 171, 50,  'Show menu if alchemy is 50 or higher'),        -- Tally Berryfizz <Expert Alchemist>

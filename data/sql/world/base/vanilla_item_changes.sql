@@ -1,3 +1,4 @@
+-- The rank book columns of 16083 and 16085 go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 -- Alter AzerothCore table to support Vanilla negative resistance values
 ALTER TABLE item_template MODIFY fire_res SMALLINT;
 ALTER TABLE item_template MODIFY holy_res SMALLINT;
@@ -20370,10 +20371,12 @@ UPDATE item_template SET bonding = 4 WHERE entry=15875;
 UPDATE item_template SET bonding = 3 WHERE entry=15996;
 
 /*  Expert Fishing - The Bass and You  */
-UPDATE item_template SET RequiredLevel = 20 WHERE entry=16083;
+INSERT IGNORE INTO `ipp_prof_item_template` (`entry`) VALUES (16083);
+UPDATE ipp_prof_item_template SET RequiredLevel = 20 WHERE entry=16083;
 
 /*  Artisan First Aid - Heal Thyself  */
-UPDATE item_template SET SellPrice = 5000 WHERE entry=16085;
+INSERT IGNORE INTO `ipp_prof_item_template` (`entry`) VALUES (16085);
+UPDATE ipp_prof_item_template SET SellPrice = 5000 WHERE entry=16085;
 
 /*  Commander's Steed  */
 UPDATE item_template SET Quality = 4, bonding = 1, BuyPrice = 1000000 WHERE entry=16339;

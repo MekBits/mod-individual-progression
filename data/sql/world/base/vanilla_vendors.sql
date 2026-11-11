@@ -1,3 +1,4 @@
+-- The recipe, pattern, schematic, manual and rank book rows that AzerothCore profession trainers teach go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 /*  Hide vendor items until the player has completed the progression level for them */
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 23 AND `SourceGroup` IN 
 (66, 372, 483, 789, 790, 843, 844, 958, 983, 989, 1148, 1250, 1257, 1275, 1286, 1307, 1308, 1313, 1325, 1326, 1347, 1351, 1448, 1453, 1454, 1463, 1474, 1672, 1673, 1692, 1694, 
@@ -810,27 +811,31 @@ DELETE FROM `npc_vendor` WHERE `item` = 6529  AND `entry` IN (1286, 3367, 4229, 
 DELETE FROM `npc_vendor` WHERE `item` = 8923  AND `entry` IN (1325, 1326, 1457, 2622, 3090, 3135, 3334, 3490, 3542, 3551, 3561, 3969, 4585, 5139, 5169, 6779, 15175);
 DELETE FROM `npc_vendor` WHERE `item` = 8924  AND `entry` IN (1325, 1326, 1457, 2622, 3090, 3135, 3334, 3490, 3542, 3551, 3561, 3969, 4585, 5139, 5169, 6779, 15175);
 DELETE FROM `npc_vendor` WHERE `item` = 8925  AND `entry` IN (1325, 1326, 1457, 2622, 3090, 3135, 3334, 3490, 3542, 3551, 3561, 3969, 4585, 5139, 5169, 6779, 10364, 14847, 15175);
-DELETE FROM `npc_vendor` WHERE `item` = 13477 AND `entry` IN (4226, 4610);
-DELETE FROM `npc_vendor` WHERE `item` = 13480 AND `entry` IN (11188);
-DELETE FROM `npc_vendor` WHERE `item` = 14481 AND `entry` IN (11189);
-DELETE FROM `npc_vendor` WHERE `item` = 14488 AND `entry` IN (7940);
-DELETE FROM `npc_vendor` WHERE `item` = 15756 AND `entry` IN (12941); 
-DELETE FROM `npc_vendor` WHERE `item` = 16072 AND `entry` IN (3955);
-DELETE FROM `npc_vendor` WHERE `item` = 16041 AND `entry` IN (3413, 5175);
-DELETE FROM `npc_vendor` WHERE `item` = 16042 AND `entry` IN (3413, 5175);
-DELETE FROM `npc_vendor` WHERE `item` = 16047 AND `entry` IN (11185);
-DELETE FROM `npc_vendor` WHERE `item` = 16072 AND `entry` IN (12033);
-DELETE FROM `npc_vendor` WHERE `item` = 16083 AND `entry` IN (2626);
-DELETE FROM `npc_vendor` WHERE `item` = 16084 AND `entry` IN (2805, 13476);
-DELETE FROM `npc_vendor` WHERE `item` = 16112 AND `entry` IN (2805, 13476);
-DELETE FROM `npc_vendor` WHERE `item` = 16113 AND `entry` IN (2805, 13476);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 13477 AND `entry` IN (4226, 4610);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 13480 AND `entry` IN (11188);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 14481 AND `entry` IN (11189);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 14488 AND `entry` IN (7940);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 15756 AND `entry` IN (12941); 
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16072 AND `entry` IN (3955);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16041 AND `entry` IN (3413, 5175);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16042 AND `entry` IN (3413, 5175);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16047 AND `entry` IN (11185);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16072 AND `entry` IN (12033);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16083 AND `entry` IN (2626);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16084 AND `entry` IN (2805, 13476);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16112 AND `entry` IN (2805, 13476);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 16113 AND `entry` IN (2805, 13476);
 DELETE FROM `npc_vendor` WHERE `item` = 16171 AND `entry` IN (3961);
 DELETE FROM `npc_vendor` WHERE `item` = 17019 AND `entry` IN (958, 983, 1257, 1275, 1307, 1308, 1351, 1463, 1673, 2805, 3323, 3335, 3351, 3490, 3542, 3562, 3970, 4083, 4220, 4562, 4575, 4878, 5110, 5151, 8361, 14739);
 DELETE FROM `npc_vendor` WHERE `item` = 17195 AND `entry` IN (13420, 13429, 13432, 13433, 13435);
 DELETE FROM `npc_vendor` WHERE `item` = 18256 AND `entry` IN (14847);
-DELETE FROM `npc_vendor` WHERE `item` = 18651 AND `entry` IN (2685);
+DELETE FROM `ipp_prof_npc_vendor` WHERE `item` = 18651 AND `entry` IN (2685);
 DELETE FROM `npc_vendor` WHERE `item` = 19483 AND `entry` IN (13219);
 DELETE FROM `npc_vendor` WHERE `item` = 19484 AND `entry` IN (13216, 13217);
+INSERT IGNORE INTO `ipp_prof_npc_vendor_remove` (`entry`, `item`) VALUES
+(4226, 13477), (4610, 13477), (11188, 13480), (11189, 14481), (7940, 14488), (12941, 15756), (3955, 16072),
+(3413, 16041), (5175, 16041), (3413, 16042), (5175, 16042), (11185, 16047), (12033, 16072), (2626, 16083),
+(2805, 16084), (13476, 16084), (2805, 16112), (13476, 16112), (2805, 16113), (13476, 16113), (2685, 18651);
 
 DELETE FROM `npc_vendor` WHERE `entry` = 1459  AND `item` IN (2101, 2504, 2505, 2506, 3027, 3030);
 DELETE FROM `npc_vendor` WHERE `entry` = 6028  AND `item` IN (2417, 2418, 2419, 2420, 2421, 2422, 2448, 3891, 17189);
@@ -846,6 +851,29 @@ DELETE FROM `npc_vendor` WHERE `entry` = 10367 AND `item` IN
 -- Darkmoon Faire							  
 DELETE FROM `npc_vendor` WHERE `entry` = 14846 AND `item` IN (4289, 11303, 11305, 11306, 11308, 12248, 12251);
 
+
+INSERT INTO `ipp_prof_npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
+(2626, 16083, 0, 0),      -- Old Man Heming, Expert Fishing - The Bass and You
+(2685, 18651, 1, 43200),  -- Mazk Snipeshot, Schematic: Truesilver Transformer
+(2805, 16084, 0, 0),      -- Deneb Walker, Expert First Aid - Under Wraps
+(2805, 16112, 0, 0),      -- Deneb Walker, Manual: Heavy Silk Bandage
+(2805, 16113, 0, 0),      -- Deneb Walker, Manual: Mageweave Bandage
+(3413, 16041, 1, 10800),  -- Sovik, Schematic: Thorium Grenade
+(3413, 16042, 1, 10800),  -- Sovik, Schematic: Thorium Widget
+(3955, 16072, 0, 0),      -- Shandrina, Expert Cookbook
+(4226, 13477, 1, 7200),   -- Ulthir, Recipe: Superior Mana Potion
+(4610, 13477, 1, 2700),   -- Algernon, Recipe: Superior Mana Potion
+(5175, 16041, 1, 10800),  -- Gearcutter Cogspinner, Schematic: Thorium Grenade
+(5175, 16042, 1, 10800),  -- Gearcutter Cogspinner, Schematic: Thorium Widget
+(7940, 14488, 1, 3600),   -- Darnall, Pattern: Runecloth Boots
+(11185, 16047, 1, 10800), -- Xizzer Fizzbolt, Schematic: Thorium Tube
+(11188, 13480, 1, 7200),  -- Evie Whirlbrew, Recipe: Major Healing Potion
+(11189, 14481, 1, 3600),  -- Qia, Pattern: Runecloth Gloves
+(12033, 16072, 0, 0),     -- Wulan, Expert Cookbook
+(12941, 15756, 1, 3600),  -- Jase Farlane, Pattern: Runic Leather Headband
+(13476, 16084, 0, 0),     -- Balai Lok'Wein, Expert First Aid - Under Wraps
+(13476, 16112, 0, 0),     -- Balai Lok'Wein, Manual: Heavy Silk Bandage
+(13476, 16113, 0, 0);     -- Balai Lok'Wein, Manual: Mageweave Bandage
 
 INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES 
 --
@@ -961,14 +989,9 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (2622, 8923, 0, 0),       -- Sly Garrett, Essence of Agony
 (2622, 8924, 0, 0),       -- Sly Garrett, Dust of Deterioration
 (2622, 8925, 0, 0),       -- Sly Garrett, Crystal Vial
-(2626, 16083, 0, 0),      -- Old Man Heming, Expert Fishing - The Bass and You
 (2664, 2692, 0, 0),       -- Kelsey Yance, Hot Spices
 (2664, 3713, 0, 0),       -- Kelsey Yance, Soothing Spices
-(2685, 18651, 1, 43200),  -- Mazk Snipeshot, Schematic: Truesilver Transformer
 (2803, 4471, 0, 0),       -- Malygen, Flint and Tinder
-(2805, 16084, 0, 0),      -- Deneb Walker, Expert First Aid - Under Wraps
-(2805, 16112, 0, 0),      -- Deneb Walker, Manual: Heavy Silk Bandage
-(2805, 16113, 0, 0),      -- Deneb Walker, Manual: Mageweave Bandage
 (2805, 17019, 0, 0),      -- Deneb Walker, Arcane Dust
 (2806, 4471, 0, 0),       -- Bale, Flint and Tinder
 (2808, 4471, 0, 0),       -- Vikki Lonsav, Flint and Tinder
@@ -1039,8 +1062,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (3367, 6529, 0, 0),       -- Felika, Shiny Bauble
 (3400, 2692, 0, 0),       -- Xen'to, Hot Spices
 (3400, 3713, 0, 0),       -- Xen'to, Soothing Spices
-(3413, 16041, 1, 10800),  -- Sovik, Schematic: Thorium Grenade
-(3413, 16042, 1, 10800),  -- Sovik, Schematic: Thorium Widget
 (3481, 4471, 0, 0),       -- Barg, Flint and Tinder
 (3482, 2692, 0, 0),       -- Tari'qa, Hot Spices
 (3490, 2928, 0, 0),       -- Hula'mahi, Dust of Decay
@@ -1110,7 +1131,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (3955, 2928, 0, 0),       -- Shandrina, Dust of Decay
 (3955, 3713, 0, 0),       -- Shandrina, Soothing Spices
 (3955, 3777, 0, 0),       -- Shandrina, Lethargy Root
-(3955, 16072, 0, 0),      -- Shandrina, Expert Cookbook
 (3961, 16171, 0, 0),      -- Maliynn, Shinsollo
 (3962, 4471, 0, 0),       -- Haljan Oakheart, Flint and Tinder
 (3969, 2928, 0, 0),       -- Fahran Silentblade, Dust of Decay
@@ -1144,7 +1164,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (4229, 3713, 0, 0),       -- Mythrin'dir, Soothing Spices
 (4229, 3777, 0, 0),       -- Mythrin'dir, Lethargy Root
 (4229, 6260, 0, 0),       -- Mythrin'dir, Blue Dye
-(4226, 13477, 1, 7200),   -- Ulthir, Recipe: Superior Mana Potion
 (4228, 6342, 1, 1800),    -- Vaean, Formula: Enchant Chest - Minor Mana
 (4241, 1179, 0, 0),       -- Mydrannul, Ice Cold Milk
 (4241, 4471, 0, 0),       -- Mydrannul, Flint and Tinder
@@ -1204,7 +1223,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (4585, 8923, 0, 0),       -- Ezekiel Graves, Essence of Agony
 (4585, 8924, 0, 0),       -- Ezekiel Graves, Dust of Deterioration
 (4585, 8925, 0, 0),       -- Ezekiel Graves, Crystal Vial
-(4610, 13477, 1, 2700),   -- Algernon, Recipe: Superior Mana Potion
 (4617, 6342, 1, 7200),    -- Thaddeus Webb, Formula: Enchant Chest - Minor Mana
 (4775, 2324, 0, 0),       -- Felicia Doan, Bleach
 (4775, 2605, 0, 0),       -- Felicia Doan, Green Dye
@@ -1263,8 +1281,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (5169, 8923, 0, 0),       -- Tynnus Venomsprout, Essence of Agony
 (5169, 8924, 0, 0),       -- Tynnus Venomsprout, Dust of Deterioration
 (5169, 8925, 0, 0),       -- Tynnus Venomsprout, Crystal Vial
-(5175, 16041, 1, 10800),  -- Gearcutter Cogspinner, Schematic: Thorium Grenade
-(5175, 16042, 1, 10800),  -- Gearcutter Cogspinner, Schematic: Thorium Widget
 (5483, 2692, 0, 0),       -- Erika Tate, Hot Spices
 (5483, 3713, 0, 0),       -- Erika Tate, Soothing Spices
 (5757, 6342, 1, 7200),    -- Lilly, Formula: Enchant Chest - Minor Mana
@@ -1304,7 +1320,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (6779, 8923, 0, 0),       -- Smudge Thunderwood, Essence of Agony
 (6779, 8924, 0, 0),       -- Smudge Thunderwood, Dust of Deterioration
 (6779, 8925, 0, 0),       -- Smudge Thunderwood, Crystal Vial
-(7940, 14488, 1, 3600),   -- Darnall, Pattern: Runecloth Boots
 (7942, 4471, 0, 0),       -- Faralorn, Flint and Tinder
 (7947, 2692, 0, 0),       -- Vivianna, Hot Spices
 (7947, 2928, 0, 0),       -- Vivianna, Dust of Decay
@@ -1382,9 +1397,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (10367, 4608, 0, 0),      -- Shrye Ragefist, Raw Black Truffle
 (10367, 21552, 0, 0),     -- Shrye Ragefist, Striped Yellowtail
 (11038, 4471, 0, 0),      -- Caretaker Alen, Flint and Tinder
-(11185, 16047, 1, 10800), -- Xizzer Fizzbolt, Schematic: Thorium Tube
-(11188, 13480, 1, 7200),  -- Evie Whirlbrew, Recipe: Major Healing Potion
-(11189, 14481, 1, 3600),  -- Qia, Pattern: Runecloth Gloves
 (11189, 2692, 0, 0),      -- Qia, Hot Spices
 (11189, 2928, 0, 0),      -- Qia, Dust of Decay 
 (11189, 3713, 0, 0),      -- Qia, Soothing Spices
@@ -1402,7 +1414,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (12028, 3777, 0, 0),      -- Lah'Mawhani, Lethargy Root
 (12033, 2692, 0, 0),      -- Wulan, Hot Spices
 (12033, 3713, 0, 0),      -- Wulan, Soothing Spices
-(12033, 16072, 0, 0),     -- Wulan, Expert Cookbook
 (12043, 2692, 0, 0),      -- Kulwia, Hot Spices
 (12043, 2928, 0, 0),      -- Kulwia, Dust of Decay
 (12245, 2692, 0, 0),      -- Vendor-Tron 1000, Hot Spices
@@ -1414,7 +1425,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (12941, 2928, 0, 0),      -- Jase Farlane, Dust of Decay
 (12941, 3713, 0, 0),      -- Jase Farlane, Soothing Spices
 (12941, 3777, 0, 0),      -- Jase Farlane, Lethargy Root
-(12941, 15756, 1, 3600),  -- Jase Farlane, Pattern: Runic Leather Headband
 (12957, 2692, 0, 0),      -- Blimo Gadgetspring, Hot Spices
 (12957, 2928, 0, 0),      -- Blimo Gadgetspring, Dust of Decay
 (12957, 3713, 0, 0),      -- Blimo Gadgetspring, Soothing Spices
@@ -1433,9 +1443,6 @@ INSERT INTO `npc_vendor` (`entry`, `item`, `maxcount`, `incrtime`) VALUES
 (13432, 17195, 0, 0),     -- Seersa Copperpinch, Fake Mistletoe
 (13433, 17195, 0, 0),     -- Wulmort Jinglepocket, Fake Mistletoe
 (13435, 17195, 0, 0),     -- Khole Jinglepocket, Fake Mistletoe
-(13476, 16084, 0, 0),     -- Balai Lok'Wein, Expert First Aid - Under Wraps
-(13476, 16112, 0, 0),     -- Balai Lok'Wein, Manual: Heavy Silk Bandage
-(13476, 16113, 0, 0),     -- Balai Lok'Wein, Manual: Mageweave Bandage
 (14624, 4471, 0, 0),      -- Master Smith Burninate, Flint and Tinder
 (14738, 2692, 0, 0),      -- Otho Moji'ko, Hot Spices
 (14738, 3713, 0, 0),      -- Otho Moji'ko, Soothing Spices

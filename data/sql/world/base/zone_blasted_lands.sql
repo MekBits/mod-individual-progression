@@ -1,3 +1,4 @@
+-- Sets 19385 DamageModifier, which tbc_creatures.sql also sets: change this file whenever tbc_creatures.sql changes, so db-import runs it again after it.
 /* smart scripts */
 UPDATE `creature_template` SET `AIName` = '' WHERE `entry` IN (5984, 6011);
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 

@@ -1,3 +1,4 @@
+-- The subname of Juno Dufrain (18911, a profession NPC) goes to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 /* 
  * Sets TBC creatures to values extracted from cMangos TBC, which has high quality, pre-nef TBC Content
  * These may need more updating as AzerothCore development continues to TBC and makes more corrections.
@@ -4213,7 +4214,8 @@ UPDATE `creature_template` SET `DamageModifier` = 2.0 WHERE `entry` = 18909;
 UPDATE `creature_template` SET `speed_walk` = 1.48, `DamageModifier` = 2.0 WHERE `entry` = 18910;
 
 /*  Juno Dufrain  */
-UPDATE `creature_template` SET `subname` = 'Fishing Supplies' WHERE `entry` = 18911;
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (18911);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fishing Supplies' WHERE `entry` = 18911;
 
 /*  Sporelok  */
 UPDATE `creature_template` SET `speed_run` = 0.992063, `DamageModifier` = 0.2, `ArmorModifier` = 0.965839, `ManaModifier` = 1.0 WHERE `entry` = 18912;

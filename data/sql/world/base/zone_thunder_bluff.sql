@@ -1,23 +1,27 @@
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 2998;  -- Karn Stonehoof <Expert Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 3004;  -- Tepa <Expert Tailor>
-UPDATE `creature_template` SET `subname` = 'Artisan Leatherworker'    WHERE `entry` = 3007;  -- Una <Artisan Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3008;  -- Mak <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 3009;  -- Bena Winterhoof <Expert Alchemist>
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 3011;  -- Teg Dawnstrider <Expert Enchanter>
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10278; -- Thrag Stonehoof <Journeyman Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11047; -- Kray <Journeyman Alchemist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 11051; -- Vhan <Journeyman Tailor>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11071; -- Mot Dawnstrider <Journeyman Enchanter>
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 11084; -- Tarn <Expert Leatherworker>
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (2998), (3004), (3007), (3008), (3009), (3011), (10278), (11047),
+(11051), (11071), (11084);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 2998;  -- Karn Stonehoof <Expert Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 3004;  -- Tepa <Expert Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Leatherworker'    WHERE `entry` = 3007;  -- Una <Artisan Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3008;  -- Mak <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 3009;  -- Bena Winterhoof <Expert Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 3011;  -- Teg Dawnstrider <Expert Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10278; -- Thrag Stonehoof <Journeyman Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11047; -- Kray <Journeyman Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 11051; -- Vhan <Journeyman Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11071; -- Mot Dawnstrider <Journeyman Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 11084; -- Tarn <Expert Leatherworker>
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (3008, 10278, 11047, 11051, 11071, 11084); -- `trainer_type` = 2
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (3004, 3007, 3009, 3011, 11084);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (3008, 10278, 11047, 11051, 11071, 11084); -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (3004, 3007, 3009, 3011, 11084);
 
 /* NPC Thrumn - Remove non-Vanilla Tabards */
 DELETE FROM `npc_vendor` WHERE `entry`= 5189 AND `item` IN (15197, 15199, 19031, 19505, 24004, 31773, 31775, 31776, 31777, 31778, 31779, 31780, 31781, 31804, 32445, 32828, 35221);
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (1017, 4128, 4165, 4207, 4242, 4351);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (1017, 4128, 4165, 4207, 4242, 4351);
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (1017), (4128), (4165), (4207), (4242), (4351);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 1017, 0, 7, 164, 50,  'Show menu if blacksmithing is 50 or higher'),   -- Karn Stonehoof <Expert Blacksmith>
 (15, 4128, 0, 7, 171, 50,  'Show menu if alchemy is 50 or higher'),         -- Bena Winterhoof <Expert Alchemist>
 (15, 4165, 0, 7, 333, 50,  'Show menu if enchanting is 50 or higher'),      -- Teg Dawnstrider <Expert Enchanter>

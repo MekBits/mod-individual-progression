@@ -1,15 +1,18 @@
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11041; -- Milla Fairancora <Journeyman Alchemist>
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 11042; -- Sylvanna Forestmoon <Expert Alchemist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 11050; -- Trianna <Journeyman Tailor>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11070; -- Lalina Summermoon <Journeyman Enchanter>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 11083; -- Darianna <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 11081; -- Faldron <Expert Leatherworker>
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (11041), (11042), (11050), (11070), (11083), (11081), (4212);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11041; -- Milla Fairancora <Journeyman Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 11042; -- Sylvanna Forestmoon <Expert Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 11050; -- Trianna <Journeyman Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11070; -- Lalina Summermoon <Journeyman Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 11083; -- Darianna <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 11081; -- Faldron <Expert Leatherworker>
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (11041, 11042, 11050, 11070, 11081, 11083); -- `trainer_type` = 2
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (4212, 11042, 11081);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (11041, 11042, 11050, 11070, 11081, 11083); -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (4212, 11042, 11081);
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (4125, 4131, 4163, 4204, 4241, 4349);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (4125, 4131, 4163, 4204, 4241, 4349);
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (4125), (4131), (4163), (4204), (4241), (4349);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 4125, 0, 7, 171, 50,  'Show menu if alchemy is 50 or higher'),         -- Sylvanna Forestmoon <Expert Alchemist>
 (15, 4131, 0, 7, 171, 125, 'Show menu if alchemy is 125 or higher'),        -- Ainethil <Artisan Alchemist>
 (15, 4163, 0, 7, 333, 50,  'Show menu if enchanting is 50 or higher'),      -- Taladan <Expert Enchanter>

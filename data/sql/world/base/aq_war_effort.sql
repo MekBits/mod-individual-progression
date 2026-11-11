@@ -365,3 +365,14 @@ UPDATE `quest_template_addon` SET `SpecialFlags` = 1 WHERE `ID` = 8610;
 
 -- make Field Duty Quests repeatable
 UPDATE `quest_template_addon` SET `SpecialFlags` = 1 WHERE `ID` IN (8548, 8572, 8573, 8574, 9338); 
+
+-- MekBits: a tenth of the war effort for a server of four players. The values are absolute, so the file can run again.
+UPDATE `quest_template` SET `RequiredItemCount1` = 2, `LogDescription` = REPLACE(`LogDescription`, 'Bring 20 ', 'Bring 2 ') WHERE `ID` IN
+(8492, 8493, 8494, 8495, 8499, 8500, 8503, 8504, 8505, 8506, 8509, 8510, 8517, 8518, 8520, 8521, 8522, 8523, 8524, 8525, 8526, 8527, 8528, 8529,
+ 8532, 8533, 8542, 8543, 8545, 8546, 8549, 8550, 8580, 8581, 8582, 8583, 8604, 8605, 8607, 8608, 8609, 8610, 8611, 8612, 8613, 8614, 8615, 8616);
+UPDATE `quest_template` SET `RequiredItemCount1` = 1, `LogDescription` = REPLACE(`LogDescription`, 'Bring 10 ', 'Bring 1 ') WHERE `ID` IN
+(8511, 8512, 8513, 8514, 8515, 8516,
+ 8588, 8589, 8590, 8591, 8600, 8601);
+UPDATE `quest_template` SET `RequiredItemCount1` = 100 WHERE `ID` IN (108850, 108855);
+UPDATE `quest_offer_reward` SET `RewardText` = REPLACE(`RewardText`, 'That\'s twenty down', 'That\'s two down') WHERE `ID` = 8499;
+UPDATE `quest_request_items` SET `CompletionText` = REPLACE(`CompletionText`, 'those twenty silk bandages', 'those two silk bandages') WHERE `ID` = 8520;

@@ -1,16 +1,19 @@
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Leatherworker'     WHERE `entry` = 223;   -- Dan Golthas <Journeyman Leatherworker> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 83, `subname` = 'Journeyman Engineer'          WHERE `entry` = 4586;  -- Graham Van Talen <Journeyman Engineer>  -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Blacksmith'        WHERE `entry` = 4605;  -- Basil Frye <Journeyman Blacksmith> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Expert Alchemist'             WHERE `entry` = 4609;  -- Doctor Marsh <Expert Alchemist> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Alchemist Trainer' WHERE `entry` = 11044; -- Doctor Martin Felben <Journeyman Alchemist Trainer> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Tailor'            WHERE `entry` = 11048; -- Victor Ward <Journeyman Tailor> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Expert Tailor'                WHERE `entry` = 11049; -- Rhiannon Davis <Expert Tailor> -- `trainer_type` = 2
-UPDATE `creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Enchanter'         WHERE `entry` = 11067; -- Malcomb Wynn <Journeyman Enchanter> -- `trainer_type` = 2
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (223), (4586), (4605), (4609), (11044), (11048), (11049), (11067);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Leatherworker'     WHERE `entry` = 223;   -- Dan Golthas <Journeyman Leatherworker> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 83, `subname` = 'Journeyman Engineer'          WHERE `entry` = 4586;  -- Graham Van Talen <Journeyman Engineer>  -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Blacksmith'        WHERE `entry` = 4605;  -- Basil Frye <Journeyman Blacksmith> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Expert Alchemist'             WHERE `entry` = 4609;  -- Doctor Marsh <Expert Alchemist> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Alchemist Trainer' WHERE `entry` = 11044; -- Doctor Martin Felben <Journeyman Alchemist Trainer> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Tailor'            WHERE `entry` = 11048; -- Victor Ward <Journeyman Tailor> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Expert Tailor'                WHERE `entry` = 11049; -- Rhiannon Davis <Expert Tailor> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81, `subname` = 'Journeyman Enchanter'         WHERE `entry` = 11067; -- Malcomb Wynn <Journeyman Enchanter> -- `trainer_type` = 2
 
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (4609, 11049);
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (4609, 11049);
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceEntry`=0 AND `ConditionTypeOrReference`=7 AND `SourceGroup` IN (1022, 4130, 4132, 4166, 4210, 4352, 4354);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceEntry`=0 AND `ConditionTypeOrReference`=7 AND `SourceGroup` IN (1022, 4130, 4132, 4166, 4210, 4352, 4354);
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (1022), (4130), (4132), (4166), (4210), (4352), (4354);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 4130, 0, 7, 171, 50,  'Show menu if alchemy is 50 or higher'),        -- Doctor Marsh <Expert Alchemist>
 (15, 4132, 0, 7, 171, 125, 'Show menu if alchemy is 125 or higher'),       -- Doctor Herbert Halsey <Artisan Alchemist>
 (15, 1022, 0, 7, 164, 50,  'Show menu if blacksmithing is 50 or higher'),  -- James Van Brunt <Expert Blacksmith>

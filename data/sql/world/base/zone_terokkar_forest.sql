@@ -1,3 +1,4 @@
+-- Changed together with tbc_creatures.sql, so that db-import runs it again after that file.
 -- fix drop Mature Bone Sifter Carcass (didn't drop)
 UPDATE `creature_loot_template` SET `GroupId` = 2 WHERE `Item` = 31814 AND `Entry` = 22482;
 

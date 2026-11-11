@@ -1,3 +1,4 @@
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 /* smart scripts */
 UPDATE `creature_template` SET `AIName` = '' WHERE `entry` IN (118, 285, 525, 735);
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 
@@ -105,8 +106,9 @@ INSERT INTO `pool_template` (`entry`, `max_limit`, `description`) VALUES
 (601013, 1, '');
 
 -- Kitta Firewind <Enchanting Trainer>
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` = 4169 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` = 4169 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7;
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (4169);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 4169, 0, 7, 333, 125, 'Show menu if enchanting is 125 or higher');
 
 -- The Stolen Tome (Warlock)
@@ -128,22 +130,24 @@ UPDATE `creature_template_model` SET `CreatureDisplayID` = 447   WHERE `Creature
 -- update creature names
 UPDATE `creature_template` SET `name`    = 'Timber Wolf'              WHERE `entry` = 69;   -- Diseased Timber Wolf
 UPDATE `creature_template` SET `name`    = 'Young Wolf'               WHERE `entry` = 299;  -- Diseased Young Wolf
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 514;  -- Smith Argus
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1103; -- Eldrin <Journeyman Tailor>
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 1215; -- Alchemist Mallory <Journeyman Alchemist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 1632; -- Adele Fielder <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Fisherman'                WHERE `entry` = 1651; -- Lee Brown <Fisherman>
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (514), (1103), (1215), (1632), (1651), (5499), (5511), (5518), (5564),
+(6306), (5500), (5567);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 514;  -- Smith Argus
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 1103; -- Eldrin <Journeyman Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 1215; -- Alchemist Mallory <Journeyman Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 1632; -- Adele Fielder <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman'                WHERE `entry` = 1651; -- Lee Brown <Fisherman>
 UPDATE `creature_template` SET `subname` = 'Tabard Vendor'            WHERE `entry` = 5193; -- Rebecca Laughlin <Tabard Designer>
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 5499; -- Lilyssia Nightbreeze <Alchemy Trainer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 5499; -- Lilyssia Nightbreeze <Alchemy Trainer>
 UPDATE `creature_template` SET `subname` = 'Herbalism Supplier'       WHERE `entry` = 5503; -- Eldraeith <Herbalism Supplies>
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 5511; -- Therum Deepforge <Blacksmithing Trainer>
-UPDATE `creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 5518; -- Lilliam Sparkspindle <Engineering Trainer>
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 5564; -- Simon Tanner <Leatherworking Trainer>
-UPDATE `creature_template` SET `subname` = 'Skinner'                  WHERE `entry` = 6306; -- Helene Peltskinner <Skinner>
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 5500; -- Tel'Athir <Apprentice Alchemist> -- `trainer_type` = 2
-UPDATE `creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 5567; -- Sellandus <Apprentice Tailor> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 5511; -- Therum Deepforge <Blacksmithing Trainer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 5518; -- Lilliam Sparkspindle <Engineering Trainer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 5564; -- Simon Tanner <Leatherworking Trainer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Skinner'                  WHERE `entry` = 6306; -- Helene Peltskinner <Skinner>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 5500; -- Tel'Athir <Apprentice Alchemist> -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 5567; -- Sellandus <Apprentice Tailor> -- `trainer_type` = 2
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (5500, 5567);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (5500, 5567);
 
 DELETE FROM `creature_template_addon` WHERE `entry` = 69;  -- Diseased Timber Wolf
 DELETE FROM `creature_template_addon` WHERE `entry` = 299; -- Diseased Young Wolf

@@ -1,3 +1,4 @@
+-- Changed together with tbc_creatures.sql, so that db-import runs it again after that file.
 /* smart scripts */
 UPDATE `creature_template` SET `AIName` = '' WHERE `entry` IN (5984, 6011);
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN 

@@ -1,25 +1,29 @@
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 1383;  -- Snarl <Expert Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 2855;  -- Snang <Journeyman Tailor>
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 2857;  -- Thund <Journeyman Engineer>
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 3345;  -- Godan <Expert Enchanter>
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 3347;  -- Yelmak <Expert Alchemist>
-UPDATE `creature_template` SET `subname` = 'Artisan Blacksmith'       WHERE `entry` = 3355;  -- Saru Steelfury <Artisan Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 3363;  -- Magar <Expert Tailor>
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 3365;  -- Karolek <Expert Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 3412;  -- Nogg <Expert Engineer>
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 5811;  -- Kamari <Journeyman Leatherworker>
-UPDATE `creature_template` SET `subname` = 'Armor Crafter'            WHERE `entry` = 7230;  -- Shayis Steelfury <Armor Crafter>
-UPDATE `creature_template` SET `subname` = 'Weapon Crafter'           WHERE `entry` = 7231;  -- Kelgruk Bloodaxe <Weapon Crafter>
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10266; -- Ug'thok <Journeyman Blacksmith>
-UPDATE `creature_template` SET `subname` = 'Artisan Engineer'         WHERE `entry` = 11017; -- Roxxik <Artisan Engineer>
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11046; -- Whuut <Journeyman Alchemist>
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11066; -- Jhag <Journeyman Enchanter>
+-- Profession NPC data and trainer menu conditions go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (1383), (2855), (2857), (3345), (3347), (3355), (3363), (3365),
+(3412), (5811), (7230), (7231), (10266), (11017), (11046), (11066);
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith'        WHERE `entry` = 1383;  -- Snarl <Expert Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor'        WHERE `entry` = 2855;  -- Snang <Journeyman Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer'      WHERE `entry` = 2857;  -- Thund <Journeyman Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter'         WHERE `entry` = 3345;  -- Godan <Expert Enchanter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist'         WHERE `entry` = 3347;  -- Yelmak <Expert Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Blacksmith'       WHERE `entry` = 3355;  -- Saru Steelfury <Artisan Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor'            WHERE `entry` = 3363;  -- Magar <Expert Tailor>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker'     WHERE `entry` = 3365;  -- Karolek <Expert Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Engineer'          WHERE `entry` = 3412;  -- Nogg <Expert Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 5811;  -- Kamari <Journeyman Leatherworker>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Armor Crafter'            WHERE `entry` = 7230;  -- Shayis Steelfury <Armor Crafter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Weapon Crafter'           WHERE `entry` = 7231;  -- Kelgruk Bloodaxe <Weapon Crafter>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith'    WHERE `entry` = 10266; -- Ug'thok <Journeyman Blacksmith>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Engineer'         WHERE `entry` = 11017; -- Roxxik <Artisan Engineer>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist'     WHERE `entry` = 11046; -- Whuut <Journeyman Alchemist>
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter'     WHERE `entry` = 11066; -- Jhag <Journeyman Enchanter>
 
-UPDATE `creature_template` SET `npcflag` = 81 WHERE `entry` IN (1383, 2855, 2857, 3412, 5811, 10266, 11017, 11046, 11066); -- `trainer_type` = 2
-UPDATE `creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (1383, 3412, 11017);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 81 WHERE `entry` IN (1383, 2855, 2857, 3412, 5811, 10266, 11017, 11046, 11066); -- `trainer_type` = 2
+UPDATE `ipp_prof_creature_template` SET `type_flags` = 134217728 WHERE `entry` IN (1383, 3412, 11017);
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (1012, 2782, 4126, 4148, 4151, 4168, 4209, 4347);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+DELETE FROM `ipp_prof_conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceEntry` = 0 AND `ConditionTypeOrReference` = 7 AND `SourceGroup` IN (1012, 2782, 4126, 4148, 4151, 4168, 4209, 4347);
+INSERT IGNORE INTO `ipp_prof_conditions_remove` (`SourceGroup`) VALUES (1012), (2782), (4126), (4148), (4151), (4168), (4209), (4347);
+INSERT INTO `ipp_prof_conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
 (15, 1012, 0, 7, 164, 125, 'Show menu if blacksmithing is 125 or higher'), -- Saru Steelfury <Artisan Blacksmith>
 (15, 2782, 0, 7, 164, 50,  'Show menu if blacksmithing is 50 or higher'),  -- Snarl <Expert Blacksmith>
 (15, 4126, 0, 7, 171, 50,  'Show menu if alchemy is 50 or higher'),        -- Yelmak <Expert Alchemist>
@@ -345,7 +349,8 @@ DELETE FROM `creature` WHERE `id` IN
 DELETE FROM `npc_vendor` WHERE `entry`= 5188 AND `item` IN (15197, 15199, 19031, 19505, 24004, 31773, 31775, 31776, 31777, 31778, 31779, 31780, 31781, 31804, 32445, 32828, 35221);
 
 -- Nogg Quest Flags fix
-UPDATE `creature_template` SET `npcflag` = `npcflag` | 2 WHERE `entry` = 3412;
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (3412);
+UPDATE `ipp_prof_creature_template` SET `npcflag` = 83 WHERE `entry` = 3412; -- 81 above plus the quest giver flag
 
 -- Quest: Return to Witch Doctor Uzer'i
 UPDATE `quest_template` SET `LogDescription`   = "Deliver Neeru's Herb Pouch to Witch Doctor Uzer'i in Feralas." WHERE `ID` = 3122;

@@ -1,3 +1,10 @@
+-- Profession NPC subnames go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions); the ones a zone file sets too are written only there.
+INSERT IGNORE INTO `ipp_prof_creature_template` (`entry`) VALUES (908), (1241), (1385), (1386), (1470), (1473), (1676), (1683), (1700),
+(1702), (2367), (2390), (2391), (2399), (2627), (2834), (2836), (2837), (2856), (3136), (3174), (3175), (3184), (3185), (3290), (3523),
+(3555), (3557), (3603), (3604), (3605), (3606), (3607), (3964), (3965), (3967), (4159), (4160), (4193), (4212), (4213), (4258), (4576),
+(4588), (4596), (4611), (4616), (4898), (4900), (5127), (5153), (5157), (5164), (5174), (5177), (5941), (6287), (6288), (6299), (7406),
+(7866), (7867), (7868), (7869), (7871), (7944), (7946), (7948), (7949), (8126), (8128), (8153), (8736), (11025), (11031), (11037),
+(11052), (11072), (11073), (11074), (11097), (11098), (11146), (12025), (12032), (12961);
 -- av.sql and av_mines.sql recreate creature_template rows this file adjusts, so it
 -- has to run again whenever one of them changes.
 
@@ -251,7 +258,7 @@ UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHER
 UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 222;
 
 /*  Dan Golthas  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.85 WHERE `entry` = 223;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 223;
 
 /*  Zek Marston  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 224;
@@ -773,7 +780,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.235294 WHERE `entry` = 511;
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 513;
 
 /*  Smith Argus  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 1.8 WHERE `entry` = 514;
+UPDATE `creature_template` SET `DamageModifier` = 1.8 WHERE `entry` = 514;
 
 /*  [UNUSED] Riverpaw Hunter  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 516;
@@ -1451,7 +1458,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 906;
 UPDATE `creature_template` SET `DamageModifier` = 5.1, `ArmorModifier` = 1.15 WHERE `entry` = 907;
 
 /*  Flora Silverwind  */
-UPDATE `creature_template` SET `subname` = 'Superior Herbalist', `DamageModifier` = 1.266667 WHERE `entry` = 908;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Superior Herbalist' WHERE `entry` = 908;
+UPDATE `creature_template` SET `DamageModifier` = 1.266667 WHERE `entry` = 908;
 
 /*  Llane Beshere  */
 UPDATE `creature_template` SET `DamageModifier` = 1.6 WHERE `entry` = 911;
@@ -1556,7 +1564,7 @@ UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 955;
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 956;
 
 /*  Dane Lindgren  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `ArmorModifier` = 0.85 WHERE `entry` = 957;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 957;
 
 /*  Dawn Brightstar  */
 UPDATE `creature_template` SET `DamageModifier` = 1.4 WHERE `entry` = 958;
@@ -1772,7 +1780,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 1092;
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 1093;
 
 /*  Eldrin  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 1.133333 WHERE `entry` = 1103;
+UPDATE `creature_template` SET `DamageModifier` = 1.133333 WHERE `entry` = 1103;
 
 /*  Grundel Harkin  */
 UPDATE `creature_template` SET `DamageModifier` = 1.6 WHERE `entry` = 1104;
@@ -1940,7 +1948,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.2 WHERE `entry` = 1213;
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1214;
 
 /*  Alchemist Mallory  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 1.2 WHERE `entry` = 1215;
+UPDATE `creature_template` SET `DamageModifier` = 1.2 WHERE `entry` = 1215;
 
 /*  Shore Crawler  */
 UPDATE `creature_template` SET `ArmorModifier` = 1.3 WHERE `entry` = 1216;
@@ -1991,7 +1999,7 @@ UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1238;
 UPDATE `creature_template` SET `minlevel` = 8, `maxlevel` = 11, `DamageModifier` = 0.5 WHERE `entry` = 1240;
 
 /*  Tognus Flintfire  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 1241;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 1241;
 
 /*  Hegnar Rumbleshot  */
 UPDATE `creature_template` SET `DamageModifier` = 0.35 WHERE `entry` = 1243;
@@ -2001,9 +2009,6 @@ UPDATE `creature_template` SET `speed_walk` = 0.666668, `DamageModifier` = 0.666
 
 /*  Kogan Forgestone  */
 UPDATE `creature_template` SET `minlevel` = 8, `DamageModifier` = 0.75 WHERE `entry` = 1245;
-
-/*  Vosur Brakthel  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist' WHERE `entry` = 1246;
 
 /*  Quartermaster Hudson  */
 UPDATE `creature_template` SET `DamageModifier` = 0.6 WHERE `entry` = 1249;
@@ -2102,7 +2107,7 @@ UPDATE `creature_template` SET `subname` = 'Mail Armor Merchant', `minlevel` = 1
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 1296;
 
 /*  Lawrence Schneider  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 1300;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 1300;
 
 /*  Felicia Gump  */
 UPDATE `creature_template` SET `subname` = 'Herbalism Supplier' WHERE `entry` = 1303;
@@ -2138,7 +2143,7 @@ UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 1312;
 UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 0.9 WHERE `entry` = 1316;
 
 /*  Lucan Cordell  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 1.05 WHERE `entry` = 1317;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 1317;
 
 /*  Jessara Cordell  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 1318;
@@ -2165,7 +2170,7 @@ UPDATE `creature_template` SET `DamageModifier` = 2.0, `ArmorModifier` = 0.55 WH
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1345;
 
 /*  Georgio Bolero  */
-UPDATE `creature_template` SET `subname` = 'Artisan Tailor', `DamageModifier` = 0.95 WHERE `entry` = 1346;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 1346;
 
 /*  Gregory Ardus  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 1348;
@@ -2246,16 +2251,18 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1, `ArmorModifier` = 0.9 WHE
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 1382;
 
 /*  Snarl  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 0.95 WHERE `entry` = 1383;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 1383;
 
 /*  Z'tark  */
 UPDATE `creature_template` SET `subname` = 'Superior Miner', `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 1384;
 
 /*  Brawn  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 1385;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker' WHERE `entry` = 1385;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 1385;
 
 /*  Rogvar  */
-UPDATE `creature_template` SET `subname` = 'Master Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 1386;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Alchemist' WHERE `entry` = 1386;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 1386;
 
 /*  Thysta  */
 UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier` = 3.25, `ArmorModifier` = 1.4 WHERE `entry` = 1387;
@@ -2450,7 +2457,7 @@ UPDATE `creature_template` SET `subname` = 'Reagent Vendor', `DamageModifier` = 
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1465;
 
 /*  Gretta Finespindle  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9 WHERE `entry` = 1466;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 1466;
 
 /*  [UNUSED] [PH] Brawl Thunderpunch  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 1467;
@@ -2462,7 +2469,8 @@ UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHER
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1469;
 
 /*  Ghak Healtouch  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.9 WHERE `entry` = 1470;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist' WHERE `entry` = 1470;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 1470;
 
 /*  Jannos Ironwill  */
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 1471;
@@ -2471,7 +2479,8 @@ UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 1471;
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 1472;
 
 /*  Kali Healtouch  */
-UPDATE `creature_template` SET `subname` = 'Herbalist', `DamageModifier` = 0.75 WHERE `entry` = 1473;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 1473;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 1473;
 
 /*  Rann Flamespinner  */
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1474;
@@ -2816,7 +2825,7 @@ UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHER
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 1631;
 
 /*  Adele Fielder  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 1.133333 WHERE `entry` = 1632;
+UPDATE `creature_template` SET `DamageModifier` = 1.133333 WHERE `entry` = 1632;
 
 /*  Priest 30  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 1633;
@@ -2864,7 +2873,7 @@ UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 1649;
 UPDATE `creature_template` SET `DamageModifier` = 1.066667 WHERE `entry` = 1650;
 
 /*  Lee Brown  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 1 WHERE `entry` = 1651;
+UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 1651;
 
 /*  Bloodsail Elder Magus  */
 UPDATE `creature_template` SET `minlevel` = 44, `maxlevel` = 45, `HealthModifier` = 1.2 WHERE `entry` = 1653;
@@ -2927,7 +2936,8 @@ UPDATE `creature_template` SET `speed_run` = 0.857143, `DamageModifier` = 0.85, 
 UPDATE `creature_template` SET `speed_run` = 0.857143, `DamageModifier` = 0.95, `ArmorModifier` = 0.9 WHERE `entry` = 1675;
 
 /*  Finbus Geargrind  */
-UPDATE `creature_template` SET `subname` = 'Expert Engineer', `DamageModifier` = 1.9 WHERE `entry` = 1676;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Engineer' WHERE `entry` = 1676;
+UPDATE `creature_template` SET `DamageModifier` = 1.9 WHERE `entry` = 1676;
 
 /*  [UNUSED] Curtis Ashlock  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 1677;
@@ -2948,7 +2958,8 @@ UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1681;
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1682;
 
 /*  Warg Deepwater  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 0.8 WHERE `entry` = 1683;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 1683;
+UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1683;
 
 /*  Khara Deepwater  */
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 1684;
@@ -2990,16 +3001,18 @@ UPDATE `creature_template` SET `DamageModifier` = 0.6 WHERE `entry` = 1698;
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 1699;
 
 /*  Paxton Ganter  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 0.75, `RangeAttackTime` = 2101 WHERE `entry` = 1700;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 1700;
+UPDATE `creature_template` SET `DamageModifier` = 0.75, `RangeAttackTime` = 2101 WHERE `entry` = 1700;
 
 /*  Dank Drizzlecut  */
 UPDATE `creature_template` SET `DamageModifier` = 11.25 WHERE `entry` = 1701;
 
 /*  Bronk Guzzlegear  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9 WHERE `entry` = 1702;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer' WHERE `entry` = 1702;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 1702;
 
 /*  Uthrar Threx  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 1703;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 1703;
 
 /*  Defias Prisoner  */
 UPDATE `creature_template` SET `maxlevel` = 24 WHERE `entry` = 1706;
@@ -3784,9 +3797,6 @@ UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 2112;
 /*  Archibald Kava  */
 UPDATE `creature_template` SET `DamageModifier` = 1.2 WHERE `entry` = 2113;
 
-/*  Faruza  */
-UPDATE `creature_template` SET `subname` = 'Apprentice Herbalist' WHERE `entry` = 2114;
-
 /*  Joshua Kien  */
 UPDATE `creature_template` SET `DamageModifier` = 1.2 WHERE `entry` = 2115;
 
@@ -3825,9 +3835,6 @@ UPDATE `creature_template` SET `DamageModifier` = 0.7 WHERE `entry` = 2129;
 
 /*  Marion Call  */
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 2130;
-
-/*  Carolai Anise  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist' WHERE `entry` = 2132;
 
 /*  [UNUSED] Theo Reshan  */
 UPDATE `creature_template` SET `subname` = 'Apprentice Herbalist', `detection_range` = 18.0 WHERE `entry` = 2133;
@@ -4253,7 +4260,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 2365;
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 2366;
 
 /*  Donald Rabonne  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 0.95 WHERE `entry` = 2367;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 2367;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 2367;
 
 /*  Daggerspine Shorehunter  */
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 2369;
@@ -4280,13 +4288,14 @@ UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier
 UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier` = 3.5 WHERE `entry` = 2389;
 
 /*  Aranae Venomblood  */
-UPDATE `creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 2390;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 2390;
 
 /*  Serge Hinott  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 2391;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 2391;
 
 /*  Daryl Stack  */
-UPDATE `creature_template` SET `subname` = 'Master Tailor', `minlevel` = 56, `maxlevel` = 56 WHERE `entry` = 2399;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Tailor' WHERE `entry` = 2399;
+UPDATE `creature_template` SET `minlevel` = 56, `maxlevel` = 56 WHERE `entry` = 2399;
 
 /*  Farmer Getz  */
 UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 2403;
@@ -4709,7 +4718,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WH
 UPDATE `creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 2626;
 
 /*  Grarnik Goodstitch  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor' WHERE `entry` = 2627;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor' WHERE `entry` = 2627;
 
 /*  Princess Poobah  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 2634;
@@ -5060,16 +5069,17 @@ UPDATE `creature_template` SET `subname` = 'Food and Drink', `DamageModifier` = 
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0, `DamageModifier` = 1.0 WHERE `entry` = 2833;
 
 /*  Myizz Luckycatch  */
-UPDATE `creature_template` SET `subname` = 'Superior Fisherman' WHERE `entry` = 2834;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Superior Fisherman' WHERE `entry` = 2834;
 
 /*  Cedrik Prose  */
 UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `rank` = 1, `DamageModifier` = 3.25, `HealthModifier` = 3.0, `ArmorModifier` = 1.4 WHERE `entry` = 2835;
 
 /*  Brikk Keencraft  */
-UPDATE `creature_template` SET `subname` = 'Master Blacksmith' WHERE `entry` = 2836;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Blacksmith' WHERE `entry` = 2836;
 
 /*  Jaxin Chong  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 0.95 WHERE `entry` = 2837;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 2837;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 2837;
 
 /*  Crazk Sparks  */
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 2838;
@@ -5105,13 +5115,14 @@ UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 2852;
 UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 1.675393, `BaseAttackTime` = 1910, `RangeAttackTime` = 2101 WHERE `entry` = 2853;
 
 /*  Snang  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 2855;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 2855;
 
 /*  Angrun  */
-UPDATE `creature_template` SET `subname` = 'Superior Herbalist', `DamageModifier` = 1.1 WHERE `entry` = 2856;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Superior Herbalist' WHERE `entry` = 2856;
+UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 2856;
 
 /*  Thund  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.85 WHERE `entry` = 2857;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 2857;
 
 /*  Gringer  */
 UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier` = 3.25, `ArmorModifier` = 1.4 WHERE `entry` = 2858;
@@ -5423,7 +5434,7 @@ UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 2996;
 
 /*  Karn Stonehoof  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 1.05 WHERE `entry` = 2998;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 2998;
 
 /*  Gibbert  */
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3000;
@@ -5435,19 +5446,19 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3001;
 UPDATE `creature_template` SET `subname` = 'Mining Supplier', `DamageModifier` = 1.1 WHERE `entry` = 3002;
 
 /*  Tepa  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 1.05 WHERE `entry` = 3004;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3004;
 
 /*  Una  */
-UPDATE `creature_template` SET `subname` = 'Artisan Leatherworker', `DamageModifier` = 0.95 WHERE `entry` = 3007;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3007;
 
 /*  Mak  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9 WHERE `entry` = 3008;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3008;
 
 /*  Bena Winterhoof  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 3009;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3009;
 
 /*  Teg Dawnstrider  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 1.05 WHERE `entry` = 3011;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3011;
 
 /*  Komin Winterhoof  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3013;
@@ -5558,7 +5569,7 @@ UPDATE `creature_template` SET `DamageModifier` = 0.7 WHERE `entry` = 3067;
 UPDATE `creature_template` SET `speed_walk` = 0.666668, `speed_run` = 0.857143 WHERE `entry` = 3068;
 
 /*  Chaw Stronghide  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.85 WHERE `entry` = 3069;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3069;
 
 /*  [UNUSED] [PH] Mulgore Alchemy Trainer  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 3070;
@@ -5681,7 +5692,8 @@ UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3134;
 UPDATE `creature_template` SET `subname` = 'Poison Supplier', `DamageModifier` = 1.2 WHERE `entry` = 3135;
 
 /*  Clarise Gnarltree  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 1.266667 WHERE `entry` = 3136;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith' WHERE `entry` = 3136;
+UPDATE `creature_template` SET `DamageModifier` = 1.266667 WHERE `entry` = 3136;
 
 /*  Matt Johnson  */
 UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 3137;
@@ -5789,10 +5801,12 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 W
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 3173;
 
 /*  Dwukk  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.95 WHERE `entry` = 3174;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 3174;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3174;
 
 /*  Krunn  */
-UPDATE `creature_template` SET `subname` = 'Miner', `DamageModifier` = 0.75 WHERE `entry` = 3175;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Miner' WHERE `entry` = 3175;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 3175;
 
 /*  [UNUSED] [PH] Durotar Engineering Trainer  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 3176;
@@ -5816,10 +5830,12 @@ UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3182;
 UPDATE `creature_template` SET `DamageModifier` = 0.85, `RangeAttackTime` = 2156, `mingold` = 3, `maxgold` = 9, `faction` = 16 WHERE `entry` = 3183;
 
 /*  Miao'zan  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.9 WHERE `entry` = 3184;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist' WHERE `entry` = 3184;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3184;
 
 /*  Mishiki  */
-UPDATE `creature_template` SET `subname` = 'Herbalist', `DamageModifier` = 0.75 WHERE `entry` = 3185;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 3185;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 3185;
 
 /*  K'waii  */
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 3186;
@@ -6014,7 +6030,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.75, `RangeAttackTime` = 2189
 UPDATE `creature_template` SET `DamageModifier` = 1.55, `RangeAttackTime` = 2090 WHERE `entry` = 3289;
 
 /*  Deek Fizzlebizz  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.95 WHERE `entry` = 3290;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer' WHERE `entry` = 3290;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3290;
 
 /*  Greishan Ironstove  */
 UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3291;
@@ -6113,13 +6130,13 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3342;
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WHERE `entry` = 3344;
 
 /*  Godan  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 1.05 WHERE `entry` = 3345;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3345;
 
 /*  Kithas  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3346;
 
 /*  Yelmak  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 3347;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3347;
 
 /*  Asoran  */
 UPDATE `creature_template` SET `subname` = 'General Goods Vendor' WHERE `entry` = 3350;
@@ -6134,7 +6151,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WH
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WHERE `entry` = 3353;
 
 /*  Saru Steelfury  */
-UPDATE `creature_template` SET `subname` = 'Artisan Blacksmith', `DamageModifier` = 0.95 WHERE `entry` = 3355;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3355;
 
 /*  Sumi  */
 UPDATE `creature_template` SET `subname` = 'Blacksmithing Supplier' WHERE `entry` = 3356;
@@ -6149,10 +6166,10 @@ UPDATE `creature_template` SET `subname` = 'Mining Supplier' WHERE `entry` = 335
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3362;
 
 /*  Magar  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 1.05 WHERE `entry` = 3363;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3363;
 
 /*  Karolek  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 3365;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3365;
 
 /*  Felika  */
 UPDATE `creature_template` SET `subname` = 'General Trade Goods Merchant' WHERE `entry` = 3367;
@@ -6257,7 +6274,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.2 WHERE `entry` = 3409;
 UPDATE `creature_template` SET `DamageModifier` = 1.15 WHERE `entry` = 3411;
 
 /*  Nogg  */
-UPDATE `creature_template` SET `subname` = 'Expert Engineer', `DamageModifier` = 1.05 WHERE `entry` = 3412;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3412;
 
 /*  Savannah Huntress  */
 UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 3415;
@@ -6374,7 +6391,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 3474;
 UPDATE `creature_template` SET `subname` = 'Blacksmithing Supplier', `DamageModifier` = 0.8 WHERE `entry` = 3477;
 
 /*  Traugh  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 0.95 WHERE `entry` = 3478;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3478;
 
 /*  Nargal Deatheye  */
 UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3479;
@@ -6392,7 +6409,7 @@ UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 3482;
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 3483;
 
 /*  Kil'hala  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 3484;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3484;
 
 /*  Wrahk  */
 UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3485;
@@ -6416,7 +6433,7 @@ UPDATE `creature_template` SET `subname` = 'Reagents and Herbs' WHERE `entry` = 
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3491;
 
 /*  Tinkerwiz  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9 WHERE `entry` = 3494;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3494;
 
 /*  Gagsprocket  */
 UPDATE `creature_template` SET `subname` = 'Engineering Goods', `DamageModifier` = 0.85 WHERE `entry` = 3495;
@@ -6491,7 +6508,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.75 WHERE `entry` = 3520;
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3521;
 
 /*  Bowen Brisboise  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 3523;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor' WHERE `entry` = 3523;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3523;
 
 /*  Spirit Wolf  */
 UPDATE `creature_template` SET `DamageModifier` = 1.3 WHERE `entry` = 3524;
@@ -6545,16 +6563,16 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 3545;
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3546;
 
 /*  Shelene Rhobart  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9 WHERE `entry` = 3549;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3549;
 
 /*  Johan Focht  */
-UPDATE `creature_template` SET `subname` = 'Miner' WHERE `entry` = 3555;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Miner' WHERE `entry` = 3555;
 
 /*  Andrew Hilbert  */
 UPDATE `creature_template` SET `subname` = 'Trade Goods', `maxlevel` = 20 WHERE `entry` = 3556;
 
 /*  Guillaume Sorouy  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 3557;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 3557;
 
 /*  [UNUSED] Temp Poisoning Vendor Undead  */
 UPDATE `creature_template` SET `subname` = 'Poison Vendor', `detection_range` = 18.0 WHERE `entry` = 3558;
@@ -6665,19 +6683,23 @@ UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3601;
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 3602;
 
 /*  Cyndra Kindwhisper  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.95 WHERE `entry` = 3603;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Alchemist' WHERE `entry` = 3603;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3603;
 
 /*  Malorne Bladeleaf  */
-UPDATE `creature_template` SET `subname` = 'Herbalist', `DamageModifier` = 0.7 WHERE `entry` = 3604;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 3604;
+UPDATE `creature_template` SET `DamageModifier` = 0.7 WHERE `entry` = 3604;
 
 /*  Nadyia Maneweaver  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3605;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Leatherworker' WHERE `entry` = 3605;
 
 /*  Alanna Raveneye  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.95 WHERE `entry` = 3606;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Enchanter' WHERE `entry` = 3606;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3606;
 
 /*  Androl Oakhand  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 3607;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 3607;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 3607;
 
 /*  Aldia  */
 UPDATE `creature_template` SET `DamageModifier` = 0.7 WHERE `entry` = 3608;
@@ -6884,10 +6906,10 @@ UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 3701;
 UPDATE `creature_template` SET `DamageModifier` = 0.65 WHERE `entry` = 3702;
 
 /*  Krulmoo Fullmoon  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 3703;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3703;
 
 /*  Mahani  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 0.95 WHERE `entry` = 3704;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3704;
 
 /*  Gahroot  */
 UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3705;
@@ -7301,16 +7323,18 @@ UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHE
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 3963;
 
 /*  Kylanna  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 0.95 WHERE `entry` = 3964;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 3964;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 3964;
 
 /*  Cylania Rootstalker  */
-UPDATE `creature_template` SET `subname` = 'Herbalist', `DamageModifier` = 0.9 WHERE `entry` = 3965;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 3965;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 3965;
 
 /*  Kaleem  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 3966;
 
 /*  Aayndia Floralwind  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker' WHERE `entry` = 3967;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker' WHERE `entry` = 3967;
 
 /*  Agro 5  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 5.0 WHERE `entry` = 3971;
@@ -7583,10 +7607,12 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4156;
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 4157;
 
 /*  Me'lynn  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 1.05 WHERE `entry` = 4159;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor' WHERE `entry` = 4159;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4159;
 
 /*  Ainethil  */
-UPDATE `creature_template` SET `subname` = 'Artisan Alchemist', `DamageModifier` = 0.95 WHERE `entry` = 4160;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Alchemist' WHERE `entry` = 4160;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 4160;
 
 /*  Lysheana  */
 UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 4161;
@@ -7646,7 +7672,8 @@ UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 4191;
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 4192;
 
 /*  Grondal Moonbreeze  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.95 WHERE `entry` = 4193;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Tailor' WHERE `entry` = 4193;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 4193;
 
 /*  Ullanna  */
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 4194;
@@ -7694,10 +7721,12 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4210;
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4211;
 
 /*  Telonis  */
-UPDATE `creature_template` SET `subname` = 'Artisan Leatherworker', `DamageModifier` = 0.95 WHERE `entry` = 4212;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Leatherworker' WHERE `entry` = 4212;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 4212;
 
 /*  Taladan  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 1.05 WHERE `entry` = 4213;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter' WHERE `entry` = 4213;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4213;
 
 /*  Erion Shadewhisper  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WHERE `entry` = 4214;
@@ -7772,7 +7801,8 @@ UPDATE `creature_template` SET `subname` = 'Mining Supplier' WHERE `entry` = 425
 
 
 /*  Bengus Deepforge  */
-UPDATE `creature_template` SET `subname` = 'Artisan Blacksmith', `DamageModifier` = 0.65, `ArmorModifier` = 0.5 WHERE `entry` = 4258;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Blacksmith' WHERE `entry` = 4258;
+UPDATE `creature_template` SET `DamageModifier` = 0.65, `ArmorModifier` = 0.5 WHERE `entry` = 4258;
 
 /*  Bear Form (Tauren Druid)  */
 UPDATE `creature_template` SET `minlevel` = 1, `maxlevel` = 1, `speed_walk` = 1.0, `DamageModifier` = 1.3 WHERE `entry` = 4261;
@@ -8396,7 +8426,8 @@ UPDATE `creature_template` SET `subname` = 'Fishing Supplier' WHERE `entry` = 45
 UPDATE `creature_template` SET `subname` = 'Reagent Supplier' WHERE `entry` = 4575;
 
 /*  Josef Gregorian  */
-UPDATE `creature_template` SET `subname` = 'Artisan Tailor', `DamageModifier` = 0.95 WHERE `entry` = 4576;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Tailor' WHERE `entry` = 4576;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 4576;
 
 /*  Josephine Lister  */
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 4578;
@@ -8414,13 +8445,14 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WH
 UPDATE `creature_template` SET `subname` = 'Poison Vendor' WHERE `entry` = 4585;
 
 /*  Graham Van Talen  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 1.15, `ArmorModifier` = 1.15 WHERE `entry` = 4586;
+UPDATE `creature_template` SET `DamageModifier` = 1.15, `ArmorModifier` = 1.15 WHERE `entry` = 4586;
 
 /*  Elizabeth Van Talen  */
 UPDATE `creature_template` SET `subname` = 'Engineering Supplier' WHERE `entry` = 4587;
 
 /*  Arthur Moore  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 4588;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker' WHERE `entry` = 4588;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4588;
 
 /*  Mary Edras  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4591;
@@ -8432,7 +8464,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WH
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 4595;
 
 /*  James Van Brunt  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 1.05 WHERE `entry` = 4596;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Blacksmith' WHERE `entry` = 4596;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4596;
 
 /*  Samuel Van Brunt  */
 UPDATE `creature_template` SET `subname` = 'Blacksmithing Supplier' WHERE `entry` = 4597;
@@ -8444,7 +8477,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4598;
 UPDATE `creature_template` SET `subname` = 'Mining Supplier' WHERE `entry` = 4599;
 
 /*  Basil Frye  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 4605;
+UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 4605;
 
 /*  Aelthalyste  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.05 WHERE `entry` = 4606;
@@ -8453,10 +8486,10 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.05 W
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 4607;
 
 /*  Doctor Marsh  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 4609;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4609;
 
 /*  Doctor Herbert Halsey  */
-UPDATE `creature_template` SET `subname` = 'Artisan Alchemist' WHERE `entry` = 4611;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Alchemist' WHERE `entry` = 4611;
 
 /*  Martha Alliestar  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4614;
@@ -8465,7 +8498,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4614;
 UPDATE `creature_template` SET `subname` = 'Herbalism Supplier' WHERE `entry` = 4615;
 
 /*  Lavinia Crowe  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 1.05 WHERE `entry` = 4616;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter' WHERE `entry` = 4616;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4616;
 
 /*  Martek the Exiled  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4618;
@@ -8897,13 +8931,15 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4895;
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 4896;
 
 /*  Brant Jasperbloom  */
-UPDATE `creature_template` SET `subname` = 'Herbalist', `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 4898;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 4898;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 4898;
 
 /*  Uma Bartulm  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 4899;
 
 /*  Alchemist Narett  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 4900;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 4900;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.85 WHERE `entry` = 4900;
 
 /*  Sara Pierce  */
 UPDATE `creature_template` SET `DamageModifier` = 1.75 WHERE `entry` = 4901;
@@ -9287,7 +9323,8 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 5117;
 UPDATE `creature_template` SET `DamageModifier` = 5.1, `ArmorModifier` = 1.15 WHERE `entry` = 5118;
 
 /*  Fimble Finespindle  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 5127;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leatherworker' WHERE `entry` = 5127;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5127;
 
 /*  Jondor Steelbrow  */
 UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 5130;
@@ -9326,10 +9363,12 @@ UPDATE `creature_template` SET `DamageModifier` = 1.55 WHERE `entry` = 5150;
 UPDATE `creature_template` SET `subname` = 'Reagent Vendor' WHERE `entry` = 5151;
 
 /*  Jormund Stonebrow  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 1.05 WHERE `entry` = 5153;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Tailor' WHERE `entry` = 5153;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5153;
 
 /*  Gimble Thistlefuzz  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter', `DamageModifier` = 3.25 WHERE `entry` = 5157;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter' WHERE `entry` = 5157;
+UPDATE `creature_template` SET `DamageModifier` = 3.25 WHERE `entry` = 5157;
 
 /*  Daryl Riknussun  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5159;
@@ -9347,7 +9386,8 @@ UPDATE `creature_template` SET `subname` = 'Fishing Supplier' WHERE `entry` = 51
 UPDATE `creature_template` SET `subname` = 'Trade Supplier' WHERE `entry` = 5163;
 
 /*  Grumnus Steelshaper  */
-UPDATE `creature_template` SET `subname` = 'Armor Crafter', `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 5164;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Armor Crafter' WHERE `entry` = 5164;
+UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 5164;
 
 /*  Hulfdan Blackbeard  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WHERE `entry` = 5165;
@@ -9362,10 +9402,12 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 5171;
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 2.4 WHERE `entry` = 5173;
 
 /*  Springspindle Fizzlegear  */
-UPDATE `creature_template` SET `subname` = 'Artisan Engineer', `DamageModifier` = 0.95 WHERE `entry` = 5174;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Engineer' WHERE `entry` = 5174;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 5174;
 
 /*  Tally Berryfizz  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 5177;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Alchemist' WHERE `entry` = 5177;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5177;
 
 /*  Hammerhead Shark  */
 UPDATE `creature_template` SET `DamageModifier` = 2.5, `mingold` = 44, `maxgold` = 222 WHERE `entry` = 5185;
@@ -9815,10 +9857,10 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1, `ArmorModifier` = 0.8 WHE
 UPDATE `creature_template` SET `ArmorModifier` = 0.8 WHERE `entry` = 5498;
 
 /*  Lilyssia Nightbreeze  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `DamageModifier` = 1.05 WHERE `entry` = 5499;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5499;
 
 /*  Tel'Athir  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.95 WHERE `entry` = 5500;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 5500;
 
 /*  Kaerbrus  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.95 WHERE `entry` = 5501;
@@ -9850,9 +9892,6 @@ UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 5509;
 /*  Thulman Flintcrag  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 5510;
 
-/*  Therum Deepforge  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith' WHERE `entry` = 5511;
-
 /*  Kaita Deepforge  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 5512;
 
@@ -9872,7 +9911,7 @@ UPDATE `creature_template` SET `ArmorModifier` = 0.8 WHERE `entry` = 5516;
 UPDATE `creature_template` SET `DamageModifier` = 1.1, `ArmorModifier` = 0.8 WHERE `entry` = 5517;
 
 /*  Lilliam Sparkspindle  */
-UPDATE `creature_template` SET `subname` = 'Expert Engineer', `DamageModifier` = 1.05, `ArmorModifier` = 0.55 WHERE `entry` = 5518;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 0.55 WHERE `entry` = 5518;
 
 /*  Billibub Cogspinner  */
 UPDATE `creature_template` SET `subname` = 'Engineering Supplier', `ArmorModifier` = 0.85 WHERE `entry` = 5519;
@@ -9962,13 +10001,13 @@ UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHER
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 5563;
 
 /*  Simon Tanner  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 5564;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5564;
 
 /*  Tannysa  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 5566;
 
 /*  Sellandus  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `DamageModifier` = 0.95, `ArmorModifier` = 0.85 WHERE `entry` = 5567;
+UPDATE `creature_template` SET `DamageModifier` = 0.95, `ArmorModifier` = 0.85 WHERE `entry` = 5567;
 
 /*  Captured Leper Gnome  */
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5568;
@@ -10222,9 +10261,6 @@ UPDATE `creature_template` SET `detection_range` = 5.0, `ArmorModifier` = 0.95 W
 /*  Steed  */
 UPDATE `creature_template` SET `minlevel` = 5, `maxlevel` = 5, `detection_range` = 18.0 WHERE `entry` = 5689;
 
-/*  Clyde Kellen  */
-UPDATE `creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 5690;
-
 /*  Dalin Forgewright Projection  */
 UPDATE `creature_template` SET `minlevel` = 20, `maxlevel` = 20, `DamageModifier` = 6.65, `RangeAttackTime` = 2200 WHERE `entry` = 5691;
 
@@ -10236,9 +10272,6 @@ UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 5693;
 
 /*  High Sorcerer Andromath  */
 UPDATE `creature_template` SET `DamageModifier` = 1 WHERE `entry` = 5694;
-
-/*  Vance Undergloom  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter' WHERE `entry` = 5695;
 
 /*  Gerard Abernathy  */
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 5696;
@@ -10484,7 +10517,7 @@ UPDATE `creature_template` SET `DamageModifier` = 3.25, `ArmorModifier` = 1.4 WH
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 5783;
 
 /*  Waldor  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.95 WHERE `entry` = 5784;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 5784;
 
 /*  Sister Hatelash  */
 UPDATE `creature_template` SET `DamageModifier` = 1.0 WHERE `entry` = 5785;
@@ -10550,7 +10583,7 @@ UPDATE `creature_template` SET `DamageModifier` = 1.2, `ArmorModifier` = 1.5 WHE
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 5810;
 
 /*  Kamari  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 5811;
+UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 5811;
 
 /*  [UNUSED] Shikar  */
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 5813;
@@ -10802,7 +10835,7 @@ UPDATE `creature_template` SET `minlevel` = 61, `maxlevel` = 61, `speed_walk` = 
 UPDATE `creature_template` SET `DamageModifier` = 1.7, `RangeAttackTime` = 1494 WHERE `entry` = 5937;
 
 /*  Uthan Stillwater  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 0.75 WHERE `entry` = 5938;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5938;
 
 /*  Vira Younghoof  */
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5939;
@@ -10811,7 +10844,8 @@ UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5939;
 UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 5940;
 
 /*  Lau'Tiki  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `DamageModifier` = 0.75 WHERE `entry` = 5941;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 5941;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5941;
 
 /*  Zansoa  */
 UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 5942;
@@ -11348,16 +11382,14 @@ UPDATE `creature_template` SET `speed_run` = 0.857143, `DamageModifier` = 1.3 WH
 UPDATE `creature_template` SET `DamageModifier` = 4.05, `ArmorModifier` = 4.0 WHERE `entry` = 6286;
 
 /*  Radnaal Maneweaver  */
-UPDATE `creature_template` SET `subname` = 'Skinner' WHERE `entry` = 6287;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Skinner' WHERE `entry` = 6287;
 
 /*  Jayla  */
-UPDATE `creature_template` SET `subname` = 'Skinner', `DamageModifier` = 0.85 WHERE `entry` = 6288;
-
-/*  Rand Rhobart  */
-UPDATE `creature_template` SET `subname` = 'Skinner' WHERE `entry` = 6289;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Skinner' WHERE `entry` = 6288;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 6288;
 
 /*  Yonn Deepcut  */
-UPDATE `creature_template` SET `subname` = 'Skinner', `DamageModifier` = 0.75 WHERE `entry` = 6290;
+UPDATE `creature_template` SET `DamageModifier` = 0.75 WHERE `entry` = 6290;
 
 /*  Balthus Stoneflayer  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 6291;
@@ -11384,13 +11416,14 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 6297;
 UPDATE `creature_template` SET `subname` = 'Mining Supplier' WHERE `entry` = 6298;
 
 /*  Delfrum Flintbeard  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.9 WHERE `entry` = 6299;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Blacksmith' WHERE `entry` = 6299;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 6299;
 
 /*  Gorbold Steelhand  */
 UPDATE `creature_template` SET `subname` = 'General Trade Supplier' WHERE `entry` = 6301;
 
 /*  Helene Peltskinner  */
-UPDATE `creature_template` SET `subname` = 'Skinner', `DamageModifier` = 0.933333 WHERE `entry` = 6306;
+UPDATE `creature_template` SET `DamageModifier` = 0.933333 WHERE `entry` = 6306;
 
 /*  Horde Wargryphoner  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 6326;
@@ -11444,7 +11477,7 @@ UPDATE `creature_template` SET `subname` = 'Demon Trainer', `DamageModifier` = 2
 UPDATE `creature_template` SET `DamageModifier` = 1.4, `RangeAttackTime` = 1705 WHERE `entry` = 6386;
 
 /*  Dranh  */
-UPDATE `creature_template` SET `subname` = 'Skinner', `DamageModifier` = 0.8 WHERE `entry` = 6387;
+UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 6387;
 
 /*  Zanzil Skeleton  */
 UPDATE `creature_template` SET `minlevel` = 45, `maxlevel` = 45, `speed_walk` = 0.888888, `RangeAttackTime` = 1716, `mingold` = 36, `maxgold` = 181 WHERE `entry` = 6388;
@@ -12185,13 +12218,13 @@ UPDATE `creature_template` SET `minlevel` = 40, `maxlevel` = 40, `DamageModifier
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0, `DamageModifier` = 1.0 WHERE `entry` = 7229;
 
 /*  Shayis Steelfury  */
-UPDATE `creature_template` SET `subname` = 'Armor Crafter', `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 7230;
+UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 7230;
 
 /*  Kelgruk Bloodaxe  */
-UPDATE `creature_template` SET `subname` = 'Weapon Crafter', `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 7231;
+UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 7231;
 
 /*  Borgus Steelhand  */
-UPDATE `creature_template` SET `subname` = 'Weapon Crafter', `DamageModifier` = 1.6, `ArmorModifier` = 0.9 WHERE `entry` = 7232;
+UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 0.9 WHERE `entry` = 7232;
 
 /*  Taskmaster Fizzule  */
 UPDATE `creature_template` SET `DamageModifier` = 2.2 WHERE `entry` = 7233;
@@ -12473,7 +12506,7 @@ UPDATE `creature_template` SET `speed_walk` = 0.666668, `DamageModifier` = 1.3 W
 UPDATE `creature_template` SET `minlevel` = 42, `maxlevel` = 43, `DamageModifier` = 1.0, `RangeAttackTime` = 1716 WHERE `entry` = 7405;
 
 /*  Oglethorpe Obnoticus  */
-UPDATE `creature_template` SET `subname` = 'Master Gnome Engineer' WHERE `entry` = 7406;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Gnome Engineer' WHERE `entry` = 7406;
 
 /*  Faltering Draenethyst Sphere  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 6.65, `RangeAttackTime` = 2200 WHERE `entry` = 7409;
@@ -12932,19 +12965,19 @@ UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 7864;
 UPDATE `creature_template` SET `minlevel` = 55, `maxlevel` = 55, `DamageModifier` = 1.0 WHERE `entry` = 7865;
 
 /*  Peter Galen  */
-UPDATE `creature_template` SET `subname` = 'Master Dragonscale Leatherworker' WHERE `entry` = 7866;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Dragonscale Leatherworker' WHERE `entry` = 7866;
 
 /*  Thorkaf Dragoneye  */
-UPDATE `creature_template` SET `subname` = 'Master Dragonscale Leatherworker' WHERE `entry` = 7867;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Dragonscale Leatherworker' WHERE `entry` = 7867;
 
 /*  Sarah Tanner  */
-UPDATE `creature_template` SET `subname` = 'Master Elemental Leatherworker' WHERE `entry` = 7868;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Elemental Leatherworker' WHERE `entry` = 7868;
 
 /*  Brumn Winterhoof  */
-UPDATE `creature_template` SET `subname` = 'Master Elemental Leatherworker' WHERE `entry` = 7869;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Elemental Leatherworker' WHERE `entry` = 7869;
 
 /*  Se'Jib  */
-UPDATE `creature_template` SET `subname` = 'Master Tribal Leatherworker' WHERE `entry` = 7871;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Tribal Leatherworker' WHERE `entry` = 7871;
 
 /*  Death's Head Cultist  */
 UPDATE `creature_template` SET `rank` = 1, `DamageModifier` = 1.5, `HealthModifier` = 3.0, `ManaModifier` = 1.0, `unit_class` = 8 WHERE `entry` = 7872;
@@ -13037,19 +13070,22 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 7940;
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 7942;
 
 /*  Tinkmaster Overspark  */
-UPDATE `creature_template` SET `subname` = 'Master Gnome Engineer', `DamageModifier` = 1.05 WHERE `entry` = 7944;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Gnome Engineer' WHERE `entry` = 7944;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 7944;
 
 /*  Brannock  */
-UPDATE `creature_template` SET `subname` = 'Fisherman', `ArmorModifier` = 0.85 WHERE `entry` = 7946;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 7946;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 7946;
 
 /*  Vivianna  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 7947;
 
 /*  Kylanna Windwhisper  */
-UPDATE `creature_template` SET `subname` = 'Master Alchemist', `ArmorModifier` = 0.85 WHERE `entry` = 7948;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Alchemist' WHERE `entry` = 7948;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 7948;
 
 /*  Xylinnia Starshine  */
-UPDATE `creature_template` SET `subname` = 'Expert Enchanter' WHERE `entry` = 7949;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Enchanter' WHERE `entry` = 7949;
 
 /*  Master Mechanic Castpipe  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 7950;
@@ -13157,13 +13193,15 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WH
 UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 8124;
 
 /*  Nixx Sprocketspring  */
-UPDATE `creature_template` SET `subname` = 'Master Goblin Engineer', `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 8126;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Goblin Engineer' WHERE `entry` = 8126;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 8126;
 
 /*  Antu'sul  */
 UPDATE `creature_template` SET `minlevel` = 48, `maxlevel` = 48, `DamageModifier` = 4.3 WHERE `entry` = 8127;
 
 /*  Pikkle  */
-UPDATE `creature_template` SET `subname` = 'Miner', `DamageModifier` = 1.1 WHERE `entry` = 8128;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Miner' WHERE `entry` = 8128;
+UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 8128;
 
 /*  Wrinkle Goodsteel  */
 UPDATE `creature_template` SET `subname` = 'Superior Armor Crafter', `DamageModifier` = 1.1 WHERE `entry` = 8129;
@@ -13211,7 +13249,8 @@ UPDATE `creature_template` SET `ArmorModifier` = 0.95 WHERE `entry` = 8151;
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 8152;
 
 /*  Narv Hidecrafter  */
-UPDATE `creature_template` SET `subname` = 'Expert Leathercrafter', `DamageModifier` = 1.05 WHERE `entry` = 8153;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Leathercrafter' WHERE `entry` = 8153;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 8153;
 
 /*  Ghost Walker Brave  */
 UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 8154;
@@ -13823,13 +13862,14 @@ UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 8723;
 UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 8724;
 
 /*  Buzzek Bracketswing  */
-UPDATE `creature_template` SET `subname` = 'Master Engineer', `DamageModifier` = 1.05 WHERE `entry` = 8736;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Engineer' WHERE `entry` = 8736;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 8736;
 
 /*  Linken  */
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 8737;
 
 /*  Vazario Linkgrease  */
-UPDATE `creature_template` SET `subname` = 'Master Goblin Engineer', `DamageModifier` = 1.1 WHERE `entry` = 8738;
+UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 8738;
 
 /*  Raytaf  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 3.15, `ArmorModifier` = 1.45 WHERE `entry` = 8756;
@@ -15011,7 +15051,7 @@ UPDATE `creature_template` SET `DamageModifier` = 6.15, `ArmorModifier` = 1.1, `
 UPDATE `creature_template` SET `speed_run` = 1.42857, `detection_range` = 18.0, `DamageModifier` = 1.0 WHERE `entry` = 10265;
 
 /*  Ug'thok  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.9 WHERE `entry` = 10266;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 10266;
 
 /*  Tinkee Steamboil  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 10267;
@@ -15020,13 +15060,13 @@ UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 10267;
 UPDATE `creature_template` SET `DamageModifier` = 6.5, `ArmorModifier` = 1.1 WHERE `entry` = 10268;
 
 /*  Rotgath Stonebeard  */
-UPDATE `creature_template` SET `subname` = 'Expert Blacksmith', `DamageModifier` = 0.95 WHERE `entry` = 10276;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 10276;
 
 /*  Groum Stonebeard  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.9 WHERE `entry` = 10277;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 10277;
 
 /*  Thrag Stonehoof  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Blacksmith', `DamageModifier` = 0.9 WHERE `entry` = 10278;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 10278;
 
 /*  Captured Felwood Ooze  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 1.45, `ArmorModifier` = 1.5, `RangeAttackTime` = 1881 WHERE `entry` = 10290;
@@ -16049,7 +16089,7 @@ UPDATE `creature_template` SET `minlevel` = 50, `maxlevel` = 51, `speed_walk` = 
 UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 3.0 WHERE `entry` = 10992;
 
 /*  Twizwick Sprocketgrind  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9 WHERE `entry` = 10993;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 10993;
 
 /*  Fallen Hero  */
 UPDATE `creature_template` SET `DamageModifier` = 4.0, `mingold` = 152, `maxgold` = 761 WHERE `entry` = 10996;
@@ -16061,7 +16101,7 @@ UPDATE `creature_template` SET `DamageModifier` = 7.0, `ArmorModifier` = 1.1 WHE
 UPDATE `creature_template` SET `minlevel` = 48, `maxlevel` = 48, `DamageModifier` = 3.0 WHERE `entry` = 11016;
 
 /*  Roxxik  */
-UPDATE `creature_template` SET `subname` = 'Artisan Engineer', `DamageModifier` = 0.95 WHERE `entry` = 11017;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 11017;
 
 /*  Arko'narin  */
 UPDATE `creature_template` SET `minlevel` = 48, `maxlevel` = 48, `speed_walk` = 1.0, `DamageModifier` = 1.4, `RangeAttackTime` = 1683 WHERE `entry` = 11018;
@@ -16079,22 +16119,24 @@ UPDATE `creature_template` SET `DamageModifier` = 7, `HealthModifier` = 12.0, `A
 UPDATE `creature_template` SET `DamageModifier` = 12.0, `HealthModifier` = 12.0, `ArmorModifier` = 0.9 WHERE `entry` = 11023;
 
 /*  Mukdrak  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11025;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer' WHERE `entry` = 11025;
+UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11025;
 
 /*  Sprite Jumpsprocket  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9 WHERE `entry` = 11026;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11026;
 
 /*  Illusory Wraith  */
 UPDATE `creature_template` SET `minlevel` = 51, `maxlevel` = 51, `speed_walk` = 1.0, `DamageModifier` = 0.4, `ArmorModifier` = 0.9, `RangeAttackTime` = 1650 WHERE `entry` = 11027;
 
 /*  Jemma Quikswitch  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9 WHERE `entry` = 11028;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11028;
 
 /*  Trixie Quikswitch  */
-UPDATE `creature_template` SET `subname` = 'Expert Engineer', `DamageModifier` = 0.95 WHERE `entry` = 11029;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 11029;
 
 /*  Franklin Lloyd  */
-UPDATE `creature_template` SET `subname` = 'Expert Engineer', `ArmorModifier` = 0.95 WHERE `entry` = 11031;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Expert Engineer' WHERE `entry` = 11031;
+UPDATE `creature_template` SET `ArmorModifier` = 0.95 WHERE `entry` = 11031;
 
 /*  Malor the Zealous  */
 UPDATE `creature_template` SET `DamageModifier` = 6.75, `ArmorModifier` = 1.1 WHERE `entry` = 11032;
@@ -16103,46 +16145,47 @@ UPDATE `creature_template` SET `DamageModifier` = 6.75, `ArmorModifier` = 1.1 WH
 UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 11033;
 
 /*  Jenna Lemkenilli  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Engineer', `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11037;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Journeyman Engineer' WHERE `entry` = 11037;
+UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11037;
 
 /*  Watcher Brownell  */
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 11040;
 
 /*  Milla Fairancora  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.9 WHERE `entry` = 11041;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11041;
 
 /*  Sylvanna Forestmoon  */
-UPDATE `creature_template` SET `subname` = 'Expert Alchemist', `ArmorModifier` = 0.85 WHERE `entry` = 11042;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 11042;
 
 /*  Crimson Monk  */
 UPDATE `creature_template` SET `DamageModifier` = 5.555556, `ArmorModifier` = 0.25 WHERE `entry` = 11043;
 
 /*  Doctor Martin Felben  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist Trainer', `DamageModifier` = 0.9 WHERE `entry` = 11044;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11044;
 
 /*  Burns  */
 UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHERE `entry` = 11045;
 
 /*  Whuut  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.85 WHERE `entry` = 11046;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 11046;
 
 /*  Kray  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Alchemist', `DamageModifier` = 0.9 WHERE `entry` = 11047;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11047;
 
 /*  Victor Ward  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 11048;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11048;
 
 /*  Rhiannon Davis  */
-UPDATE `creature_template` SET `subname` = 'Expert Tailor', `ArmorModifier` = 0.85 WHERE `entry` = 11049;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 11049;
 
 /*  Trianna  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9 WHERE `entry` = 11050;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11050;
 
 /*  Vhan  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Tailor', `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11051;
+UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 1.5 WHERE `entry` = 11051;
 
 /*  Timothy Worthington  */
-UPDATE `creature_template` SET `subname` = 'Master Tailor' WHERE `entry` = 11052;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Tailor' WHERE `entry` = 11052;
 
 /*  High Priestess MacDonnell  */
 UPDATE `creature_template` SET `DamageModifier` = 1.7, `ArmorModifier` = 0.9 WHERE `entry` = 11053;
@@ -16160,34 +16203,34 @@ UPDATE `creature_template` SET `DamageModifier` = 8.5, `RangeAttackTime` = 1255,
 UPDATE `creature_template` SET `DamageModifier` = 1.45 WHERE `entry` = 11064;
 
 /*  Thonys Pillarstone  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.9 WHERE `entry` = 11065;
-
-/*  Jhag  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter' WHERE `entry` = 11066;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11065;
 
 /*  Malcomb Wynn  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.85 WHERE `entry` = 11067;
+UPDATE `creature_template` SET `DamageModifier` = 0.85 WHERE `entry` = 11067;
 
 /*  Betty Quin  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.9 WHERE `entry` = 11068;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11068;
 
 /*  Jenova Stoneshield  */
 UPDATE `creature_template` SET `DamageModifier` = 5.2, `ArmorModifier` = 2.95 WHERE `entry` = 11069;
 
 /*  Lalina Summermoon  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.95 WHERE `entry` = 11070;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 11070;
 
 /*  Mot Dawnstrider  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Enchanter', `DamageModifier` = 0.8 WHERE `entry` = 11071;
+UPDATE `creature_template` SET `DamageModifier` = 0.8 WHERE `entry` = 11071;
 
 /*  Kitta Firewind  */
-UPDATE `creature_template` SET `subname` = 'Artisan Enchanter', `DamageModifier` = 0.95 WHERE `entry` = 11072;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Enchanter' WHERE `entry` = 11072;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 11072;
 
 /*  Annora  */
-UPDATE `creature_template` SET `subname` = 'Master Enchanter', `speed_walk` = 1.0, `DamageModifier` = 1.0, `RangeAttackTime` = 1617 WHERE `entry` = 11073;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Enchanter' WHERE `entry` = 11073;
+UPDATE `creature_template` SET `speed_walk` = 1.0, `DamageModifier` = 1.0, `RangeAttackTime` = 1617 WHERE `entry` = 11073;
 
 /*  Hgarth  */
-UPDATE `creature_template` SET `subname` = 'Artisan Enchanter', `DamageModifier` = 0.95 WHERE `entry` = 11074;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Artisan Enchanter' WHERE `entry` = 11074;
+UPDATE `creature_template` SET `DamageModifier` = 0.95 WHERE `entry` = 11074;
 
 /*  Cauldron Lord Bilemaw  */
 UPDATE `creature_template` SET `speed_walk` = 0.777776, `mingold` = 50, `maxgold` = 250 WHERE `entry` = 11075;
@@ -16208,25 +16251,27 @@ UPDATE `creature_template` SET `DamageModifier` = 9.45 WHERE `entry` = 11079;
 UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 11080;
 
 /*  Faldron  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `ArmorModifier` = 0.85 WHERE `entry` = 11081;
+UPDATE `creature_template` SET `ArmorModifier` = 0.85 WHERE `entry` = 11081;
 
 /*  Stratholme Courier  */
 UPDATE `creature_template` SET `DamageModifier` = 6.65, `RangeAttackTime` = 1301 WHERE `entry` = 11082;
 
 /*  Darianna  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9 WHERE `entry` = 11083;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11083;
 
 /*  Tarn  */
-UPDATE `creature_template` SET `subname` = 'Expert Leatherworker', `DamageModifier` = 1.05 WHERE `entry` = 11084;
+UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 11084;
 
 /*  Randal Worth  */
-UPDATE `creature_template` SET `subname` = 'Journeyman Leatherworker', `DamageModifier` = 0.9 WHERE `entry` = 11096;
+UPDATE `creature_template` SET `DamageModifier` = 0.9 WHERE `entry` = 11096;
 
 /*  Drakk Stonehand  */
-UPDATE `creature_template` SET `subname` = 'Master Leatherworking Trainer', `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 11097;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Leatherworking Trainer' WHERE `entry` = 11097;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 11097;
 
 /*  Hahrana Ironhide  */
-UPDATE `creature_template` SET `subname` = 'Master Leatherworker', `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 11098;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Master Leatherworker' WHERE `entry` = 11098;
+UPDATE `creature_template` SET `DamageModifier` = 1.05, `ArmorModifier` = 1.4 WHERE `entry` = 11098;
 
 /*  Argent Guard  */
 UPDATE `creature_template` SET `DamageModifier` = 3.9 WHERE `entry` = 11099;
@@ -16274,7 +16319,7 @@ UPDATE `creature_template` SET `detection_range` = 18.0 WHERE `entry` = 11144;
 UPDATE `creature_template` SET `DamageModifier` = 1.05 WHERE `entry` = 11145;
 
 /*  Ironus Coldsteel  */
-UPDATE `creature_template` SET `subname` = 'Special Weapon Crafter' WHERE `entry` = 11146;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Special Weapon Crafter' WHERE `entry` = 11146;
 
 /*  The Scourge Cauldron  */
 UPDATE `creature_template` SET `DamageModifier` = 1.3 WHERE `entry` = 11152;
@@ -17627,7 +17672,7 @@ UPDATE `creature_template` SET `speed_walk` = 1.0, `detection_range` = 18.0 WHER
 UPDATE `creature_template` SET `ArmorModifier` = 0.95 WHERE `entry` = 12024;
 
 /*  Malvor  */
-UPDATE `creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 12025;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Herbalist' WHERE `entry` = 12025;
 
 /*  Tukk  */
 UPDATE `creature_template` SET `subname` = 'General Goods Vendor' WHERE `entry` = 12027;
@@ -17636,7 +17681,7 @@ UPDATE `creature_template` SET `subname` = 'General Goods Vendor' WHERE `entry` 
 UPDATE `creature_template` SET `DamageModifier` = 0.9, `ArmorModifier` = 0.95 WHERE `entry` = 12030;
 
 /*  Lui'Mala  */
-UPDATE `creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 12032;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 12032;
 
 /*  Koiter  */
 UPDATE `creature_template` SET `DamageModifier` = 1.6, `ArmorModifier` = 2.4 WHERE `entry` = 12034;
@@ -18481,7 +18526,7 @@ UPDATE `creature_template` SET `subname` = 'General Goods Vendor', `ArmorModifie
 UPDATE `creature_template` SET `DamageModifier` = 1.1 WHERE `entry` = 12960;
 
 /*  Kil'Hiwana  */
-UPDATE `creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 12961;
+UPDATE `ipp_prof_creature_template` SET `subname` = 'Fisherman' WHERE `entry` = 12961;
 
 /*  Kolkar Waylayer  */
 UPDATE `creature_template` SET `speed_walk` = 0.666668, `mingold` = 28, `maxgold` = 167 WHERE `entry` = 12976;

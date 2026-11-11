@@ -60,7 +60,7 @@ The base SQL files do not write profession data to the core tables. They write i
 
 The row tables are `trainer`, `trainer_spell`, `creature_default_trainer`, `conditions`, `npc_vendor` and `item_template_locale`. The tables with columns, where NULL means "the module does not set this column", are `creature_template` (`subname`, `npcflag`, `type_flags`), `quest_template` (`RewardItem1-4`, `RewardAmount1-4`) and `item_template` (`description`, `spellid_1`, `spellcharges_1`, `spellppmRate_1`, `RequiredLevel`, `SellPrice`). Everything else the module writes stays on the core tables as it was; so do trainer 651, the creatures 119187, 118754, 118771 and 121087, and `gossip_menu_option`.
 
-Every start with the option at 1 first takes out what an earlier start wrote and then writes it again, so the result does not depend on which files changed since. A core row that something else changed in the meantime (an AzerothCore update) is backed up with that new value and then overwritten by the module's value; AzerothCore's newer value is what comes back when the option is turned off. Before it reads or writes anything, the startup step checks in `information_schema` that every table and column it names exists. A missing one logs one ERROR naming it, and the data is left as it is.
+Every start with the option at 1 first takes out what an earlier start wrote and then writes it again, so the result does not depend on which files changed since. When an AzerothCore update changes an owned column of `creature_template`, `quest_template` or `item_template`, or replaces a whole row of a row table, the startup step backs up that new value and then overwrites it with the module's value; the new value is what comes back when the option is turned off. Two other kinds of update are not followed (Known limits). Before it reads or writes anything, the startup step checks in `information_schema` that every table and column it names exists. A missing one logs one ERROR naming it, and the data is left as it is.
 
 ### Writing a profession change
 | The module wrote | It now writes |
@@ -70,7 +70,7 @@ Every start with the option at 1 first takes out what an earlier start wrote and
 | an UPDATE of columns on core rows | `INSERT IGNORE INTO ipp_prof_<t> (<key>) VALUES ...` for its keys, then the UPDATE on `ipp_prof_<t>` |
 | an UPDATE of one column of a row table, such as `ReqLevel` | `REPLACE INTO ipp_prof_<t> (<all columns>) SELECT <columns, with the new value> FROM <t> WHERE <the same condition>` |
 | a statement on owned and other columns | split: the other columns stay on the core table |
-| an R3.4 exception, such as `DELETE FROM trainer WHERE Id BETWEEN 611 AND 651` | split: `ipp_prof_trainer` for 611-650; the core `DELETE ... WHERE Id = 651` stays next to trainer 651's insert |
+| a statement that also writes rows kept on the core table (trainer 651, the creatures 119187, 118754, 118771 and 121087), such as `DELETE FROM trainer WHERE Id BETWEEN 611 AND 651` | split: `ipp_prof_trainer` for 611-650; the core `DELETE ... WHERE Id = 651` stays next to trainer 651's insert |
 | a block that mixes owned and non-owned items, such as the vendor DELETE and INSERT block in `vanilla_vendors.sql` | per item: an owned item's DELETE and INSERT rows move as above; a non-owned item's DELETE stays on the core table together with its INSERT rows, so no removal row ever matches a row a core INSERT adds |
 | an `INSERT IGNORE` into a core row table | per key: if AzerothCore's data has the row, the statement does nothing and is removed (staging it would replace AzerothCore's row under key 1); otherwise `INSERT IGNORE INTO ipp_prof_<t>` |
 
@@ -84,8 +84,11 @@ Every statement names its columns. Whether an item or spell is "owned" is decide
 
 ### Known limits
 * A line deleted from a base file leaves its row in `ipp_prof_*`.
-* Turning the option off restores what this module wrote at startup. A database that the module's older profession SQL wrote to the core tables directly, before the `ipp_prof_` tables existed, keeps those values until they are restored by hand.
+* Turning the option off undoes only what the startup step wrote. A database that the module's older profession SQL wrote to the core tables directly, before the `ipp_prof_` tables existed, keeps those values until they are restored by hand.
 * A profession change that writes trainers, recipes, profession books or a profession NPC's `subname`/`npcflag`/`type_flags` straight to a core table is not covered by the option. It has to go to `ipp_prof_*`.
+* An AzerothCore update that changes only some columns of a row the module replaced (row tables) leaves a mixed row; with the option at 0 that row comes back with the module's values in the other columns, and AzerothCore's own values for them are lost.
+* A row the module replaced or removed that an AzerothCore update deletes comes back from the backup when the option is turned off.
+* The pet options have the same two limits.
 
 ## Discord
 [https://discord.gg/PTXxh3KSgQ](https://discord.gg/PTXxh3KSgQ)

@@ -1357,19 +1357,10 @@ private:
         }
     }
 
-    // One helper serves the pet features (hunter_pet_trainers.sql, warlock_pet_trainers.sql: ipp_pet_* tables)
-    // and the profession feature (ipp_professions_tables.sql: ipp_prof_* tables). Each keeps its data in its own
-    // tables, which are written to the core tables here, before they are loaded, only while the feature is on, so
-    // that with the feature off pets, demon trainers, grimoires and professions behave as in AzerothCore. For
-    // each core table <x> (prefix ipp_pet_ or ipp_prof_):
-    //   <prefix><x>          what the module wants written; the SQL files write it
-    //   <prefix>applied_<x>  what this step wrote last
-    //   <prefix>backup_<x>   the core values it replaced
-    // Undoing goes by what was written, not by the current <prefix><x>, so a module update that changes or
-    // drops rows still gets the core values back: a re-apply restores the rows that were dropped, and the
-    // restore after turning the feature off covers everything. A core row changed since by something else
-    // (e.g. an AzerothCore update) is backed up with its new value by the next apply and overwritten by the
-    // module's value; that newer value is what comes back when the feature is turned off.
+    // Writes a feature's ipp_pet_* or ipp_prof_* data to the core tables before they load, only while it is on (README, VanillaProfessions).
+    // Per core table <x>: <prefix><x> is what the module wants, <prefix>applied_<x> what was written last, <prefix>backup_<x> the core values it replaced.
+    // Undo goes by <prefix>applied_<x>, not the current <prefix><x>, so a module update that changes or drops rows still gets the core values back.
+    // An AzerothCore update that changes part of a written row, or deletes a replaced row, is not followed at restore (README, Known limits).
     struct DatabaseFeature
     {
         std::string name;                 // the feature's row in stateTable
@@ -1637,22 +1628,8 @@ private:
         ApplyDatabaseFeature(warlock, sIndividualProgression->DemonTrainersActive());
     }
 
-    // The profession data (data/sql/world/base/ipp_professions_tables.sql and the base files that write to it) is
-    // written to the core tables only while IndividualProgression.VanillaProfessions = 1. The statements are built
-    // from descriptors of the core tables, so that the statements and the list of tables and columns that
-    // ApplyDatabaseFeature checks come from the same text.
-    //
-    // Tables with their own rows (RowTable). Per core table <t>:
-    //   ipp_prof_<t>          the rows the module wants
-    //   ipp_prof_applied_<t>  the rows written last
-    //   ipp_prof_backup_<t>   the core rows they replaced
-    //   removeTable           where the module deletes AzerothCore's rows; removeMatch is the condition between
-    //                         a removal row r and a core row c (it leaves out rows the module keeps writing to
-    //                         the core tables: trainer 651, the creatures 119187, 118754, 118771 and 121087)
-    // Tables with columns the module sets (ColumnTable): ipp_prof_<t> holds the key and the owned columns,
-    // NULL = not set; applied and backup the same.
-    // Every apply starts from a restore (or an empty applied and backup when nothing is applied), so that the
-    // end state does not depend on which base files changed since the last start.
+    // Profession data (README, VanillaProfessions): the statements and the columns ApplyDatabaseFeature checks come from the same descriptors.
+    // Every apply starts from a restore (or empty applied and backup tables), so the end state does not depend on which base files changed.
     struct RowTable
     {
         char const* table;
@@ -1660,14 +1637,14 @@ private:
         std::vector<char const*> columns;       // every column of the core table
         char const* removeTable;                // nullptr: the module deletes no core rows from this table
         std::vector<char const*> removeColumns; // the columns of removeTable
-        char const* removeMatch;
+        char const* removeMatch;                // r = removal row, c = core row; leaves out rows kept on the core table (trainer 651, creatures 119187, 118754, 118771, 121087)
     };
 
     struct ColumnTable
     {
         char const* table;
         char const* key;
-        std::vector<char const*> columns;       // the owned columns
+        std::vector<char const*> columns;       // the owned columns; NULL in ipp_prof_<t> = not set
     };
 
     static std::string Quoted(std::string const& name)

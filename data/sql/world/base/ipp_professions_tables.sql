@@ -1,37 +1,10 @@
 /*
-    Tables for the profession data of this module (trainers and their recipe lists, profession vendors and
-    books, the "Train me." skill conditions, profession NPC subnames/npcflag/type_flags, Cooking/First Aid/
-    Fishing rewards and items). The base files write that data to the ipp_prof_* tables below, never to the
-    core tables. The startup step writes it to the core tables, before they are loaded, only while
-    IndividualProgression.VanillaProfessions = 1; with 0 AzerothCore's values are restored
-    (IndividualProgression.cpp, BuildProfessionFeature). Changing the key needs a restart.
-
-    This file sorts before every file that writes to them. Tables are only ever created here, never dropped:
-    a base file that did not change does not run again.
-
-    Per core table <t> with its own rows (trainer, trainer_spell, creature_default_trainer, conditions,
-    npc_vendor, item_template_locale):
-        ipp_prof_<t>          the rows the module wants; the base files write it
-        ipp_prof_applied_<t>  the rows the startup step wrote last (written by C++ only)
-        ipp_prof_backup_<t>   the core rows it replaced (written by C++ only)
-        ipp_prof_<t>_remove   where the module deletes AzerothCore's rows: one row per match (0 / '' = any)
-    Per core table whose columns the module sets (creature_template, quest_template, item_template):
-        ipp_prof_<t> holds the key and the owned columns, NULL = the module does not set that column;
-        ipp_prof_applied_<t> and ipp_prof_backup_<t> as above.
-
-    One writer per owned row, and for the tables with columns per key and column: when two base files write
-    the same one, the file last in name order keeps the statement and the earlier file's is removed, because a
-    changed file is run in full and a later file that did not change is not run again.
-
-    A row key that a pet option owns is never put in ipp_prof_*, and the reverse: the warlock pet feature and
-    this one write the same core tables (creature_template.npcflag, npc_vendor, item_template.description and
-    spellid_1), the pets apply first, and an overlap would make each feature back up the other's value.
-
-    A column is added to an ipp_prof_* table later by a new SQL file with a single ALTER TABLE, never edited
-    afterwards, whose name sorts after ipp_professions_tables.sql and before professions.sql, together with the
-    change to the column list in IndividualProgression.cpp. The CREATE statements below are never edited:
-    CREATE TABLE IF NOT EXISTS does not change a table that exists, and a missing column makes the feature log
-    an ERROR and skip, including the restore at key 0.
+    The base files write the profession data here, never to the core tables. The startup step writes it to the core
+    tables only while IndividualProgression.VanillaProfessions = 1 (IndividualProgression.cpp,
+    BuildProfessionFeature; README). This file sorts before every file that writes to these tables, and tables are
+    created here, never dropped. Never edit a CREATE (CREATE TABLE IF NOT EXISTS does not change an existing table):
+    add a column with a new file holding one ALTER TABLE, sorted after this file and before professions.sql, together
+    with the column list in the cpp. One writer per owned row, and no key shared with a pet option (README).
 */
 
 -- Whether the startup step has written the ipp_prof_* data to the core tables (rows written by C++ only).

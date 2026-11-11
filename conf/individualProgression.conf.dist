@@ -201,13 +201,14 @@ IndividualProgression.WarlockDemonTrainers = 1
 # IndividualProgression.VanillaProfessions
 #
 #        Description: Enable this option to restore the Vanilla/TBC professions of this module: rank trainers, Cooking,
-#                     Fishing and First Aid ranks from books and quests, recipes moved off trainers and
-#                     Brilliant Glass at level 71.
-#                     Disabled, professions behave as in AzerothCore (3.3.5a) in every tier: the module's profession data
-#                     is not written to the core tables, or is taken out again at startup.
-#                     Turning it off restores the values this module wrote at startup. A database the module's older
-#                     profession SQL already wrote (before the ipp_prof_ tables existed) keeps those values until they
-#                     are restored by hand, as with the pet options.
+#                     Fishing and First Aid ranks from books and quests, recipes moved off trainers and Brilliant Glass
+#                     at level 71.
+#                     Disabled, the trainers, recipes, profession vendors and books are AzerothCore's (3.3.5a) in every
+#                     tier; IndividualProgression.ProfessionTierCap still limits the rank per tier. The module's
+#                     profession data is not written to the core tables, or is taken out again at startup.
+#                     Turning it off undoes only what the startup step wrote (see the README's Known limits). A
+#                     database the module's older profession SQL already wrote (before the ipp_prof_ tables existed)
+#                     keeps those values until they are restored by hand, as with the pet options.
 #                     Changing this option needs a restart.
 #
 #        Default:     1 - Enabled

@@ -89,6 +89,7 @@ Every statement names its columns. Whether an item or spell is "owned" is decide
 * An AzerothCore update that changes only some columns of a row the module replaced (row tables) leaves a mixed row; with the option at 0 that row comes back with the module's values in the other columns, and AzerothCore's own values for them are lost.
 * A row the module replaced or removed that an AzerothCore update deletes comes back from the backup when the option is turned off.
 * The pet options have the same two limits.
+* The profession trainers AzerothCore spawns in Shattrath for patch 3.1 (33608-33684, 35099, 35101) stay deleted with the option at 0; `professions.sql` removes their spawns from the core `creature` table for both values.
 
 ## Discord
 [https://discord.gg/PTXxh3KSgQ](https://discord.gg/PTXxh3KSgQ)

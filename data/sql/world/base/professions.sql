@@ -301,7 +301,7 @@ INSERT INTO `ipp_prof_trainer` (`Id`, `Type`, `Requirement`, `Greeting`, `Verifi
 (@TRAINER_ID+46, 2, 0, 'Here, let me show you how to bind those wounds....', 0),
 (@TRAINER_ID+47, 2, 0, 'I can teach you how to use a fishing pole to catch fish.', 0);
 
--- Trainer 651 (the pre-T3 Leatherworking list of the four TBC copies) is not profession data and stays in the core table.
+-- Trainer 651 stays in the core table: the four TBC Leatherworking copies, also kept there, train from it.
 DELETE FROM `trainer` WHERE `Id` = @TRAINER_ID+51;
 INSERT INTO `trainer` (`Id`, `Type`, `Requirement`, `Greeting`, `VerifiedBuild`) VALUES 
 (@TRAINER_ID+51, 2, 0, 'Greetings!  Can I teach you how to turn beast hides into armor?', 0);

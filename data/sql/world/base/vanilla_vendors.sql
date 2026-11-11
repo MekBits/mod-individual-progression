@@ -1,4 +1,4 @@
--- The formula, manual and rank book rows of the profession vendors go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
+-- The recipe, pattern, schematic, manual and rank book rows that AzerothCore profession trainers teach go to the ipp_prof_* tables (IndividualProgression.VanillaProfessions).
 /*  Hide vendor items until the player has completed the progression level for them */
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 23 AND `SourceGroup` IN 
 (66, 372, 483, 789, 790, 843, 844, 958, 983, 989, 1148, 1250, 1257, 1275, 1286, 1307, 1308, 1313, 1325, 1326, 1347, 1351, 1448, 1453, 1454, 1463, 1474, 1672, 1673, 1692, 1694, 

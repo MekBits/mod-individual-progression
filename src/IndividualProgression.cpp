@@ -1357,17 +1357,19 @@ private:
         }
     }
 
-    // hunter_pet_trainers.sql, warlock_pet_trainers.sql and professions (ipp_professions_tables.sql) keep their
-    // data in ipp_pet_* / ipp_prof_* tables. It is written to the core tables here, before they are loaded, only
-    // while the feature is on, so that with the feature off pets, demon trainers, grimoires and professions behave
-    // as in AzerothCore. For each core table:
-    //   ipp_pet_<x>          what the module wants written; the SQL file replaces it on every module update
-    //   ipp_pet_applied_<x>  what this step wrote last
-    //   ipp_pet_backup_<x>   the core values it replaced
-    // Undoing goes by what was written, not by the current ipp_pet_<x>, so a module update that changes or
+    // One helper serves the pet features (hunter_pet_trainers.sql, warlock_pet_trainers.sql: ipp_pet_* tables)
+    // and the profession feature (ipp_professions_tables.sql: ipp_prof_* tables). Each keeps its data in its own
+    // tables, which are written to the core tables here, before they are loaded, only while the feature is on, so
+    // that with the feature off pets, demon trainers, grimoires and professions behave as in AzerothCore. For
+    // each core table <x> (prefix ipp_pet_ or ipp_prof_):
+    //   <prefix><x>          what the module wants written; the SQL files write it
+    //   <prefix>applied_<x>  what this step wrote last
+    //   <prefix>backup_<x>   the core values it replaced
+    // Undoing goes by what was written, not by the current <prefix><x>, so a module update that changes or
     // drops rows still gets the core values back: a re-apply restores the rows that were dropped, and the
     // restore after turning the feature off covers everything. A core row changed since by something else
-    // (e.g. an AzerothCore update) keeps its new value; the next apply backs that value up instead.
+    // (e.g. an AzerothCore update) is backed up with its new value by the next apply and overwritten by the
+    // module's value; that newer value is what comes back when the feature is turned off.
     struct DatabaseFeature
     {
         std::string name;                 // the feature's row in stateTable

@@ -22,6 +22,16 @@
     One writer per owned row, and for the tables with columns per key and column: when two base files write
     the same one, the file last in name order keeps the statement and the earlier file's is removed, because a
     changed file is run in full and a later file that did not change is not run again.
+
+    A row key that a pet option owns is never put in ipp_prof_*, and the reverse: the warlock pet feature and
+    this one write the same core tables (creature_template.npcflag, npc_vendor, item_template.description and
+    spellid_1), the pets apply first, and an overlap would make each feature back up the other's value.
+
+    A column is added to an ipp_prof_* table later by a new SQL file with a single ALTER TABLE, never edited
+    afterwards, whose name sorts after ipp_professions_tables.sql and before professions.sql, together with the
+    change to the column list in IndividualProgression.cpp. The CREATE statements below are never edited:
+    CREATE TABLE IF NOT EXISTS does not change a table that exists, and a missing column makes the feature log
+    an ERROR and skip, including the restore at key 0.
 */
 
 -- Whether the startup step has written the ipp_prof_* data to the core tables (rows written by C++ only).

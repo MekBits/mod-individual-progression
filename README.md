@@ -60,7 +60,7 @@ The base SQL files do not write profession data to the core tables. They write i
 
 The row tables are `trainer`, `trainer_spell`, `creature_default_trainer`, `conditions`, `npc_vendor` and `item_template_locale`. The tables with columns, where NULL means "the module does not set this column", are `creature_template` (`subname`, `npcflag`, `type_flags`), `quest_template` (`RewardItem1-4`, `RewardAmount1-4`) and `item_template` (`description`, `spellid_1`, `spellcharges_1`, `spellppmRate_1`, `RequiredLevel`, `SellPrice`). Everything else the module writes stays on the core tables as it was; so do trainer 651, the creatures 119187, 118754, 118771 and 121087, and `gossip_menu_option`.
 
-Every start with the option at 1 first takes out what an earlier start wrote and then writes it again, so the result does not depend on which files changed since. A core row that something else changed in the meantime (an AzerothCore update) keeps its new value. Before it reads or writes anything, the startup step checks in `information_schema` that every table and column it names exists. A missing one logs one ERROR naming it, and the data is left as it is.
+Every start with the option at 1 first takes out what an earlier start wrote and then writes it again, so the result does not depend on which files changed since. A core row that something else changed in the meantime (an AzerothCore update) is backed up with that new value and then overwritten by the module's value; AzerothCore's newer value is what comes back when the option is turned off. Before it reads or writes anything, the startup step checks in `information_schema` that every table and column it names exists. A missing one logs one ERROR naming it, and the data is left as it is.
 
 ### Writing a profession change
 | The module wrote | It now writes |
@@ -70,10 +70,17 @@ Every start with the option at 1 first takes out what an earlier start wrote and
 | an UPDATE of columns on core rows | `INSERT IGNORE INTO ipp_prof_<t> (<key>) VALUES ...` for its keys, then the UPDATE on `ipp_prof_<t>` |
 | an UPDATE of one column of a row table, such as `ReqLevel` | `REPLACE INTO ipp_prof_<t> (<all columns>) SELECT <columns, with the new value> FROM <t> WHERE <the same condition>` |
 | a statement on owned and other columns | split: the other columns stay on the core table |
+| an R3.4 exception, such as `DELETE FROM trainer WHERE Id BETWEEN 611 AND 651` | split: `ipp_prof_trainer` for 611-650; the core `DELETE ... WHERE Id = 651` stays next to trainer 651's insert |
+| a block that mixes owned and non-owned items, such as the vendor DELETE and INSERT block in `vanilla_vendors.sql` | per item: an owned item's DELETE and INSERT rows move as above; a non-owned item's DELETE stays on the core table together with its INSERT rows, so no removal row ever matches a row a core INSERT adds |
+| an `INSERT IGNORE` into a core row table | per key: if AzerothCore's data has the row, the statement does nothing and is removed (staging it would replace AzerothCore's row under key 1); otherwise `INSERT IGNORE INTO ipp_prof_<t>` |
 
 Every statement names its columns. Whether an item or spell is "owned" is decided from AzerothCore's data (a rank book, or an item that teaches a spell an AzerothCore profession trainer teaches), not from a database this module's files already wrote to.
 
 **One writer per owned row**, and for the tables with columns per key and column, also when two files write the same value. Where two files write it, the file last in name order keeps the statement and the earlier one is removed, because a changed file is run in full by db-import and a later file that did not change is not run again. If a changed file and a later unchanged one write the same row, add a comment line to the later file so that it runs again after it. This is not checked by a tool.
+
+**A row key that a pet option owns is never put in `ipp_prof_*`, and the reverse.** The warlock pet feature (`WarlockDemonTrainers`) and the profession feature write the same core tables (`creature_template.npcflag`, `npc_vendor`, `item_template.description` and `spellid_1`). The pets apply first, so an overlap would make each feature back up the other's value.
+
+**Adding a column to an `ipp_prof_*` table later** takes a new SQL file with a single `ALTER TABLE`, never edited afterwards, whose name sorts after `ipp_professions_tables.sql` and before `professions.sql`, together with the change to the column list in `IndividualProgression.cpp`. Never edit the `CREATE TABLE` statements: `CREATE TABLE IF NOT EXISTS` does not change a table that exists, and a missing column makes the feature log an ERROR and skip, including the restore at key 0.
 
 ### Known limits
 * A line deleted from a base file leaves its row in `ipp_prof_*`.

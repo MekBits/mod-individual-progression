@@ -7,6 +7,9 @@
 #include "ReputationMgr.h"
 #include "PetDefines.h"
 #include "World.h"
+#include <algorithm>
+#include <cctype>
+#include <set>
 
 IndividualProgression* IndividualProgression::instance()
 {
@@ -1202,6 +1205,7 @@ private:
         sIndividualProgression->fishingFix = sConfigMgr->GetOption<bool>("IndividualProgression.FishingFix", true);
         sIndividualProgression->VanillaHunterPets = sConfigMgr->GetOption<bool>("IndividualProgression.VanillaHunterPets", true);
         sIndividualProgression->WarlockDemonTrainers = sConfigMgr->GetOption<bool>("IndividualProgression.WarlockDemonTrainers", true);
+        sIndividualProgression->VanillaProfessions = sConfigMgr->GetOption<bool>("IndividualProgression.VanillaProfessions", true);
         sIndividualProgression->simpleConfigOverride = sConfigMgr->GetOption<bool>("IndividualProgression.SimpleConfigOverride", true);
         sIndividualProgression->progressionLimit = sConfigMgr->GetOption<uint8>("IndividualProgression.ProgressionLimit", 0);
         sIndividualProgression->startingProgression = sConfigMgr->GetOption<uint8>("IndividualProgression.StartingProgression", 0);
@@ -1353,31 +1357,95 @@ private:
         }
     }
 
-    // hunter_pet_trainers.sql and warlock_pet_trainers.sql keep their data in ipp_pet_* tables. It is written
-    // to the core tables here, before they are loaded, only while the feature is on, so that with the feature
-    // off pets, demon trainers and grimoires behave as in AzerothCore. For each core table:
-    //   ipp_pet_<x>          what the module wants written; the SQL file replaces it on every module update
-    //   ipp_pet_applied_<x>  what this step wrote last
-    //   ipp_pet_backup_<x>   the core values it replaced
-    // Undoing goes by what was written, not by the current ipp_pet_<x>, so a module update that changes or
-    // drops rows still gets the core values back: a re-apply restores the rows that were dropped, and the
-    // restore after turning the feature off covers everything. A core row changed since by something else
-    // (e.g. an AzerothCore update) keeps its new value; the next apply backs that value up instead.
-    struct PetDatabaseFeature
+    // Writes a feature's ipp_pet_* or ipp_prof_* data to the core tables before they load, only while it is on (README, VanillaProfessions).
+    // Per core table <x>: <prefix><x> is what the module wants, <prefix>applied_<x> what was written last, <prefix>backup_<x> the core values it replaced.
+    // Undo goes by <prefix>applied_<x>, not the current <prefix><x>, so a module update that changes or drops rows still gets the core values back.
+    // An AzerothCore update that changes part of a written row, or deletes a replaced row, is not followed at restore (README, Known limits).
+    struct DatabaseFeature
     {
-        char const* name;
-        std::vector<char const*> seed;    // applied by the version before ipp_pet_applied_*: that wrote ipp_pet_<x>
-        std::vector<char const*> apply;   // every startup while on
-        std::vector<char const*> restore; // first startup after turning it off
+        std::string name;                 // the feature's row in stateTable
+        std::string stateTable;           // "ipp_pet_state" or "ipp_prof_state"
+        std::string noun;                 // log lines: "hunter pet", "warlock pet", "profession"
+        std::vector<std::string> seed;    // applied by the version before ipp_pet_applied_*: that wrote ipp_pet_<x>
+        std::vector<std::string> apply;   // every startup while on
+        std::vector<std::string> restore; // first startup after turning it off
+        std::vector<std::string> clear;   // run before apply when not applied (professions: empty applied and backup tables)
+        bool restoreBeforeApply = false;  // professions: an apply while applied runs restore first
+        std::vector<std::pair<std::string, std::string>> columns; // every (table, column) the statements name, except the state table
     };
 
-    static void ApplyPetDatabaseFeature(PetDatabaseFeature const& feature, bool on)
+    using ColumnList = std::vector<std::pair<std::string, std::string>>;
+
+    static void AddColumns(ColumnList& list, std::vector<std::string> const& tables, std::vector<std::string> const& columns)
     {
-        // Always one row unless the query fails, e.g. when the SQL files that add commit_token have not run yet.
-        QueryResult state = WorldDatabase.Query("SELECT IFNULL(MAX(`applied`), 0), IFNULL(MAX(`commit_token`), 0) FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
+        for (std::string const& table : tables)
+            for (std::string const& column : columns)
+                list.emplace_back(table, column);
+    }
+
+    static std::string ToLower(std::string text)
+    {
+        std::transform(text.begin(), text.end(), text.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return text;
+    }
+
+    // AzerothCore stops the worldserver on a statement that fails with errno 1054, 1146 or 1064 (unknown column,
+    // missing table, syntax error), also inside a transaction. So everything a feature's statements name is looked up
+    // in information_schema first. Table names are compared as they are, column names without regard to case, as MySQL
+    // does (the SQL files write `SpellID` where the table has `SpellId`). Logs and returns true when something is missing.
+    static bool MissingColumns(DatabaseFeature const& feature, ColumnList const& wanted)
+    {
+        std::set<std::string> tables;
+        for (auto const& entry : wanted)
+            tables.insert(entry.first);
+
+        std::string tableList;
+        for (std::string const& table : tables)
+            tableList += (tableList.empty() ? "'" : ", '") + table + "'";
+
+        std::set<std::pair<std::string, std::string>> found;
+        if (!tableList.empty())
+        {
+            // No rows at all when none of the tables exist.
+            QueryResult result = WorldDatabase.Query("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ({})", tableList);
+            if (result)
+            {
+                do
+                {
+                    Field* fields = result->Fetch();
+                    found.emplace(fields[0].Get<std::string>(), ToLower(fields[1].Get<std::string>()));
+                } while (result->NextRow());
+            }
+        }
+
+        std::set<std::pair<std::string, std::string>> reported;
+        std::string missing;
+        for (auto const& entry : wanted)
+        {
+            if (found.count({ entry.first, ToLower(entry.second) }) || !reported.insert(entry).second)
+                continue;
+
+            missing += (missing.empty() ? "" : ", ") + entry.first + "." + entry.second;
+        }
+
+        if (missing.empty())
+            return false;
+
+        LOG_ERROR("module", "IndividualProgression: {} data left as it is, missing in the world database: {} (are the module's world SQL files applied?)", feature.noun, missing);
+        return true;
+    }
+
+    static void ApplyDatabaseFeature(DatabaseFeature const& feature, bool on)
+    {
+        // Without these columns the state query below would stop the worldserver.
+        if (MissingColumns(feature, { { feature.stateTable, "feature" }, { feature.stateTable, "applied" }, { feature.stateTable, "commit_token" } }))
+            return;
+
+        // Always one row unless the query fails.
+        QueryResult state = WorldDatabase.Query("SELECT IFNULL(MAX(`applied`), 0), IFNULL(MAX(`commit_token`), 0) FROM `{}` WHERE `feature` = '{}'", feature.stateTable, feature.name);
         if (!state)
         {
-            LOG_ERROR("module", "IndividualProgression: reading ipp_pet_state failed, {} pet data left as it is (are the module's world SQL files applied?)", feature.name);
+            LOG_ERROR("module", "IndividualProgression: reading {} failed, {} data left as it is (are the module's world SQL files applied?)", feature.stateTable, feature.noun);
             return;
         }
 
@@ -1387,43 +1455,51 @@ private:
         if (!on && !applied)
             return;
 
+        if (MissingColumns(feature, feature.columns))
+            return;
+
         auto trans = WorldDatabase.BeginTransaction();
-        if (applied && commitToken == 0)
-            for (char const* sql : feature.seed)
+        if (on && !applied)
+            for (std::string const& sql : feature.clear)
                 trans->Append(sql);
-        for (char const* sql : on ? feature.apply : feature.restore)
+        if (applied && commitToken == 0)
+            for (std::string const& sql : feature.seed)
+                trans->Append(sql);
+        if (on && applied && feature.restoreBeforeApply)
+            for (std::string const& sql : feature.restore)
+                trans->Append(sql);
+        for (std::string const& sql : on ? feature.apply : feature.restore)
             trans->Append(sql);
-        trans->Append("REPLACE INTO `ipp_pet_state` (`feature`, `applied`, `commit_token`) VALUES ('{}', {}, {})",
-            feature.name, on ? 1 : 0, commitToken + 1);
+        trans->Append("REPLACE INTO `{}` (`feature`, `applied`, `commit_token`) VALUES ('{}', {}, {})",
+            feature.stateTable, feature.name, on ? 1 : 0, commitToken + 1);
         WorldDatabase.DirectCommitTransaction(trans);
 
         // DirectCommitTransaction rolls back and only logs on failure. The token changes only if this transaction
         // went through, also when a re-apply leaves `applied` as it was. (Not if the connection drops halfway:
         // MySQLConnection reconnects and runs the remaining statements in autocommit, everywhere in AzerothCore.)
-        QueryResult result = WorldDatabase.Query("SELECT `commit_token` FROM `ipp_pet_state` WHERE `feature` = '{}'", feature.name);
+        QueryResult result = WorldDatabase.Query("SELECT `commit_token` FROM `{}` WHERE `feature` = '{}'", feature.stateTable, feature.name);
         if (!result || (*result)[0].Get<uint32>() != commitToken + 1)
         {
-            LOG_ERROR("module", "IndividualProgression: writing the {} pet data failed, see the SQL errors above", feature.name);
+            LOG_ERROR("module", "IndividualProgression: writing the {} data failed, see the SQL errors above", feature.noun);
             return;
         }
 
-        LOG_INFO("module", "IndividualProgression: {} pet data {}", feature.name, on ? "applied" : "removed, AzerothCore values restored");
+        LOG_INFO("module", "IndividualProgression: {} data {}", feature.noun, on ? "applied" : "removed, AzerothCore values restored");
     }
 
     static void ApplyPetDatabaseSettings()
     {
-        if (!WorldDatabase.Query("SHOW TABLES LIKE 'ipp_pet_state'"))
-        {
-            LOG_ERROR("module", "IndividualProgression: table ipp_pet_state is missing, pet data not applied (are the module's world SQL files applied?)");
-            return;
-        }
-
         // Per table the apply steps are: put back the core rows of keys no longer in ipp_pet_<x> (where they
         // still hold what was written) and forget them; back up the core rows about to be replaced that are not
         // ours; write ipp_pet_<x>; record it as written.
-        static PetDatabaseFeature const hunter
+        ColumnList hunterColumns;
+        AddColumns(hunterColumns, { "creature_template", "ipp_pet_spell_data_id", "ipp_pet_applied_spell_data_id", "ipp_pet_backup_spell_data_id" }, { "entry", "PetSpellDataId" });
+        AddColumns(hunterColumns, { "creaturespelldata_dbc", "ipp_pet_creaturespelldata", "ipp_pet_applied_creaturespelldata", "ipp_pet_backup_creaturespelldata" },
+            { "ID", "Spells_1", "Spells_2", "Spells_3", "Spells_4", "Availability_1", "Availability_2", "Availability_3", "Availability_4" });
+
+        static DatabaseFeature const hunter
         {
-            "hunter",
+            "hunter", "ipp_pet_state", "hunter pet",
             {
                 "DELETE FROM `ipp_pet_applied_spell_data_id`",
                 "INSERT INTO `ipp_pet_applied_spell_data_id` SELECT * FROM `ipp_pet_spell_data_id`",
@@ -1466,12 +1542,22 @@ private:
                 "DELETE FROM `ipp_pet_backup_spell_data_id`",
                 "DELETE FROM `ipp_pet_applied_creaturespelldata`",
                 "DELETE FROM `ipp_pet_backup_creaturespelldata`",
-            }
+            },
+            {},
+            false,
+            hunterColumns
         };
 
-        static PetDatabaseFeature const warlock
+        ColumnList warlockColumns;
+        AddColumns(warlockColumns, { "creature_template", "ipp_pet_trainer_npcflag", "ipp_pet_applied_trainer_npcflag", "ipp_pet_backup_trainer_npcflag" }, { "entry", "npcflag" });
+        AddColumns(warlockColumns, { "npc_vendor", "ipp_pet_npc_vendor", "ipp_pet_applied_npc_vendor", "ipp_pet_backup_npc_vendor" },
+            { "entry", "item", "ExtendedCost", "slot", "maxcount", "incrtime", "VerifiedBuild" });
+        AddColumns(warlockColumns, { "item_template", "ipp_pet_grimoire", "ipp_pet_applied_grimoire", "ipp_pet_backup_grimoire" },
+            { "entry", "spellid_1", "spellid_2", "spelltrigger_2", "description" });
+
+        static DatabaseFeature const warlock
         {
-            "warlock",
+            "warlock", "ipp_pet_state", "warlock pet",
             {
                 "DELETE FROM `ipp_pet_applied_trainer_npcflag`",
                 "INSERT INTO `ipp_pet_applied_trainer_npcflag` SELECT * FROM `ipp_pet_trainer_npcflag`",
@@ -1532,11 +1618,178 @@ private:
                 "DELETE FROM `ipp_pet_backup_npc_vendor`",
                 "DELETE FROM `ipp_pet_applied_grimoire`",
                 "DELETE FROM `ipp_pet_backup_grimoire`",
-            }
+            },
+            {},
+            false,
+            warlockColumns
         };
 
-        ApplyPetDatabaseFeature(hunter, sIndividualProgression->HunterPetsActive());
-        ApplyPetDatabaseFeature(warlock, sIndividualProgression->DemonTrainersActive());
+        ApplyDatabaseFeature(hunter, sIndividualProgression->HunterPetsActive());
+        ApplyDatabaseFeature(warlock, sIndividualProgression->DemonTrainersActive());
+    }
+
+    // Profession data (README, VanillaProfessions): the statements and the columns ApplyDatabaseFeature checks come from the same descriptors.
+    // Every apply starts from a restore (or empty applied and backup tables), so the end state does not depend on which base files changed.
+    struct RowTable
+    {
+        char const* table;
+        std::vector<char const*> key;
+        std::vector<char const*> columns;       // every column of the core table
+        char const* removeTable;                // nullptr: the module deletes no core rows from this table
+        std::vector<char const*> removeColumns; // the columns of removeTable
+        char const* removeMatch;                // r = removal row, c = core row; leaves out rows kept on the core table (trainer 651, creatures 119187, 118754, 118771, 121087)
+    };
+
+    struct ColumnTable
+    {
+        char const* table;
+        char const* key;
+        std::vector<char const*> columns;       // the owned columns; NULL in ipp_prof_<t> = not set
+    };
+
+    static std::string Quoted(std::string const& name)
+    {
+        return "`" + name + "`";
+    }
+
+    // "`a`, `b`", or "c.`a`, c.`b`" with a prefix.
+    static std::string NameList(std::vector<char const*> const& columns, std::string const& prefix = "")
+    {
+        std::string text;
+        for (char const* column : columns)
+            text += (text.empty() ? "" : ", ") + prefix + Quoted(column);
+        return text;
+    }
+
+    // "x.`a` <=> y.`a` AND x.`b` <=> y.`b`"
+    static std::string EqualList(std::vector<char const*> const& columns, std::string const& x, std::string const& y, char const* op)
+    {
+        std::string text;
+        for (char const* column : columns)
+            text += (text.empty() ? "" : " AND ") + x + "." + Quoted(column) + " " + op + " " + y + "." + Quoted(column);
+        return text;
+    }
+
+    // The core table and its three module tables.
+    static std::vector<std::string> TableNames(std::string const& table)
+    {
+        return { table, "ipp_prof_" + table, "ipp_prof_applied_" + table, "ipp_prof_backup_" + table };
+    }
+
+    static DatabaseFeature BuildProfessionFeature()
+    {
+        std::vector<RowTable> rowTables =
+        {
+            { "trainer", { "Id" }, { "Id", "Type", "Requirement", "Greeting", "VerifiedBuild" }, nullptr, {}, nullptr },
+            { "trainer_spell", { "TrainerId", "SpellId" },
+                { "TrainerId", "SpellId", "MoneyCost", "ReqSkillLine", "ReqSkillRank", "ReqAbility1", "ReqAbility2", "ReqAbility3", "ReqLevel", "VerifiedBuild" },
+                "ipp_prof_trainer_spell_remove", { "TrainerId", "SpellId" },
+                "(r.`TrainerId` = 0 OR r.`TrainerId` = c.`TrainerId`) AND r.`SpellId` = c.`SpellId` AND c.`TrainerId` <> 651" },
+            { "creature_default_trainer", { "CreatureId" }, { "CreatureId", "TrainerId" },
+                "ipp_prof_creature_default_trainer_remove", { "CreatureId" },
+                "r.`CreatureId` = c.`CreatureId` AND c.`CreatureId` NOT IN (119187, 118754, 118771, 121087)" },
+            { "conditions",
+                { "SourceTypeOrReferenceId", "SourceGroup", "SourceEntry", "SourceId", "ElseGroup", "ConditionTypeOrReference", "ConditionTarget", "ConditionValue1", "ConditionValue2", "ConditionValue3" },
+                { "SourceTypeOrReferenceId", "SourceGroup", "SourceEntry", "SourceId", "ElseGroup", "ConditionTypeOrReference", "ConditionTarget", "ConditionValue1", "ConditionValue2", "ConditionValue3",
+                    "NegativeCondition", "ErrorType", "ErrorTextId", "ScriptName", "Comment" },
+                "ipp_prof_conditions_remove", { "SourceGroup" },
+                "r.`SourceGroup` = c.`SourceGroup` AND c.`SourceTypeOrReferenceId` = 15 AND c.`SourceEntry` = 0 AND c.`ConditionTypeOrReference` = 7" },
+            { "npc_vendor", { "entry", "item", "ExtendedCost" }, { "entry", "slot", "item", "maxcount", "incrtime", "ExtendedCost", "VerifiedBuild" },
+                "ipp_prof_npc_vendor_remove", { "entry", "item" },
+                "(r.`entry` = 0 OR r.`entry` = c.`entry`) AND r.`item` = c.`item` AND c.`entry` NOT IN (119187, 118754, 118771, 121087)" },
+            { "item_template_locale", { "ID", "locale" }, { "ID", "locale", "Name", "Description", "VerifiedBuild" },
+                "ipp_prof_item_template_locale_remove", { "ID", "locale" },
+                "r.`ID` = c.`ID` AND (r.`locale` = '' OR r.`locale` = c.`locale`)" },
+        };
+
+        std::vector<ColumnTable> columnTables =
+        {
+            { "creature_template", "entry", { "subname", "npcflag", "type_flags" } },
+            { "quest_template", "ID", { "RewardItem1", "RewardItem2", "RewardItem3", "RewardItem4", "RewardAmount1", "RewardAmount2", "RewardAmount3", "RewardAmount4" } },
+            { "item_template", "entry", { "description", "spellid_1", "spellcharges_1", "spellppmRate_1", "RequiredLevel", "SellPrice" } },
+        };
+
+        DatabaseFeature feature;
+        feature.name = "professions";
+        feature.stateTable = "ipp_prof_state";
+        feature.noun = "profession";
+        feature.restoreBeforeApply = true;
+
+        // Restore (or clear) of every table first, then apply of every table.
+        std::vector<std::string> restore, clear, apply;
+
+        for (RowTable const& table : rowTables)
+        {
+            std::string const t = Quoted(table.table);
+            std::string const m = Quoted(std::string("ipp_prof_") + table.table);
+            std::string const a = Quoted(std::string("ipp_prof_applied_") + table.table);
+            std::string const b = Quoted(std::string("ipp_prof_backup_") + table.table);
+            std::string const columns = NameList(table.columns);
+
+            // Core rows still equal to what was written go; what they replaced comes back.
+            restore.push_back("DELETE c FROM " + t + " c JOIN " + a + " a ON " + EqualList(table.key, "a", "c", "=") + " WHERE " + EqualList(table.columns, "c", "a", "<=>"));
+            restore.push_back("INSERT IGNORE INTO " + t + " (" + columns + ") SELECT " + columns + " FROM " + b);
+            restore.push_back("DELETE FROM " + a);
+            restore.push_back("DELETE FROM " + b);
+            clear.push_back("DELETE FROM " + a);
+            clear.push_back("DELETE FROM " + b);
+
+            // Back up the core rows about to be replaced or removed, delete them, write the wanted rows.
+            std::string condition = "EXISTS (SELECT 1 FROM " + m + " m WHERE " + EqualList(table.key, "m", "c", "=") + ")";
+            if (table.removeTable)
+                condition += " OR EXISTS (SELECT 1 FROM " + Quoted(table.removeTable) + " r WHERE " + table.removeMatch + ")";
+            apply.push_back("INSERT IGNORE INTO " + b + " (" + columns + ") SELECT " + NameList(table.columns, "c.") + " FROM " + t + " c WHERE " + condition);
+            apply.push_back("DELETE c FROM " + t + " c WHERE " + condition);
+            apply.push_back("INSERT INTO " + t + " (" + columns + ") SELECT " + columns + " FROM " + m);
+            apply.push_back("INSERT INTO " + a + " (" + columns + ") SELECT " + columns + " FROM " + m);
+
+            AddColumns(feature.columns, TableNames(table.table), std::vector<std::string>(table.columns.begin(), table.columns.end()));
+            if (table.removeTable)
+                AddColumns(feature.columns, std::vector<std::string>{ table.removeTable }, std::vector<std::string>(table.removeColumns.begin(), table.removeColumns.end()));
+        }
+
+        for (ColumnTable const& table : columnTables)
+        {
+            std::string const t = Quoted(table.table);
+            std::string const m = Quoted(std::string("ipp_prof_") + table.table);
+            std::string const a = Quoted(std::string("ipp_prof_applied_") + table.table);
+            std::string const b = Quoted(std::string("ipp_prof_backup_") + table.table);
+            std::string const k = Quoted(table.key);
+            std::string const keyAndColumns = k + ", " + NameList(table.columns);
+
+            // A column goes back where it still holds what was written.
+            for (char const* column : table.columns)
+            {
+                std::string const c = Quoted(column);
+                restore.push_back("UPDATE " + t + " JOIN " + a + " ON " + a + "." + k + " = " + t + "." + k + " JOIN " + b + " ON " + b + "." + k + " = " + a + "." + k +
+                    " SET " + t + "." + c + " = " + b + "." + c + " WHERE " + a + "." + c + " IS NOT NULL AND " + t + "." + c + " <=> " + a + "." + c);
+            }
+            restore.push_back("DELETE FROM " + a);
+            restore.push_back("DELETE FROM " + b);
+            clear.push_back("DELETE FROM " + a);
+            clear.push_back("DELETE FROM " + b);
+
+            // Back up the columns about to be set (NULL for the ones the module leaves alone), then set them.
+            std::string backupColumns = t + "." + k;
+            for (char const* column : table.columns)
+                backupColumns += ", IF(" + m + "." + Quoted(column) + " IS NULL, NULL, " + t + "." + Quoted(column) + ")";
+            apply.push_back("INSERT INTO " + b + " (" + keyAndColumns + ") SELECT " + backupColumns + " FROM " + t + " JOIN " + m + " ON " + m + "." + k + " = " + t + "." + k);
+            for (char const* column : table.columns)
+            {
+                std::string const c = Quoted(column);
+                apply.push_back("UPDATE " + t + " JOIN " + m + " ON " + m + "." + k + " = " + t + "." + k + " SET " + t + "." + c + " = " + m + "." + c + " WHERE " + m + "." + c + " IS NOT NULL");
+            }
+            apply.push_back("INSERT INTO " + a + " (" + keyAndColumns + ") SELECT " + keyAndColumns + " FROM " + m);
+
+            std::vector<std::string> columns { table.key };
+            columns.insert(columns.end(), table.columns.begin(), table.columns.end());
+            AddColumns(feature.columns, TableNames(table.table), columns);
+        }
+
+        feature.restore = restore;
+        feature.clear = clear;
+        feature.apply = apply;
+        return feature;
     }
 
 public:
@@ -1554,7 +1807,12 @@ public:
 
         // The core tables are already loaded on a config reload; the new state takes effect at the next start.
         if (!reload)
+        {
             ApplyPetDatabaseSettings();
+
+            static DatabaseFeature const professions = BuildProfessionFeature();
+            ApplyDatabaseFeature(professions, sIndividualProgression->ProfessionsActive());
+        }
 
         if (sIndividualProgression->simpleConfigOverride)
         {

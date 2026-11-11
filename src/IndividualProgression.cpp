@@ -1205,6 +1205,7 @@ private:
         sIndividualProgression->fishingFix = sConfigMgr->GetOption<bool>("IndividualProgression.FishingFix", true);
         sIndividualProgression->VanillaHunterPets = sConfigMgr->GetOption<bool>("IndividualProgression.VanillaHunterPets", true);
         sIndividualProgression->WarlockDemonTrainers = sConfigMgr->GetOption<bool>("IndividualProgression.WarlockDemonTrainers", true);
+        sIndividualProgression->VanillaProfessions = sConfigMgr->GetOption<bool>("IndividualProgression.VanillaProfessions", true);
         sIndividualProgression->simpleConfigOverride = sConfigMgr->GetOption<bool>("IndividualProgression.SimpleConfigOverride", true);
         sIndividualProgression->progressionLimit = sConfigMgr->GetOption<uint8>("IndividualProgression.ProgressionLimit", 0);
         sIndividualProgression->startingProgression = sConfigMgr->GetOption<uint8>("IndividualProgression.StartingProgression", 0);
@@ -1634,6 +1635,184 @@ private:
         ApplyDatabaseFeature(warlock, sIndividualProgression->DemonTrainersActive());
     }
 
+    // The profession data (data/sql/world/base/ipp_professions_tables.sql and the base files that write to it) is
+    // written to the core tables only while IndividualProgression.VanillaProfessions = 1. The statements are built
+    // from descriptors of the core tables, so that the statements and the list of tables and columns that
+    // ApplyDatabaseFeature checks come from the same text.
+    //
+    // Tables with their own rows (RowTable). Per core table <t>:
+    //   ipp_prof_<t>          the rows the module wants
+    //   ipp_prof_applied_<t>  the rows written last
+    //   ipp_prof_backup_<t>   the core rows they replaced
+    //   removeTable           where the module deletes AzerothCore's rows; removeMatch is the condition between
+    //                         a removal row r and a core row c (it leaves out rows the module keeps writing to
+    //                         the core tables: trainer 651, the creatures 119187, 118754, 118771 and 121087)
+    // Tables with columns the module sets (ColumnTable): ipp_prof_<t> holds the key and the owned columns,
+    // NULL = not set; applied and backup the same.
+    // Every apply starts from a restore (or an empty applied and backup when nothing is applied), so that the
+    // end state does not depend on which base files changed since the last start.
+    struct RowTable
+    {
+        char const* table;
+        std::vector<char const*> key;
+        std::vector<char const*> columns;       // every column of the core table
+        char const* removeTable;                // nullptr: the module deletes no core rows from this table
+        std::vector<char const*> removeColumns; // the columns of removeTable
+        char const* removeMatch;
+    };
+
+    struct ColumnTable
+    {
+        char const* table;
+        char const* key;
+        std::vector<char const*> columns;       // the owned columns
+    };
+
+    static std::string Quoted(std::string const& name)
+    {
+        return "`" + name + "`";
+    }
+
+    // "`a`, `b`", or "c.`a`, c.`b`" with a prefix.
+    static std::string NameList(std::vector<char const*> const& columns, std::string const& prefix = "")
+    {
+        std::string text;
+        for (char const* column : columns)
+            text += (text.empty() ? "" : ", ") + prefix + Quoted(column);
+        return text;
+    }
+
+    // "x.`a` <=> y.`a` AND x.`b` <=> y.`b`"
+    static std::string EqualList(std::vector<char const*> const& columns, std::string const& x, std::string const& y, char const* op)
+    {
+        std::string text;
+        for (char const* column : columns)
+            text += (text.empty() ? "" : " AND ") + x + "." + Quoted(column) + " " + op + " " + y + "." + Quoted(column);
+        return text;
+    }
+
+    // The core table and its three module tables.
+    static std::vector<std::string> TableNames(std::string const& table)
+    {
+        return { table, "ipp_prof_" + table, "ipp_prof_applied_" + table, "ipp_prof_backup_" + table };
+    }
+
+    static DatabaseFeature BuildProfessionFeature()
+    {
+        std::vector<RowTable> rowTables =
+        {
+            { "trainer", { "Id" }, { "Id", "Type", "Requirement", "Greeting", "VerifiedBuild" }, nullptr, {}, nullptr },
+            { "trainer_spell", { "TrainerId", "SpellId" },
+                { "TrainerId", "SpellId", "MoneyCost", "ReqSkillLine", "ReqSkillRank", "ReqAbility1", "ReqAbility2", "ReqAbility3", "ReqLevel", "VerifiedBuild" },
+                "ipp_prof_trainer_spell_remove", { "TrainerId", "SpellId" },
+                "(r.`TrainerId` = 0 OR r.`TrainerId` = c.`TrainerId`) AND r.`SpellId` = c.`SpellId` AND c.`TrainerId` <> 651" },
+            { "creature_default_trainer", { "CreatureId" }, { "CreatureId", "TrainerId" },
+                "ipp_prof_creature_default_trainer_remove", { "CreatureId" },
+                "r.`CreatureId` = c.`CreatureId` AND c.`CreatureId` NOT IN (119187, 118754, 118771, 121087)" },
+            { "conditions",
+                { "SourceTypeOrReferenceId", "SourceGroup", "SourceEntry", "SourceId", "ElseGroup", "ConditionTypeOrReference", "ConditionTarget", "ConditionValue1", "ConditionValue2", "ConditionValue3" },
+                { "SourceTypeOrReferenceId", "SourceGroup", "SourceEntry", "SourceId", "ElseGroup", "ConditionTypeOrReference", "ConditionTarget", "ConditionValue1", "ConditionValue2", "ConditionValue3",
+                    "NegativeCondition", "ErrorType", "ErrorTextId", "ScriptName", "Comment" },
+                "ipp_prof_conditions_remove", { "SourceGroup" },
+                "r.`SourceGroup` = c.`SourceGroup` AND c.`SourceTypeOrReferenceId` = 15 AND c.`SourceEntry` = 0 AND c.`ConditionTypeOrReference` = 7" },
+            { "npc_vendor", { "entry", "item", "ExtendedCost" }, { "entry", "slot", "item", "maxcount", "incrtime", "ExtendedCost", "VerifiedBuild" },
+                "ipp_prof_npc_vendor_remove", { "entry", "item" },
+                "(r.`entry` = 0 OR r.`entry` = c.`entry`) AND r.`item` = c.`item` AND c.`entry` NOT IN (119187, 118754, 118771, 121087)" },
+            { "item_template_locale", { "ID", "locale" }, { "ID", "locale", "Name", "Description", "VerifiedBuild" },
+                "ipp_prof_item_template_locale_remove", { "ID", "locale" },
+                "r.`ID` = c.`ID` AND (r.`locale` = '' OR r.`locale` = c.`locale`)" },
+        };
+
+        std::vector<ColumnTable> columnTables =
+        {
+            { "creature_template", "entry", { "subname", "npcflag", "type_flags" } },
+            { "quest_template", "ID", { "RewardItem1", "RewardItem2", "RewardItem3", "RewardItem4", "RewardAmount1", "RewardAmount2", "RewardAmount3", "RewardAmount4" } },
+            { "item_template", "entry", { "description", "spellid_1", "spellcharges_1", "spellppmRate_1", "RequiredLevel", "SellPrice" } },
+        };
+
+        DatabaseFeature feature;
+        feature.name = "professions";
+        feature.stateTable = "ipp_prof_state";
+        feature.noun = "profession";
+        feature.restoreBeforeApply = true;
+
+        // Restore (or clear) of every table first, then apply of every table.
+        std::vector<std::string> restore, clear, apply;
+
+        for (RowTable const& table : rowTables)
+        {
+            std::string const t = Quoted(table.table);
+            std::string const m = Quoted(std::string("ipp_prof_") + table.table);
+            std::string const a = Quoted(std::string("ipp_prof_applied_") + table.table);
+            std::string const b = Quoted(std::string("ipp_prof_backup_") + table.table);
+            std::string const columns = NameList(table.columns);
+
+            // Core rows still equal to what was written go; what they replaced comes back.
+            restore.push_back("DELETE c FROM " + t + " c JOIN " + a + " a ON " + EqualList(table.key, "a", "c", "=") + " WHERE " + EqualList(table.columns, "c", "a", "<=>"));
+            restore.push_back("INSERT IGNORE INTO " + t + " (" + columns + ") SELECT " + columns + " FROM " + b);
+            restore.push_back("DELETE FROM " + a);
+            restore.push_back("DELETE FROM " + b);
+            clear.push_back("DELETE FROM " + a);
+            clear.push_back("DELETE FROM " + b);
+
+            // Back up the core rows about to be replaced or removed, delete them, write the wanted rows.
+            std::string condition = "EXISTS (SELECT 1 FROM " + m + " m WHERE " + EqualList(table.key, "m", "c", "=") + ")";
+            if (table.removeTable)
+                condition += " OR EXISTS (SELECT 1 FROM " + Quoted(table.removeTable) + " r WHERE " + table.removeMatch + ")";
+            apply.push_back("INSERT IGNORE INTO " + b + " (" + columns + ") SELECT " + NameList(table.columns, "c.") + " FROM " + t + " c WHERE " + condition);
+            apply.push_back("DELETE c FROM " + t + " c WHERE " + condition);
+            apply.push_back("INSERT INTO " + t + " (" + columns + ") SELECT " + columns + " FROM " + m);
+            apply.push_back("INSERT INTO " + a + " (" + columns + ") SELECT " + columns + " FROM " + m);
+
+            AddColumns(feature.columns, TableNames(table.table), std::vector<std::string>(table.columns.begin(), table.columns.end()));
+            if (table.removeTable)
+                AddColumns(feature.columns, std::vector<std::string>{ table.removeTable }, std::vector<std::string>(table.removeColumns.begin(), table.removeColumns.end()));
+        }
+
+        for (ColumnTable const& table : columnTables)
+        {
+            std::string const t = Quoted(table.table);
+            std::string const m = Quoted(std::string("ipp_prof_") + table.table);
+            std::string const a = Quoted(std::string("ipp_prof_applied_") + table.table);
+            std::string const b = Quoted(std::string("ipp_prof_backup_") + table.table);
+            std::string const k = Quoted(table.key);
+            std::string const keyAndColumns = k + ", " + NameList(table.columns);
+
+            // A column goes back where it still holds what was written.
+            for (char const* column : table.columns)
+            {
+                std::string const c = Quoted(column);
+                restore.push_back("UPDATE " + t + " JOIN " + a + " ON " + a + "." + k + " = " + t + "." + k + " JOIN " + b + " ON " + b + "." + k + " = " + a + "." + k +
+                    " SET " + t + "." + c + " = " + b + "." + c + " WHERE " + a + "." + c + " IS NOT NULL AND " + t + "." + c + " <=> " + a + "." + c);
+            }
+            restore.push_back("DELETE FROM " + a);
+            restore.push_back("DELETE FROM " + b);
+            clear.push_back("DELETE FROM " + a);
+            clear.push_back("DELETE FROM " + b);
+
+            // Back up the columns about to be set (NULL for the ones the module leaves alone), then set them.
+            std::string backupColumns = t + "." + k;
+            for (char const* column : table.columns)
+                backupColumns += ", IF(" + m + "." + Quoted(column) + " IS NULL, NULL, " + t + "." + Quoted(column) + ")";
+            apply.push_back("INSERT INTO " + b + " (" + keyAndColumns + ") SELECT " + backupColumns + " FROM " + t + " JOIN " + m + " ON " + m + "." + k + " = " + t + "." + k);
+            for (char const* column : table.columns)
+            {
+                std::string const c = Quoted(column);
+                apply.push_back("UPDATE " + t + " JOIN " + m + " ON " + m + "." + k + " = " + t + "." + k + " SET " + t + "." + c + " = " + m + "." + c + " WHERE " + m + "." + c + " IS NOT NULL");
+            }
+            apply.push_back("INSERT INTO " + a + " (" + keyAndColumns + ") SELECT " + keyAndColumns + " FROM " + m);
+
+            std::vector<std::string> columns { table.key };
+            columns.insert(columns.end(), table.columns.begin(), table.columns.end());
+            AddColumns(feature.columns, TableNames(table.table), columns);
+        }
+
+        feature.restore = restore;
+        feature.clear = clear;
+        feature.apply = apply;
+        return feature;
+    }
+
 public:
     IndividualPlayerProgression_WorldScript() : WorldScript("IndividualProgression_WorldScript") { }
 
@@ -1649,7 +1828,12 @@ public:
 
         // The core tables are already loaded on a config reload; the new state takes effect at the next start.
         if (!reload)
+        {
             ApplyPetDatabaseSettings();
+
+            static DatabaseFeature const professions = BuildProfessionFeature();
+            ApplyDatabaseFeature(professions, sIndividualProgression->ProfessionsActive());
+        }
 
         if (sIndividualProgression->simpleConfigOverride)
         {

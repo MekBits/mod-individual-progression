@@ -1268,6 +1268,9 @@ private:
         sIndividualProgression->mountPriceJourneyman = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Journeyman", 0);
         sIndividualProgression->mountPriceExpert = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Expert", 0);
         sIndividualProgression->mountPriceArtisan = sConfigMgr->GetOption<uint32>("IndividualProgression.MountPrice.Artisan", 0);
+        sIndividualProgression->warEffortSupplyDivisor = sConfigMgr->GetOption<uint32>("IndividualProgression.AQ.WarEffortSupplyDivisor", 1);
+        sIndividualProgression->warEffortSignets = sConfigMgr->GetOption<uint32>("IndividualProgression.AQ.WarEffortSignets", 1000);
+        sIndividualProgression->broodCarapaceFragments = sConfigMgr->GetOption<uint32>("IndividualProgression.AQ.BroodCarapaceFragments", 200);
     }
 
     static void LoadXpValues()
@@ -1355,6 +1358,136 @@ private:
 
             LOG_INFO("module", "IndividualProgression: paladin and warlock trainers teach Summon Warhorse and Summon Felsteed at level {}", level);
         }
+    }
+
+    // The Ahn'Qiraj war effort and the Brood of Nozdormu turn-in are sized for a full server. The configured amounts are
+    // written to the world database here, before World::SetInitialWorldSettings() loads the quests, together with the
+    // numbers in the English quest texts. The amounts are absolute and the texts are matched whatever number they hold,
+    // so the database follows the config from any earlier value, including the stock one that a rerun SQL file writes back.
+    static void ApplyAhnQirajQuestSettings()
+    {
+        // Every supply quest of the war effort on both factions, the first delivery and the repeatable one.
+        // Stock they take 20 of their item, the leather quests 10.
+        char const* const supplyQuests = "8492, 8493, 8494, 8495, 8499, 8500, 8503, 8504, 8505, 8506, 8509, 8510, 8517, 8518, 8520, 8521, "
+            "8522, 8523, 8524, 8525, 8526, 8527, 8528, 8529, 8532, 8533, 8542, 8543, 8545, 8546, 8549, 8550, 8580, 8581, 8582, 8583, "
+            "8604, 8605, 8607, 8608, 8609, 8610, 8611, 8612, 8613, 8614, 8615, 8616";
+        char const* const leatherQuests = "8511, 8512, 8513, 8514, 8515, 8516, 8588, 8589, 8590, 8591, 8600, 8601";
+        uint32 const stockSupplies = 20;
+        uint32 const stockLeather = 10;
+
+        uint32 divisor = sIndividualProgression->warEffortSupplyDivisor;
+        uint32 signets = sIndividualProgression->warEffortSignets;
+        uint32 fragments = sIndividualProgression->broodCarapaceFragments;
+
+        // A quest that asks for 0 of its item can never be completed, so 0 falls back to the stock amount.
+        if (!divisor)
+        {
+            LOG_ERROR("module", "IndividualProgression: AQ.WarEffortSupplyDivisor must be 1 or more, using 1");
+            divisor = 1;
+        }
+        if (!signets)
+        {
+            LOG_ERROR("module", "IndividualProgression: AQ.WarEffortSignets must be 1 or more, using 1000");
+            signets = 1000;
+        }
+        if (!fragments)
+        {
+            LOG_ERROR("module", "IndividualProgression: AQ.BroodCarapaceFragments must be 1 or more, using 200");
+            fragments = 200;
+        }
+
+        // Rounded up, so every supply quest still asks for at least one item.
+        uint32 const supplies = (stockSupplies + divisor - 1) / divisor;
+        uint32 const leather = (stockLeather + divisor - 1) / divisor;
+
+        WorldDatabase.DirectExecute("UPDATE `quest_template` SET `RequiredItemCount1` = {}, `LogDescription` = REGEXP_REPLACE(`LogDescription`, '^Bring [0-9]+ ', 'Bring {} ') WHERE `ID` IN ({})",
+            supplies, supplies, supplyQuests);
+        WorldDatabase.DirectExecute("UPDATE `quest_template` SET `RequiredItemCount1` = {}, `LogDescription` = REGEXP_REPLACE(`LogDescription`, '^Bring [0-9]+ ', 'Bring {} ') WHERE `ID` IN ({})",
+            leather, leather, leatherQuests);
+
+        // Complete the War Effort. Its quest log text names no number; the commanders' gossip reads the amount from the quest.
+        WorldDatabase.DirectExecute("UPDATE `quest_template` SET `RequiredItemCount1` = {} WHERE `ID` IN (108850, 108855)", signets);
+
+        // The Hand of the Righteous, the repeatable Brood of Nozdormu turn-in. Its reputation per turn-in is not changed here.
+        WorldDatabase.DirectExecute("UPDATE `quest_template` SET `RequiredItemCount1` = {}, `LogDescription` = REGEXP_REPLACE(`LogDescription`, '^Collect [0-9]+ ', 'Collect {} ') WHERE `ID` = 8302",
+            fragments, fragments);
+
+        // The supply quests' own texts spell the amount out. Each entry is the words around the number in one text,
+        // so the replacement cannot reach another number in it ("Two for the Alliance, one for me" in 8524 stays).
+        struct SpelledAmount
+        {
+            char const* table;
+            char const* column;
+            uint32 questId;
+            char const* before;
+            char const* after;
+            bool isLeather;
+            bool capitalized;
+        };
+
+        SpelledAmount const spelledAmounts[] =
+        {
+            { "quest_template", "QuestDescription", 8492, "stacks of ", "", false, false },
+            { "quest_template", "QuestDescription", 8494, "stacks of ", "", false, false },
+            { "quest_template", "QuestDescription", 8495, "another stack of ", " iron bars", false, false },
+            { "quest_template", "QuestDescription", 8504, "gather up ", " more", false, false },
+            { "quest_template", "QuestDescription", 8512, "a stack of ", "", true, false },
+            { "quest_template", "QuestDescription", 8527, "another ", " roast raptor", false, false },
+            { "quest_offer_reward", "RewardText", 8495, "", " iron bars!", false, true },
+            { "quest_offer_reward", "RewardText", 8499, "That's ", " down", false, false },
+            { "quest_offer_reward", "RewardText", 8503, "That's another ", " down", false, false },
+            { "quest_offer_reward", "RewardText", 8525, "another ", " albacore", false, false },
+            { "quest_offer_reward", "RewardText", 8532, "bringing in another ", "", false, false },
+            { "quest_offer_reward", "RewardText", 8545, "another ", " mithril bars", false, false },
+            { "quest_offer_reward", "RewardText", 8546, "Another ", " bars", false, false },
+            { "quest_request_items", "CompletionText", 8492, "those ", " bars of copper", false, false },
+            { "quest_request_items", "CompletionText", 8494, "those ", " bars of iron", false, false },
+            { "quest_request_items", "CompletionText", 8495, "another stack of ", " iron bars", false, false },
+            { "quest_request_items", "CompletionText", 8504, "gather up ", " more", false, false },
+            { "quest_request_items", "CompletionText", 8512, "a stack of ", "", true, false },
+            { "quest_request_items", "CompletionText", 8517, "the ", " linen bandages", false, false },
+            { "quest_request_items", "CompletionText", 8520, "those ", " silk bandages", false, false },
+            { "quest_request_items", "CompletionText", 8527, "another ", " roast raptor", false, false },
+            { "quest_request_items", "CompletionText", 8532, "the ", " copper bars", false, false },
+            { "quest_request_items", "CompletionText", 8583, "at least ", " purple lotus", false, false },
+            { "quest_request_items", "CompletionText", 8588, "at least ", " for me", true, false },
+            { "quest_request_items", "CompletionText", 8590, "the ", " thick leather", true, false },
+            { "quest_request_items", "CompletionText", 8600, "slice off ", " rugged leather", true, false }
+        };
+
+        // supplies is at most 20 and leather at most 10, as the divisor is at least 1.
+        static char const* const numberWords[] =
+        {
+            "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"
+        };
+
+        auto sqlString = [](std::string const& text)
+        {
+            std::string escaped;
+            for (char c : text)
+            {
+                if (c == '\'')
+                    escaped += '\'';
+                escaped += c;
+            }
+            return escaped;
+        };
+
+        for (SpelledAmount const& amount : spelledAmounts)
+        {
+            std::string word = numberWords[amount.isLeather ? leather : supplies];
+            if (amount.capitalized)
+                word[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(word[0])));
+
+            std::string const before = sqlString(amount.before);
+            std::string const after = sqlString(amount.after);
+            WorldDatabase.DirectExecute("UPDATE `{}` SET `{}` = REGEXP_REPLACE(`{}`, '{}[A-Za-z]+{}', '{}{}{}') WHERE `ID` = {}",
+                amount.table, amount.column, amount.column, before, after, before, word, after, amount.questId);
+        }
+
+        LOG_INFO("module", "IndividualProgression: war effort supply quests take {} (leather {}), Complete the War Effort {} signets, The Hand of the Righteous {} fragments",
+            supplies, leather, signets, fragments);
     }
 
     // Writes a feature's ipp_pet_* or ipp_prof_* data to the core tables before they load, only while it is on (README, VanillaProfessions).
@@ -1804,6 +1937,7 @@ public:
     void OnAfterConfigLoad(bool reload) override
     {
         ApplyMountSettings();
+        ApplyAhnQirajQuestSettings();
 
         // The core tables are already loaded on a config reload; the new state takes effect at the next start.
         if (!reload)

@@ -435,6 +435,7 @@ public:
     uint32 mountLevelApprentice, mountLevelJourneyman, mountLevelExpert, mountLevelArtisan;
     uint32 mountCostApprentice, mountCostJourneyman, mountCostExpert, mountCostArtisan;
     uint32 mountPriceApprentice, mountPriceJourneyman, mountPriceExpert, mountPriceArtisan;
+    uint32 warEffortSupplyDivisor, warEffortSignets, broodCarapaceFragments;
     std::string excludedAccountsRegex, botAccountsRegex, sharedFactionIdsRegex;
 
     // progression is derived from rewarded hidden quests (IDs 66000 + progression)

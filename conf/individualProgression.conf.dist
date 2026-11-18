@@ -727,7 +727,7 @@ IndividualProgression.AQ.WarEffortSupplyDivisor = 1
 # IndividualProgression.AQ.WarEffortSignets
 #
 #        Description: Commendation Signets that 'Complete the War Effort' asks for before the Scarab Gong can be rung.
-#                     The War Effort Commanders' progress report shows the same amount.
+#                     The War Effort Commanders' progress report shows the same amount. 1 to 65535.
 #
 #        Default:     1000
 #
@@ -737,7 +737,7 @@ IndividualProgression.AQ.WarEffortSignets = 1000
 #
 #        Description: Silithid Carapace Fragments that The Hand of the Righteous, the repeatable Brood of Nozdormu
 #                     turn-in, asks for. The reputation per turn-in does not change (vanilla_quest_reputations.sql,
-#                     or optional/sql/world/zz_optional_aq_quest_nerf.sql to raise it).
+#                     or optional/sql/world/zz_optional_aq_quest_nerf.sql to raise it). 1 to 65535.
 #
 #        Default:     200
 #

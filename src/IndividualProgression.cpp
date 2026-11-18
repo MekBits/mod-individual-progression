@@ -1396,6 +1396,22 @@ private:
             fragments = 200;
         }
 
+        // RequiredItemCount1 is a smallint unsigned; a larger value makes the UPDATE fail, and the quest keeps its old amount.
+        uint32 const maxItemCount = 65535;
+        if (signets > maxItemCount)
+        {
+            LOG_ERROR("module", "IndividualProgression: AQ.WarEffortSignets can be at most {}, using {}", maxItemCount, maxItemCount);
+            signets = maxItemCount;
+        }
+        if (fragments > maxItemCount)
+        {
+            LOG_ERROR("module", "IndividualProgression: AQ.BroodCarapaceFragments can be at most {}, using {}", maxItemCount, maxItemCount);
+            fragments = maxItemCount;
+        }
+
+        // Any divisor from the stock amount up gives one item; capping it here keeps the rounding below from overflowing.
+        divisor = std::min(divisor, stockSupplies);
+
         // Rounded up, so every supply quest still asks for at least one item.
         uint32 const supplies = (stockSupplies + divisor - 1) / divisor;
         uint32 const leather = (stockLeather + divisor - 1) / divisor;

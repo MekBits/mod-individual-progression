@@ -707,3 +707,38 @@ IndividualProgression.MountPrice.Apprentice = 0
 IndividualProgression.MountPrice.Journeyman = 0
 IndividualProgression.MountPrice.Expert = 0
 IndividualProgression.MountPrice.Artisan = 0
+
+# IndividualProgression.AQ.WarEffortSupplyDivisor
+#
+#        Description: Divides the amount every Ahn'Qiraj war effort supply quest asks for, on both factions, the first
+#                     delivery and the repeatable one alike. The amount is rounded up, so a quest asks for at least one.
+#                     Stock the quests take 20 of their item and the leather quests 10; with 10 they take 2 and 1.
+#                     The rewards do not change: the first delivery of each kind still gives 10 Commendation Signets.
+#                     The number in the quest log and the numbers the quest givers spell out in their English texts
+#                     follow. Other locales keep the stock numbers in their texts.
+#                     Like the two options below, the value is written to the world database when the worldserver
+#                     starts and when the config is reloaded. Restart the worldserver to apply it.
+#                     The amounts are absolute, so setting an option back to its default restores the stock amount.
+#
+#        Default:     1 - Stock amounts (20, leather 10)
+#
+IndividualProgression.AQ.WarEffortSupplyDivisor = 1
+
+# IndividualProgression.AQ.WarEffortSignets
+#
+#        Description: Commendation Signets that 'Complete the War Effort' asks for before the Scarab Gong can be rung.
+#                     The War Effort Commanders' progress report shows the same amount. 1 to 65535.
+#
+#        Default:     1000
+#
+IndividualProgression.AQ.WarEffortSignets = 1000
+
+# IndividualProgression.AQ.BroodCarapaceFragments
+#
+#        Description: Silithid Carapace Fragments that The Hand of the Righteous, the repeatable Brood of Nozdormu
+#                     turn-in, asks for. The reputation per turn-in does not change (vanilla_quest_reputations.sql,
+#                     or optional/sql/world/zz_optional_aq_quest_nerf.sql to raise it). 1 to 65535.
+#
+#        Default:     200
+#
+IndividualProgression.AQ.BroodCarapaceFragments = 200

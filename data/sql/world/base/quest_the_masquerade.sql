@@ -256,7 +256,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 -- Positions are hand-made. There's a huge throne where she used to be spawned in classic...
 DELETE FROM `creature` WHERE `guid` = 500800 AND `id` = 1749;
 INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES
-(500800, 1749, 0, 0, 0, 1, 1, 1, -8435, 335.559, 122.163, 2.56468, 300, 0, 3497, 2568, 0, 0, 0, 0, '', 0);
+(500800, 1749, 0, 0, 0, 1, 131072, 1, -8435, 335.559, 122.163, 2.56468, 300, 0, 3497, 2568, 0, 0, 0, 0, '', 0);
 
 # DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 30 AND `SourceEntry` = 1749;
 # INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
@@ -383,8 +383,10 @@ DELETE FROM `creature_questender` WHERE `id` = 1748 AND `quest` = 6403;
 INSERT INTO `creature_questender` (`id`, `quest`) VALUES
 (1748, 6403);
 
--- Disable mmaps for Reginald in stormwind
-UPDATE `creature_template` SET `flags_extra` = `flags_extra` |536870912 WHERE `entry` = 12580;
+# Windsor walks with pathfinding again. IGNORE_PATHFINDING gave him a two-point path, so he cut straight lines below the
+# floor (down to -1.3 on the keep legs). 00_cleanup.sql removes the flag from existing databases.
+# -- Disable mmaps for Reginald in stormwind
+# UPDATE `creature_template` SET `flags_extra` = `flags_extra` |536870912 WHERE `entry` = 12580;
 
 DELETE FROM `creature_queststarter` WHERE `quest` = 6501;
 INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES

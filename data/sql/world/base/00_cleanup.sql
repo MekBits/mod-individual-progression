@@ -134,3 +134,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`,
 (177673, 1, 0, 1, 70, 0, 100, 0, 2, 0, 0, 0, 0, 0, 80, 17767300, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Serpent Statue - On Loot State Changed (Activated) - Call Timed Actionlist'),
 (177673, 1, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, 0, 241, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Serpent Statue - On Link - Summon Gameobject Group 0 \'Naga Beam\''),
 (17767300, 9, 0, 0, 0, 0, 100, 0, 3500, 3500, 0, 0, 0, 0, 12, 12369, 1, 180000, 0, 0, 0, 8, 0, 0, 0, 0, 252.57, 2963.7, 1.72356, 1.29154, 'Serpent Statue - On Script - Summon Creature \'Lord Kragaru\'');
+
+-- Marshal Windsor: older versions of quest_the_masquerade.sql set CREATURE_FLAG_EXTRA_IGNORE_PATHFINDING (536870912) on him,
+-- which made him walk in straight lines below the floor; remove it
+UPDATE `creature_template` SET `flags_extra` = `flags_extra` & ~536870912 WHERE `entry` = 12580;

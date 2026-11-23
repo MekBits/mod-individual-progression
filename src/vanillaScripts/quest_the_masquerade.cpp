@@ -748,7 +748,7 @@ public:
                         break;
                     case 25:
                         _canGreet = true;
-                        // Pathing on: without it the core moves him in a straight line that cuts below the floor
+                        // Pathing on, so he keeps to the floor also once the core honours generatePath=false
                         me->GetMotionMaster()->MovePoint(6, -8953.17f, 518.537f, 96.355f);
                         break;
                     case 26:

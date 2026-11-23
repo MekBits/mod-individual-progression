@@ -383,8 +383,8 @@ DELETE FROM `creature_questender` WHERE `id` = 1748 AND `quest` = 6403;
 INSERT INTO `creature_questender` (`id`, `quest`) VALUES
 (1748, 6403);
 
-# Windsor walks with pathfinding again. IGNORE_PATHFINDING gave him a two-point path, so he cut straight lines below the
-# floor (down to -1.3 on the keep legs). 00_cleanup.sql removes the flag from existing databases.
+# IGNORE_PATHFINDING gives him a two-point path, so he cuts straight lines below the floor; 00_cleanup.sql removes the flag
+# from existing databases.
 # -- Disable mmaps for Reginald in stormwind
 # UPDATE `creature_template` SET `flags_extra` = `flags_extra` |536870912 WHERE `entry` = 12580;
 

@@ -177,8 +177,8 @@ public:
         }
         else
         {
-            // Dynamic respawn drops the object and ignores SetRespawnTime, so the timer goes in with the despawn.
-            _invoker->DespawnOrUnsummon(0ms, 5s);
+            // Dynamic respawn ignores SetRespawnTime; Map::Update processes respawns every 5 s, so 1 s here means 1-6 s away.
+            _invoker->DespawnOrUnsummon(0ms, 1s);
         }
         return true;
     }

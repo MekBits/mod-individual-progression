@@ -130,7 +130,7 @@ public:
         }
         else
         {
-            handler.PSendSysMessage("You need to be level 70 or below, or level 80, to enter this version of Naxxramas.");
+            handler.PSendSysMessage("You need to be level 70 or below, or level 80 with progression 18 or vanilla raid access enabled, to enter this version of Naxxramas.");
         }
 
         return false;

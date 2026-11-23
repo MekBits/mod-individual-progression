@@ -29,6 +29,12 @@ private:
             if (level <= 70 && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
                 return false;
 
+            if (level == 80 && heroicArrival && !sIndividualProgression->canEnterVanillaRaidAt80(player))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage("You need progression 18 or vanilla raid access enabled to enter the vanilla version of Onyxia's Lair.");
+                return false;
+            }
+
             if (level == 80 && heroicArrival && !player->HasItemCount(ITEM_DRAKEFIRE_AMULET))
             {
                 ChatHandler(player->GetSession()).SendSysMessage("You need to have the Drakefire Amulet in your inventory to enter the 40-player version.");
@@ -42,6 +48,12 @@ private:
 
             if (level <= 70 && !sIndividualProgression->isAttuned(player))
                 return false;
+
+            if (level == 80 && heroicArrival && !sIndividualProgression->canEnterVanillaRaidAt80(player))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage("You need progression 18 or vanilla raid access enabled to enter the vanilla version of Naxxramas.");
+                return false;
+            }
 
             if (level == 80 && heroicArrival && !sIndividualProgression->isAttuned(player))
             {
@@ -138,16 +150,19 @@ public:
             if ((player->getRace() == RACE_DRAENEI || player->getRace() == RACE_BLOODELF) && sIndividualProgression->tbcRacesStartingProgression && !sIndividualProgression->hasPassedProgression(player, static_cast<ProgressionState>(sIndividualProgression->tbcRacesStartingProgression)))
             {
                 sIndividualProgression->UpdateProgressionState(player, static_cast<ProgressionState>(sIndividualProgression->tbcRacesStartingProgression));
+                sIndividualProgression->GrantAttunements(player, static_cast<ProgressionState>(sIndividualProgression->tbcRacesStartingProgression));
             }
 
             if (player->getClass() == CLASS_DEATH_KNIGHT && sIndividualProgression->deathKnightStartingProgression && !sIndividualProgression->hasPassedProgression(player, static_cast<ProgressionState>(sIndividualProgression->deathKnightStartingProgression)))
             {
                 sIndividualProgression->UpdateProgressionState(player, static_cast<ProgressionState>(sIndividualProgression->deathKnightStartingProgression));
+                sIndividualProgression->GrantAttunements(player, static_cast<ProgressionState>(sIndividualProgression->deathKnightStartingProgression));
             }
 
             if (sIndividualProgression->startingProgression && !sIndividualProgression->hasPassedProgression(player, static_cast<ProgressionState>(sIndividualProgression->startingProgression)))
             {
                 sIndividualProgression->UpdateProgressionState(player, static_cast<ProgressionState>(sIndividualProgression->startingProgression));
+                sIndividualProgression->GrantAttunements(player, static_cast<ProgressionState>(sIndividualProgression->startingProgression));
             }
 
             sIndividualProgression->checkIPProgression(player);

@@ -53,6 +53,7 @@ enum TheGreatMasquerade
     EVENT_REGINALD_SAY_2 = 6,
     EVENT_KATRANA_SAY_1 = 7,
     EVENT_CHECK_PLAYER = 67,
+    EVENT_CHECK_ONYXIA_GUARDS = 73,
 
     // Speech
     SAY_REGINALD_SHOO_HORSE = 0,
@@ -118,6 +119,8 @@ enum TheGreatMasquerade
     SPELL_WINDSOR_DEATH = 20465
 };
 
+Position const AnduinExit = { -8505.770f, 338.312f, 120.886f }; // the door of the hall, 66 yards from his throne spot
+
 class DelayedEmoteEvent : public BasicEvent
 {
 public:
@@ -142,7 +145,11 @@ public:
 
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
-        _invoker->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
+        // The scene may have ended and turned the guard back into a Royal Guard.
+        if (_invoker->GetEntry() != NPC_ONYXIA_GUARD)
+            return true;
+
+        _invoker->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
         if (Creature* bolvar = _invoker->FindNearestCreature(NPC_BOLVAR, 50.0f))
         {
             _invoker->AI()->AttackStart(bolvar);
@@ -163,14 +170,42 @@ public:
 
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
-        _invoker->DespawnOrUnsummon();
-        _invoker->SetRespawnTime(5);
+        if (_invoker->IsRespawnCompatibilityMode())
+        {
+            _invoker->DespawnOrUnsummon();
+            _invoker->SetRespawnTime(5);
+        }
+        else
+        {
+            // Dynamic respawn ignores SetRespawnTime; Map::Update processes respawns every 5 s, so 1 s here means 1-6 s away.
+            _invoker->DespawnOrUnsummon(0ms, 1s);
+        }
         return true;
     }
 
 private:
     Creature* _invoker;
 
+};
+
+// Walks Anduin out of the hall and despawns him when he is there. It runs on his own event queue, so it outlives Windsor.
+class DelayedAnduinLeaveEvent : public BasicEvent
+{
+public:
+    DelayedAnduinLeaveEvent(Creature* invoker, uint32 checks) : _invoker(invoker), _checks(checks) { }
+
+    bool Execute(uint64 /*time*/, uint32 /*diff*/)
+    {
+        if (_invoker->GetExactDist2d(AnduinExit.GetPositionX(), AnduinExit.GetPositionY()) < 2.0f || _checks >= 60)
+            _invoker->DespawnOrUnsummon(3s); // stands still for 3 s so a watcher sees where he ended
+        else
+            _invoker->m_Events.AddEvent(new DelayedAnduinLeaveEvent(_invoker, _checks + 1), _invoker->m_Events.CalculateTime(1000));
+        return true;
+    }
+
+private:
+    Creature* _invoker;
+    uint32 _checks;
 };
 
 class npc_squire_rowe : public CreatureScript
@@ -324,6 +359,8 @@ public:
         {
             if (actionId == ACTION_RESET_MASQUERADE)
             {
+                RestoreKeep();
+
                 me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
 
                 ObjectGuid::LowType guid = GUID_ROWE;
@@ -344,9 +381,53 @@ public:
                 _events.ScheduleEvent(46, 3s);
 
             if (actionId == ACTION_INCREASE_DEATH_COUNTER)
+                CheckOnyxiaGuards();
+        }
+
+        // The guards are database spawns, not Windsor's summons, so SummonedCreatureDies never fires for them: count from the list.
+        void CheckOnyxiaGuards()
+        {
+            if (_guardsDone)
+                return;
+
+            for (ObjectGuid const& guid : _onyxiaGuardGUIDs)
+                if (Creature* guard = ObjectAccessor::GetCreature(*me, guid))
+                    if (guard->IsAlive() && guard->GetEntry() == NPC_ONYXIA_GUARD)
+                        return;
+
+            _guardsDone = true;
+            _events.ScheduleEvent(68, 3s);
+        }
+
+        // Puts the keep back as it was before the scene: living Onyxia guards are Royal Guards again and Bolvar is himself.
+        // Dead guards respawn as 1756 from their spawn data.
+        void RestoreKeep()
+        {
+            for (ObjectGuid const& guid : _onyxiaGuardGUIDs)
             {
-                if (!me->FindNearestCreature(NPC_ONYXIA_GUARD, 20.0f))
-                    _events.ScheduleEvent(68, 3s);
+                Creature* guard = ObjectAccessor::GetCreature(*me, guid);
+                if (!guard || !guard->IsAlive() || guard->GetEntry() != NPC_ONYXIA_GUARD)
+                    continue;
+
+                guard->CombatStop(true);
+                guard->UpdateEntry(NPC_ROYAL_GUARD, guard->GetCreatureData(), true, true);
+                guard->GetMotionMaster()->MoveTargetedHome();
+            }
+            _onyxiaGuardGUIDs.clear();
+            _guardsDone = true; // stops the poll, so a reset cannot restart the ending
+
+            // The emote is only known once the scene has touched him (event 59).
+            if (_bolvarEmote)
+            {
+                if (Creature* bolvar = me->FindNearestCreature(NPC_BOLVAR, 20.0f))
+                {
+                    uint32 npcFlags, unitFlags, dynamicFlags;
+                    ObjectMgr::ChooseCreatureFlags(bolvar->GetCreatureTemplate(), npcFlags, unitFlags, dynamicFlags, bolvar->GetCreatureData());
+                    bolvar->SetFaction(bolvar->GetCreatureTemplate()->faction);
+                    bolvar->ReplaceAllNpcFlags(NPCFlags(npcFlags));
+                    bolvar->SetUInt32Value(UNIT_NPC_EMOTESTATE, *_bolvarEmote);
+                }
+                _bolvarEmote.reset();
             }
         }
 
@@ -475,6 +556,8 @@ public:
                     _events.ScheduleEvent(45, 1ms);
                     break;
                 case 26: // Keep gossip
+                    // The keep's guards stay at their posts, so they are there when Onyxia is revealed.
+                    _canGreet = false;
                     _events.ScheduleEvent(EVENT_CHECK_PLAYER, 300s);
                     Talk(SAY_REGINALD_BEFORE_KEEP);
                     me->GetMotionMaster()->Clear();
@@ -892,6 +975,7 @@ public:
                     case 59:
                         if (Creature* bolvar = me->FindNearestCreature(NPC_BOLVAR, 20.0f))
                         {
+                            _bolvarEmote = bolvar->GetUInt32Value(UNIT_NPC_EMOTESTATE);
                             bolvar->SetFaction(11);
                             bolvar->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
                             bolvar->AI()->Talk(SAY_BOLVAR_TO_ANDUINN);
@@ -899,8 +983,8 @@ public:
                         if (Creature* anduinn = me->FindNearestCreature(NPC_ANDUINN, 20.0f))
                         {
                             anduinn->SetWalk(true);
-                            anduinn->GetMotionMaster()->MovePoint(1, -8505.770f, 338.312f, 120.886f, FORCED_MOVEMENT_NONE, 0.0f, 0.0f, true);
-                            anduinn->DespawnOrUnsummon(5s);
+                            anduinn->GetMotionMaster()->MovePoint(1, AnduinExit.GetPositionX(), AnduinExit.GetPositionY(), AnduinExit.GetPositionZ(), FORCED_MOVEMENT_NONE, 0.0f, 0.0f, true);
+                            anduinn->m_Events.AddEvent(new DelayedAnduinLeaveEvent(anduinn, 0), anduinn->m_Events.CalculateTime(1000));
                         }
                         break;
                     case 60:
@@ -925,12 +1009,14 @@ public:
 
                                 itr->UpdateEntry(NPC_ONYXIA_GUARD, nullptr);
                                 itr->AI()->SetGUID(me->GetGUID());
-                                itr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
+                                itr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
                                 itr->m_Events.AddEvent(new DelayedAttackStartEvent(itr), itr->m_Events.CalculateTime(8000));
+                                _onyxiaGuardGUIDs.push_back(itr->GetGUID());
                                 counter++;
                             }
                         }
 
+                        _events.ScheduleEvent(EVENT_CHECK_ONYXIA_GUARDS, 1s);
                         _events.ScheduleEvent(61, 5s);
                         _events.ScheduleEvent(66, 6s);
                         break;
@@ -983,8 +1069,10 @@ public:
                             bolvar->GetMotionMaster()->MovePoint(1, -8448.279f, 338.398f, 121.329f, FORCED_MOVEMENT_NONE, 0.0f, 0.0f, false);
                             bolvar->SetFacingToObject(me);
                             bolvar->SetStandState(UNIT_STAND_STATE_KNEEL);
+                            _events.ScheduleEvent(69, 3s);
                         }
-                        _events.ScheduleEvent(69, 3s);
+                        else
+                            _events.ScheduleEvent(70, 3s); // no Bolvar to kneel or answer, the scene goes on without him
                         break;
                     case 69:
                         if (Creature* bolvar = me->FindNearestCreature(NPC_BOLVAR, 20.0f))
@@ -1006,14 +1094,19 @@ public:
                             bolvar->SetSpeed(MOVE_WALK, 1.0f);
                             bolvar->SetWalk(true);
                             bolvar->GetMotionMaster()->MoveTargetedHome();
-                            bolvar->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
-
-                            if (Player* player = ObjectAccessor::FindConnectedPlayer(_playerGUID))
-                                player->GroupEventHappens(QUEST_THE_GREAT_MASQUERADE, me);
-
-                            DoAction(ACTION_RESET_MASQUERADE);
-                            me->DespawnOrUnsummon(10s);
                         }
+
+                        // Credit, the reset and the despawn run with or without Bolvar. The reset also gives him his faction, flags and emote back.
+                        if (Player* player = ObjectAccessor::FindConnectedPlayer(_playerGUID))
+                            player->GroupEventHappens(QUEST_THE_GREAT_MASQUERADE, me);
+
+                        DoAction(ACTION_RESET_MASQUERADE);
+                        me->DespawnOrUnsummon(10s);
+                        break;
+                    case EVENT_CHECK_ONYXIA_GUARDS:
+                        CheckOnyxiaGuards();
+                        if (!_guardsDone)
+                            _events.ScheduleEvent(EVENT_CHECK_ONYXIA_GUARDS, 1s);
                         break;
                     default:
                         break;
@@ -1029,6 +1122,9 @@ public:
         ObjectGuid _marcusGUID;
         GuidSet _swGuardsSaluted;
         bool _canGreet;
+        GuidVector _onyxiaGuardGUIDs;
+        bool _guardsDone = false;
+        Optional<uint32> _bolvarEmote;
     };
 
     bool OnGossipSelect(Player* player, Creature* me, uint32 /*menuId*/, uint32 gossipListId) override
